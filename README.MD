@@ -61,16 +61,6 @@ todo
 |webTierSecurity|Support sending credentials with AJAX requests to specific domains. This will allow editing of feature services secured with web-tier authentication|Boolean|false|
 |esriEnvironment|Most users will not need to modify this value. For Esri hosting environments only. Will automatically create a `portalUrl` and `proxyUrl` for the application. Only set this is to true if the app is going to be stored on Esri's hosting servers. If you are using your own custom hosted portal, set the `portalUrl` in `config.json` instead of setting this to true.|   Boolean|false|
 
-## Dojo Configuration
-
-`/dist/config/dojo.js`
-
-todo
-
-# Folders and Files
-
-todo
-
 # API
 
 This is the API for the ApplicationBase class. `ApplicationBase.js`

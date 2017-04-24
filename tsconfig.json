@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "amd",
@@ -10,7 +9,10 @@
     "reactNamespace": "jsxFactory"
   },
   "include": [
-    "./src/**/*"
+    "./**/*"
+  ],
+  "exclude": [
+    "node_modules"
   ],
   "files": [
     "./node_modules/dojo-typings/dojo/1.11/loader.d.ts",

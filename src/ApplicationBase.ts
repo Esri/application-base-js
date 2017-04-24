@@ -16,14 +16,14 @@ import PortalQueryParams = require("esri/portal/PortalQueryParams");
 import {
   ApplicationConfig,
   ApplicationConfigs,
-  BoilerplateResult,
-  BoilerplateResults,
-  BoilerplateSettings
+  ApplicationBaseResult,
+  ApplicationBaseResults,
+  ApplicationBaseSettings
 } from "./interfaces";
 
 type Direction = "ltr" | "rtl";
 
-interface BoilerplateItemPromises {
+interface ApplicationBaseItemPromises {
   webmap?: IPromise<any>;
   webscene?: IPromise<any>;
   groupInfo?: IPromise<any>;
@@ -50,7 +50,7 @@ const defaultSettings = {
   webscene: {}
 };
 
-class Boilerplate {
+class ApplicationBase {
 
   //--------------------------------------------------------------------------
   //
@@ -58,18 +58,18 @@ class Boilerplate {
   //
   //--------------------------------------------------------------------------
 
-  constructor(applicationConfig: any, boilerplateConfig: any) {
+  constructor(applicationConfig: any, ApplicationBaseConfig: any) {
     if (typeof applicationConfig === "string") {
       applicationConfig = JSON.parse(applicationConfig);
     }
 
-    if (typeof boilerplateConfig === "string") {
-      boilerplateConfig = JSON.parse(boilerplateConfig);
+    if (typeof ApplicationBaseConfig === "string") {
+      ApplicationBaseConfig = JSON.parse(ApplicationBaseConfig);
     }
 
     this.settings = {
       ...defaultSettings,
-      ...boilerplateConfig
+      ...ApplicationBaseConfig
     }
     this.config = {
       ...defaultConfig,
@@ -86,7 +86,7 @@ class Boilerplate {
   //----------------------------------
   //  settings
   //----------------------------------
-  settings: BoilerplateSettings = defaultSettings;
+  settings: ApplicationBaseSettings = defaultSettings;
 
   //----------------------------------
   //  config
@@ -96,7 +96,7 @@ class Boilerplate {
   //----------------------------------
   //  results
   //----------------------------------
-  results: BoilerplateResults = {};
+  results: ApplicationBaseResults = {};
 
   //----------------------------------
   //  portal
@@ -146,7 +146,7 @@ class Boilerplate {
     return portal.queryItems(params);
   }
 
-  load(): IPromise<Boilerplate> {
+  load(): IPromise<ApplicationBase> {
     const urlParams = this._getUrlParamValues(this.settings.urlParams);
     this.results.urlParams = urlParams
 
@@ -274,7 +274,7 @@ class Boilerplate {
           });
         }
 
-        const promises: BoilerplateItemPromises = {
+        const promises: ApplicationBaseItemPromises = {
           webmap: webmapPromises.length ?
             promiseUtils.eachAlways(webmapPromises) :
             promiseUtils.resolve(),
@@ -352,7 +352,7 @@ class Boilerplate {
       return;
     }
 
-    const localStoragePrefix = "boilerplate_config_";
+    const localStoragePrefix = "application_base_config_";
     const lsItem = localStorage.getItem(localStoragePrefix + appid);
     const localConfig = lsItem && JSON.parse(lsItem);
     return localConfig;
@@ -392,7 +392,7 @@ class Boilerplate {
     return new Portal().load();
   }
 
-  private _overwriteItems(responses: BoilerplateResult[], applicationItem: PortalItem): void {
+  private _overwriteItems(responses: ApplicationBaseResult[], applicationItem: PortalItem): void {
     if (!responses) {
       return;
     }
@@ -559,4 +559,4 @@ class Boilerplate {
 
 }
 
-export default Boilerplate;
+export default ApplicationBase;

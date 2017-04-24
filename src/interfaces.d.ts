@@ -31,7 +31,7 @@ export interface ApplicationConfig {
   [propName: string]: any;
 }
 
-export interface BoilerplateSettings {
+export interface ApplicationBaseSettings {
   environment: {
     isEsri?: boolean;
     webTierSecurity?: boolean;
@@ -61,20 +61,20 @@ export interface BoilerplateSettings {
   }
 }
 
-export interface BoilerplateResult {
+export interface ApplicationBaseResult {
   error?: Error;
   value: any;
   promise: IPromise<any>;
 }
 
-export interface BoilerplateResults {
-  applicationItem?: BoilerplateResult;
-  applicationData?: BoilerplateResult;
-  groupInfos?: BoilerplateResult[];
-  groupItems?: BoilerplateResult[];
+export interface ApplicationBaseResults {
+  applicationItem?: ApplicationBaseResult;
+  applicationData?: ApplicationBaseResult;
+  groupInfos?: ApplicationBaseResult[];
+  groupItems?: ApplicationBaseResult[];
   localStorage?: ApplicationConfig;
   portal?: Portal;
   urlParams?: ApplicationConfig;
-  webMapItems?: BoilerplateResult[];
-  webSceneItems?: BoilerplateResult[];
+  webMapItems?: ApplicationBaseResult[];
+  webSceneItems?: ApplicationBaseResult[];
 }

@@ -1,10 +1,10 @@
-# Application Boilerplate
+# ApplicationBase
 
 todo
 
 ## Purpose
 
-The purpose of this Boilerplate is to handle fetching and managing ArcGIS Online information used in configurable applications such as:
+The purpose of this ApplicationBase is to handle fetching and managing ArcGIS Online information used in configurable applications such as:
 
 - Portal information
 - User information
@@ -12,7 +12,7 @@ The purpose of this Boilerplate is to handle fetching and managing ArcGIS Online
 - Configured application information
 - URL parameters
 
-The boilerplate will handle fetching this information, store it, and perform setup when necessary.
+The ApplicationBase will handle fetching this information, store it, and perform setup when necessary.
 
 ## Features
 
@@ -41,9 +41,9 @@ todo
 |units|Application measurement units|string|""|
 |helperServices|Object containing URLs to various helper services|Object|See below|
 
-## Boilerplate Configuration
+## ApplicationBase Configuration
 
-`/dist/config/boilerplate.json`
+`/dist/config/ApplicationBase.json`
 
 |property|description|type|default|
 |---|---|---|---|
@@ -73,15 +73,15 @@ todo
 
 # API
 
-This is the API for the boilerplate class. `Boilerplate.js`
+This is the API for the ApplicationBase class. `ApplicationBase.js`
 
 ## Constructor
 
-`new BoilerPlate(ApplicationConfig, BoilerplateConfig)`
+`new ApplicationBase(ApplicationConfig, ApplicationBaseConfig)`
 
 ## Constructor Options
 
-See [application configuration](#application-configuration) and [boilerplate configuration](#boilerplate-configuration) for more information.
+See [application configuration](#application-configuration) and [ApplicationBase configuration](#applicationbase-configuration) for more information.
 
 ## Properties
 
@@ -90,8 +90,8 @@ See [application configuration](#application-configuration) and [boilerplate con
 |config|Config created|ApplicationConfiguration|true|
 |direction|Language direction|string|true|
 |locale|Locale string|string|true|
-|portal|`Portal` created by Boilerplate|`esri/portal/Portal`|true|
-|results|Boilerplate query results|BoilerplateResults|true|
+|portal|`Portal` created by ApplicationBase|`esri/portal/Portal`|true|
+|results|ApplicationBase query results|ApplicationBaseResults|true|
 |units|Appropriate units of measurement|string|true|
 
 ## Methods
@@ -102,7 +102,7 @@ todo
 
 ### queryGroupItems()
 
-Query a group by parameters. `Boilerplate.queryGroupItems(options)`.
+Query a group by parameters. `ApplicationBase.queryGroupItems(options)`.
 
 #### Options
 
@@ -179,5 +179,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-A copy of the license is available in the repository's [license.txt](https://raw.github.com/Esri/application-boilerplate-js/master/license.txt) file.
+A copy of the license is available in the repository's [license.txt](https://raw.github.com/Esri/application-base-js/master/license.txt) file.
 

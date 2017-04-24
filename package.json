@@ -1,15 +1,16 @@
 {
-  "name": "arcgis-boilerplate-ts",
+  "name": "application-base-js",
   "version": "0.0.1",
-  "description": "TypeScript boilerplate for building ArcGIS JS API 4.x Applications",
-  "main": "dist/Boilerplate.js",
+  "description": "A core class for creating a configurable application using JavaScript/TypeScript",
+  "main": "dist/ApplicationBase.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Esri/application-boilerplate-js.git"
+    "url": "git+https://github.com/Esri/application-base-js.git"
   },
   "keywords": [
     "Esri",
     "ArcGIS",
+    "JavaScript",
     "TypeScript"
   ],
   "dependencies": {

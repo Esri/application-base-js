@@ -177,7 +177,7 @@ class ApplicationBase {
         queryApplicationItem.then(itemInfo => {
           return itemInfo instanceof PortalItem ?
             itemInfo.fetchData() :
-            null;
+            undefined;
         }) :
         promiseUtils.resolve();
 

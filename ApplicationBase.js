@@ -116,7 +116,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                     queryApplicationItem.then(function (itemInfo) {
                         return itemInfo instanceof PortalItem ?
                             itemInfo.fetchData() :
-                            null;
+                            undefined;
                     }) :
                     promiseUtils.resolve();
                 var queryPortal = _this.settings.portal.fetch ?

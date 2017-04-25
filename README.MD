@@ -24,7 +24,7 @@ This is the API for the ApplicationBase class. `ApplicationBase.js`
 
 ## Constructor Options
 
-See [ApplicationConfig](#ApplicationConfig) and [ApplicationBaseConfig](#ApplicationBaseConfig) for more information.
+See [ApplicationConfig](#applicationconfig) and [ApplicationBaseConfig](#applicationbaseconfig) for more information.
 
 ### ApplicationConfig
 
@@ -51,7 +51,7 @@ See [ApplicationConfig](#ApplicationConfig) and [ApplicationBaseConfig](#Applica
 |webmap.fetch|When true the application will query for a webmap|Boolean|false|
 |group.fetchInfo|When true the application will query for a group's information|Boolean|false|
 |group.fetchItems|When true the application will query for a group's items|Boolean|false|
-|group.itemParams|Defines query paramaters for fetching group items|[itemParams](#itemParams)|{}|
+|group.itemParams|Defines query paramaters for fetching group items|[itemParams](#itemparams)|{}|
 |portal.fetch|When true the application will query arcgis.com for default settings for helper services, units etc. If you want to use custom settings for units or any of the helper services set this to false then enter default values for any items you need using the helper services and units properties.|Boolean|true|
 |urlParams|Defines which URL parameters should be captured and stored into the config for use within the application|String[]|See below|
 |environment.webTierSecurity|Support sending credentials with AJAX requests to specific domains. This will allow editing of feature services secured with web-tier authentication|Boolean|false|
@@ -77,11 +77,11 @@ Example:
 
 |property|description|type|readonly|
 |---|---|---|---|
-|config|Config created|[ApplicationConfig](#ApplicationConfig)|true|
+|config|Config created|[ApplicationConfig](#applicationconfig)|true|
 |direction|Language direction|string|true|
 |locale|Locale string|string|true|
 |portal|`Portal` created by ApplicationBase|[Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)|true|
-|results|ApplicationBase query results|[ApplicationBaseResults](#ApplicationBaseResults)|true|
+|results|ApplicationBase query results|[ApplicationBaseResults](#applicationbaseresults)|true|
 |units|Appropriate units of measurement|string|true|
 
 
@@ -97,15 +97,15 @@ Example:
 
 |property|description|type|
 |---|---|---|
-|applicationItem?|The application item result|[ApplicationBaseResult](#ApplicationBaseResult)|
-|applicationData?|The application data result|[ApplicationBaseResult](#ApplicationBaseResult)|
-|groupInfos?|The restults from querying group infos|[ApplicationBaseResult](#ApplicationBaseResult)[]|
-|groupItems?|The results from querying group items|[ApplicationBaseResult](#ApplicationBaseResult)[]|
-|localStorage?|The local storage configuration result|[ApplicationConfig](#ApplicationConfig)|
+|applicationItem?|The application item result|[ApplicationBaseResult](#applicationbaseresult)|
+|applicationData?|The application data result|[ApplicationBaseResult](#applicationbaseresult)|
+|groupInfos?|The restults from querying group infos|[ApplicationBaseResult](#applicationbaseresult)[]|
+|groupItems?|The results from querying group items|[ApplicationBaseResult](#applicationbaseresult)[]|
+|localStorage?|The local storage configuration result|[ApplicationConfig](#applicationconfig)|
 |portal?|The Portal instance result|[Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)|
-|urlParams?|The results from URL parameters|[ApplicationConfig](#ApplicationConfig)|
-|webMapItems?|The restults from querying webmap items|[ApplicationBaseResult](#ApplicationBaseResult)[]|
-|webSceneItems?|The restults from querying webscene items|[ApplicationBaseResult](#ApplicationBaseResult)[]|
+|urlParams?|The results from URL parameters|[ApplicationConfig](#applicationconfig)|
+|webMapItems?|The restults from querying webmap items|[ApplicationBaseResult](#applicationbaseresult)[]|
+|webSceneItems?|The restults from querying webscene items|[ApplicationBaseResult](#applicationbaseresult)[]|
 
 ## Methods
 
@@ -113,7 +113,7 @@ Example:
 
 Loads the requested ApplicationBase resources and returns the class once complete.
 
-### queryGroupItems(groupId: string, itemParams: [itemParams](#itemParams), portal: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : IPromise&lt;any&gt;
+### queryGroupItems(groupId: string, itemParams: [itemParams](#itemparams), portal: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : IPromise&lt;any&gt;
 
 Query a group by parameters. `ApplicationBase.queryGroupItems("myid", {}, myPortal)`.
 

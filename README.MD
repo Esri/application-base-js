@@ -1,32 +1,32 @@
 # ApplicationBase
 
-todo
+A class designed to handle common tasks of configurable ArcGIS Web Applications.
 
 ## Purpose
 
-The purpose of this ApplicationBase is to handle fetching and managing ArcGIS Online information used in configurable applications such as:
+The purpose of this ApplicationBase is to handle fetching and managing ArcGIS Online information used in configurable applications. The ApplicationBase queries and maintains:
 
 - Portal information
 - User information
-- Item data (webscene, webmap, group information, group items)
+- Item data (webscenes, webmaps, group information, group items)
 - Configured application information
 - URL parameters
 
 The ApplicationBase will handle fetching this information, store it, and perform setup when necessary.
 
-## Features
+# API
 
-todo
+This is the API for the ApplicationBase class. `ApplicationBase.js`
 
-# Preview examples
+## Constructor
 
-todo
+`new ApplicationBase(ApplicationConfig: ApplicationConfig, ApplicationBaseConfig: ApplicationBaseConfig)`
 
-# Settings & Configuration
+## Constructor Options
 
-## Application Configuration
+See [ApplicationConfig](#ApplicationConfig) and [ApplicationBaseConfig](#ApplicationBaseConfig) for more information.
 
-`/dist/config/application.json`
+### ApplicationConfig
 
 |property|description|type|default|
 |---|---|---|---|
@@ -39,62 +39,29 @@ todo
 |oauthappid|oAuth authentication ID|string|""|
 |proxyUrl|Enter the url to the proxy if needed by the application. See the [Using the proxy page](http://developers.arcgis.com/en/javascript/jshelp/ags_proxy.html) help topic for details.|string|""|
 |units|Application measurement units|string|""|
-|helperServices|Object containing URLs to various helper services|Object|See below|
+|helperServices|Object containing URLs to various helper services|[HelperServices](https://developers.arcgis.com/javascript/latest/api-reference/esri-portal-Portal.html#helperServices)|null|
 
-## ApplicationBase Configuration
-
-`/dist/config/ApplicationBase.json`
+### ApplicationBaseConfig
 
 |property|description|type|default|
 |---|---|---|---|
-|webscene|WebScene related settings|Object|See below|
+|webscene.default|The default id to query when not set|string|""|
 |webscene.fetch|When true the application will query for a webscene|Boolean|true|
-|webmap|WebMap related settings|Object|See below|
+|webmap.default|The default id to query when not set|string|""|
 |webmap.fetch|When true the application will query for a webmap|Boolean|false|
-|group|Group related settings|Object|See below|
 |group.fetchInfo|When true the application will query for a group's information|Boolean|false|
 |group.fetchItems|When true the application will query for a group's items|Boolean|false|
-|group.itemParams|Defines query paramaters for fetching group items|Object|See below|
-|portal|Portal related settings|Object|See below|
+|group.itemParams|Defines query paramaters for fetching group items|[itemParams](#itemParams)|{}|
 |portal.fetch|When true the application will query arcgis.com for default settings for helper services, units etc. If you want to use custom settings for units or any of the helper services set this to false then enter default values for any items you need using the helper services and units properties.|Boolean|true|
 |urlParams|Defines which URL parameters should be captured and stored into the config for use within the application|String[]|See below|
-|webTierSecurity|Support sending credentials with AJAX requests to specific domains. This will allow editing of feature services secured with web-tier authentication|Boolean|false|
-|esriEnvironment|Most users will not need to modify this value. For Esri hosting environments only. Will automatically create a `portalUrl` and `proxyUrl` for the application. Only set this is to true if the app is going to be stored on Esri's hosting servers. If you are using your own custom hosted portal, set the `portalUrl` in `config.json` instead of setting this to true.|   Boolean|false|
+|environment.webTierSecurity|Support sending credentials with AJAX requests to specific domains. This will allow editing of feature services secured with web-tier authentication|Boolean|false|
+|environment.isEsri|Most users will not need to modify this value. For Esri hosting environments only. Will automatically create a `portalUrl` and `proxyUrl` for the application. Only set this is to true if the app is going to be stored on Esri's hosting servers. If you are using your own custom hosted portal, set the `portalUrl` in instead of setting this to true.|   Boolean|false|
 
-# API
+#### itemParams
 
-This is the API for the ApplicationBase class. `ApplicationBase.js`
+See [PortalQueryParams](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-PortalQueryParams.html)
 
-## Constructor
-
-`new ApplicationBase(ApplicationConfig, ApplicationBaseConfig)`
-
-## Constructor Options
-
-See [application configuration](#application-configuration) and [ApplicationBase configuration](#applicationbase-configuration) for more information.
-
-## Properties
-
-|property|description|type|readonly
-|---|---|---|---|
-|config|Config created|ApplicationConfiguration|true|
-|direction|Language direction|string|true|
-|locale|Locale string|string|true|
-|portal|`Portal` created by ApplicationBase|`esri/portal/Portal`|true|
-|results|ApplicationBase query results|ApplicationBaseResults|true|
-|units|Appropriate units of measurement|string|true|
-
-## Methods
-
-### load()
-
-todo
-
-### queryGroupItems()
-
-Query a group by parameters. `ApplicationBase.queryGroupItems(options)`.
-
-#### Options
+Example:
 
 ```js
 {
@@ -106,37 +73,55 @@ Query a group by parameters. `ApplicationBase.queryGroupItems(options)`.
 }
 ```
 
-# Setup
+## Properties
 
-## Getting Started
+|property|description|type|readonly|
+|---|---|---|---|
+|config|Config created|[ApplicationConfig](#ApplicationConfig)|true|
+|direction|Language direction|string|true|
+|locale|Locale string|string|true|
+|portal|`Portal` created by ApplicationBase|[Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)|true|
+|results|ApplicationBase query results|[ApplicationBaseResults](#ApplicationBaseResults)|true|
+|units|Appropriate units of measurement|string|true|
 
-todo
 
-Review the following ArcGIS.com help topics for details on Templates:
+### ApplicationBaseResult
 
-- [Writing your first application](https://developers.arcgis.com/en/javascript/jstutorials/intro_firstmap_amd.html)
-*   [Make your first app](http://doc.arcgis.com/en/arcgis-online/create-maps/make-your-first-app.htm)
-*   [Create apps from maps](http://doc.arcgis.com/en/arcgis-online/create-maps/create-app-templates.htm)
-*   [Add configurable parameters to templates](http://doc.arcgis.com/en/arcgis-online/create-maps/configurable-templates.htm)
+|property|description|type|
+|---|---|---|
+|error|The error returned from the query|Error|
+|value|The value returned from the query|any|
+|promise|The query promise|IPromise&lt;any&gt;|
 
-## Instructions
+### ApplicationbaseResults
 
-todo
+|property|description|type|
+|---|---|---|
+|applicationItem?|The application item result|[ApplicationBaseResult](#ApplicationBaseResult)|
+|applicationData?|The application data result|[ApplicationBaseResult](#ApplicationBaseResult)|
+|groupInfos?|The restults from querying group infos|[ApplicationBaseResult](#ApplicationBaseResult)[]|
+|groupItems?|The results from querying group items|[ApplicationBaseResult](#ApplicationBaseResult)[]|
+|localStorage?|The local storage configuration result|[ApplicationConfig](#ApplicationConfig)|
+|portal?|The Portal instance result|[Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)|
+|urlParams?|The results from URL parameters|[ApplicationConfig](#ApplicationConfig)|
+|webMapItems?|The restults from querying webmap items|[ApplicationBaseResult](#ApplicationBaseResult)[]|
+|webSceneItems?|The restults from querying webscene items|[ApplicationBaseResult](#ApplicationBaseResult)[]|
 
-1. Download and unzip the .zip file or clone the repository.
-2. Web-enable the directory.
-3. Access the .html page.
-4. Start writing your template!
+## Methods
 
-[New to GitHub? Get started here.](https://github.com/)
+### load(): IPromise&lt;ApplicationBase&gt;
 
-## Deploying
+Loads the requested ApplicationBase resources and returns the class once complete.
 
-todo
+### queryGroupItems(groupId: string, itemParams: [itemParams](#itemParams), portal: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : IPromise&lt;any&gt;
+
+Query a group by parameters. `ApplicationBase.queryGroupItems("myid", {}, myPortal)`.
 
 ## Requirements
 
-todo
+- [TypeScript](https://www.typescriptlang.org/)
+  - [TypeScript Setup](https://developers.arcgis.com/javascript//latest/guide/typescript-setup/index.html)
+- [NPM](https://www.npmjs.com/)
 
 ## Resources
 

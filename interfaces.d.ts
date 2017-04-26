@@ -78,3 +78,8 @@ export interface ApplicationBaseResults {
   webMapItems?: ApplicationBaseResult[];
   webSceneItems?: ApplicationBaseResult[];
 }
+export interface Proxy {
+  sourceUrl: string,
+  proxyUrl: string,
+  proxyId: string
+}

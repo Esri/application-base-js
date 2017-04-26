@@ -49,11 +49,10 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
     function createMap(item, appProxies) {
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";
-        var proxies = appProxies || null;
         if (!isWebMap && !isWebScene) {
             return promiseUtils.reject();
         }
-        return isWebMap ? createWebMapFromItem(item, proxies) : createWebSceneFromItem(item, proxies);
+        return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies);
         ;
     }
     exports.createMap = createMap;
@@ -92,19 +91,6 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         });
     }
     exports.createWebSceneFromItem = createWebSceneFromItem;
-    function _updateProxiedLayers(webItem, appProxies) {
-        if (!appProxies) {
-            return webItem;
-        }
-        appProxies.forEach(function (proxy) {
-            webItem.layers.forEach(function (layer) {
-                if (layer.url === proxy.sourceUrl) {
-                    layer.url = proxy.proxyUrl;
-                }
-            });
-        });
-        return webItem;
-    }
     function getItemTitle(item) {
         if (item && item.title) {
             return item.title;
@@ -149,5 +135,23 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         });
     }
     exports.setFindLocation = setFindLocation;
+    //--------------------------------------------------------------------------
+    //
+    //  Private Methods
+    //
+    //--------------------------------------------------------------------------
+    function _updateProxiedLayers(webItem, appProxies) {
+        if (!appProxies) {
+            return webItem;
+        }
+        appProxies.forEach(function (proxy) {
+            webItem.layers.forEach(function (layer) {
+                if (layer.url === proxy.sourceUrl) {
+                    layer.url = proxy.proxyUrl;
+                }
+            });
+        });
+        return webItem;
+    }
 });
 //# sourceMappingURL=itemUtils.js.map

@@ -67,18 +67,24 @@ export interface ApplicationBaseResult {
   promise: IPromise<any>;
 }
 
+export interface ApplicationBasePortalItemResult extends ApplicationBaseResult {
+  value: PortalItem;
+  promise: IPromise<PortalItem>;
+}
+
 export interface ApplicationBaseResults {
-  applicationItem?: ApplicationBaseResult;
+  applicationItem?: ApplicationBasePortalItemResult;
   applicationData?: ApplicationBaseResult;
-  groupInfos?: ApplicationBaseResult[];
-  groupItems?: ApplicationBaseResult[];
+  groupInfos?: ApplicationBasePortalItemResult[];
+  groupItems?: ApplicationBasePortalItemResult[];
   localStorage?: ApplicationConfig;
   portal?: Portal;
   urlParams?: ApplicationConfig;
-  webMapItems?: ApplicationBaseResult[];
-  webSceneItems?: ApplicationBaseResult[];
+  webMapItems?: ApplicationBasePortalItemResult[];
+  webSceneItems?: ApplicationBasePortalItemResult[];
 }
-export interface Proxy {
+
+export interface ApplicationProxy {
   sourceUrl: string,
   proxyUrl: string,
   proxyId: string

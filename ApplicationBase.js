@@ -149,18 +149,18 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                     queryPortal
                 ]).always(function (applicationArgs) {
                     var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2];
-                    var localStorage = _this.settings.localStorage.fetch ?
-                        _this._getLocalConfig(appId) :
-                        null;
-                    _this.results.localStorage = localStorage;
                     var applicationItem = applicationItemResponse ?
                         applicationItemResponse.value :
                         null;
                     var applicationData = applicationDataResponse ?
                         applicationDataResponse.value :
                         null;
-                    _this.results.applicationItem = applicationItem;
-                    _this.results.applicationData = applicationData;
+                    var localStorage = _this.settings.localStorage.fetch ?
+                        _this._getLocalConfig(appId) :
+                        null;
+                    _this.results.localStorage = localStorage;
+                    _this.results.applicationItem = applicationItemResponse;
+                    _this.results.applicationData = applicationDataResponse;
                     var applicationConfig = applicationData ?
                         applicationData.values :
                         null;
@@ -234,9 +234,6 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         var websceneResponses = itemArgs.webscene.value || [];
                         var groupInfoResponses = itemArgs.groupInfo.value || [];
                         var groupItemsResponses = itemArgs.groupItems.value || [];
-                        //console.log(applicationItem);
-                        // todo: mixin sourceUrl with proxyUrl
-                        // const appProxies = applicationInfo.appProxies;
                         var itemInfo = applicationItem ? applicationItem.itemInfo : null;
                         _this._overwriteItems(webmapResponses, itemInfo);
                         _this._overwriteItems(websceneResponses, itemInfo);

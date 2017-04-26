@@ -34,7 +34,7 @@ import PortalItem = require("esri/portal/PortalItem");
 
 import {
   ApplicationConfig,
-  Proxy
+  ApplicationProxy
 } from "../interfaces";
 
 import {
@@ -74,15 +74,15 @@ export function getViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export function createMap(item: PortalItem, appProxies?: Proxy[]): IPromise<WebMap | WebScene> {
+export function createMap(item: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebMap | WebScene> {
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
-  const proxies = appProxies || null;
+
   if (!isWebMap && !isWebScene) {
     return promiseUtils.reject();
   }
 
-  return isWebMap ? createWebMapFromItem(item, proxies) : createWebSceneFromItem(item, proxies) as IPromise<WebMap | WebScene>;;
+  return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies) as IPromise<WebMap | WebScene>;;
 }
 
 export function createView(map: WebMap | WebScene, viewProperties: any): IPromise<MapView | SceneView> {
@@ -102,7 +102,7 @@ export function createView(map: WebMap | WebScene, viewProperties: any): IPromis
   });
 }
 
-export function createWebMapFromItem(portalItem: PortalItem, appProxies: Proxy[]): IPromise<WebMap> {
+export function createWebMapFromItem(portalItem: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebMap> {
   return requireUtils.when(require, "esri/WebMap").then(WebMap => {
     const wm = new WebMap({
       portalItem: portalItem
@@ -113,7 +113,7 @@ export function createWebMapFromItem(portalItem: PortalItem, appProxies: Proxy[]
   });
 }
 
-export function createWebSceneFromItem(portalItem: PortalItem, appProxies: Proxy[]): IPromise<WebScene> {
+export function createWebSceneFromItem(portalItem: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebScene> {
   return requireUtils.when(require, "esri/WebScene").then(WebScene => {
     const ws = new WebScene({
       portalItem: portalItem
@@ -124,19 +124,6 @@ export function createWebSceneFromItem(portalItem: PortalItem, appProxies: Proxy
   });
 }
 
-function _updateProxiedLayers(webItem: WebMap | WebScene, appProxies: Proxy[]): IPromise<WebMap | WebScene> {
-  if (!appProxies) {
-    return webItem;
-  }
-  appProxies.forEach(proxy => {
-    webItem.layers.forEach(layer => {
-      if (layer.url === proxy.sourceUrl) {
-        layer.url = proxy.proxyUrl;
-      }
-    });
-  });
-  return webItem;
-}
 export function getItemTitle(item: PortalItem): string {
   if (item && item.title) {
     return item.title;
@@ -183,4 +170,26 @@ export function setFindLocation(query: string, view: MapView | SceneView): IProm
       return result;
     });
   });
+}
+
+//--------------------------------------------------------------------------
+//
+//  Private Methods
+//
+//--------------------------------------------------------------------------
+
+function _updateProxiedLayers(webItem: WebMap | WebScene, appProxies?: ApplicationProxy[]): IPromise<WebMap | WebScene> {
+  if (!appProxies) {
+    return webItem;
+  }
+
+  appProxies.forEach(proxy => {
+    webItem.layers.forEach(layer => {
+      if (layer.url === proxy.sourceUrl) {
+        layer.url = proxy.proxyUrl;
+      }
+    });
+  });
+
+  return webItem;
 }

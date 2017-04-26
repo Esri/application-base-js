@@ -214,11 +214,6 @@ class ApplicationBase {
       ]).always(applicationArgs => {
         const [applicationItemResponse, applicationDataResponse, portalResponse] = applicationArgs;
 
-        const localStorage = this.settings.localStorage.fetch ?
-          this._getLocalConfig(appId) :
-          null;
-        this.results.localStorage = localStorage;
-
         const applicationItem = applicationItemResponse ?
           applicationItemResponse.value :
           null;
@@ -227,8 +222,13 @@ class ApplicationBase {
           applicationDataResponse.value :
           null;
 
-        this.results.applicationItem = applicationItem;
-        this.results.applicationData = applicationData;
+        const localStorage = this.settings.localStorage.fetch ?
+          this._getLocalConfig(appId) :
+          null;
+
+        this.results.localStorage = localStorage;
+        this.results.applicationItem = applicationItemResponse;
+        this.results.applicationData = applicationDataResponse;
 
         const applicationConfig = applicationData ?
           applicationData.values :
@@ -316,10 +316,6 @@ class ApplicationBase {
           const websceneResponses = itemArgs.webscene.value || [];
           const groupInfoResponses = itemArgs.groupInfo.value || [];
           const groupItemsResponses = itemArgs.groupItems.value || [];
-
-          //console.log(applicationItem);
-          // todo: mixin sourceUrl with proxyUrl
-          // const appProxies = applicationInfo.appProxies;
 
           const itemInfo = applicationItem ? applicationItem.itemInfo : null;
           this._overwriteItems(webmapResponses, itemInfo);

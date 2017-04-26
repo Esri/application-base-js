@@ -60,7 +60,7 @@ const defaultConfig = {
     elevationSync: {},
     geocode: []
   }
-}
+};
 
 const defaultSettings = {
   environment: {},
@@ -92,7 +92,7 @@ class ApplicationBase {
     this.settings = {
       ...defaultSettings,
       ...ApplicationBaseConfig
-    }
+    };
     this.config = {
       ...defaultConfig,
       ...applicationConfig
@@ -170,7 +170,7 @@ class ApplicationBase {
 
   load(): IPromise<ApplicationBase> {
     const urlParams = this._getUrlParamValues(this.settings.urlParams);
-    this.results.urlParams = urlParams
+    this.results.urlParams = urlParams;
 
     this.config = this._mixinAllConfigs({
       config: this.config,
@@ -183,7 +183,7 @@ class ApplicationBase {
       this.config.proxyUrl = this._getEsriEnvironmentProxyUrl(esriPortalUrl);
     }
 
-    this._setPortalUrl(this.config.portalUrl)
+    this._setPortalUrl(this.config.portalUrl);
     this._setProxyUrl(this.config.proxyUrl);
 
     this.direction = this._getLanguageDirection();
@@ -476,7 +476,7 @@ class ApplicationBase {
       ...appConfig,
       ...localConfig,
       ...urlConfig
-    }
+    };
   }
 
   private _setPortalUrl(portalUrl: string): void {

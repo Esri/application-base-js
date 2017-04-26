@@ -18,7 +18,8 @@
   },
   "devDependencies": {
     "@types/arcgis-js-api": "^4.3.0",
-    "dojo-typings": "^1.11.6"
+    "dojo-typings": "^1.11.6",
+    "tslint": "^5.1.0"
   },
   "scripts": {
     "start": "npm run watch -s",

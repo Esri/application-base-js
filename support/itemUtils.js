@@ -46,13 +46,13 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         return __assign({}, urlViewProperties);
     }
     exports.getViewProperties = getViewProperties;
-    function createMap(item) {
+    function createMap(item, appItem) {
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";
         if (!isWebMap && !isWebScene) {
             return promiseUtils.reject();
         }
-        return isWebMap ? createWebMapFromItem(item) : createWebSceneFromItem(item);
+        return isWebMap ? createWebMapFromItem(item, appItem) : createWebSceneFromItem(item, appItem);
         ;
     }
     exports.createMap = createMap;
@@ -69,24 +69,41 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         });
     }
     exports.createView = createView;
-    function createWebMapFromItem(portalItem) {
+    function createWebMapFromItem(portalItem, appItem) {
+        console.log("portalItem", portalItem);
         return requireUtils.when(require, "esri/WebMap").then(function (WebMap) {
             var wm = new WebMap({
                 portalItem: portalItem
             });
-            return wm.load();
+            return wm.load().then(function () {
+                return updateProxiedLayers(wm, appItem);
+            });
         });
     }
     exports.createWebMapFromItem = createWebMapFromItem;
-    function createWebSceneFromItem(portalItem) {
+    function createWebSceneFromItem(portalItem, appItem) {
         return requireUtils.when(require, "esri/WebScene").then(function (WebScene) {
             var ws = new WebScene({
                 portalItem: portalItem
             });
-            return ws.load();
+            return ws.load().then(function () {
+                return updateProxiedLayers(ws, appItem);
+            });
         });
     }
     exports.createWebSceneFromItem = createWebSceneFromItem;
+    function updateProxiedLayers(webItem, appItem) {
+        var proxies = appItem.appProxies;
+        proxies.forEach(function (proxy) {
+            webItem.layers.forEach(function (layer) {
+                if (layer.url === proxy.sourceUrl) {
+                    layer.url = proxy.proxyUrl;
+                }
+            });
+        });
+        return promiseUtils.resolve(webItem);
+    }
+    exports.updateProxiedLayers = updateProxiedLayers;
     function getItemTitle(item) {
         if (item && item.title) {
             return item.title;

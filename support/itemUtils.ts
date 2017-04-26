@@ -73,15 +73,14 @@ export function getViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export function createMap(item: PortalItem): IPromise<WebMap | WebScene> {
+export function createMap(item: PortalItem, appItem: any): IPromise<WebMap | WebScene> {
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
-
   if (!isWebMap && !isWebScene) {
     return promiseUtils.reject();
   }
 
-  return isWebMap ? createWebMapFromItem(item) : createWebSceneFromItem(item) as IPromise<WebMap | WebScene>;;
+  return isWebMap ? createWebMapFromItem(item, appItem) : createWebSceneFromItem(item, appItem) as IPromise<WebMap | WebScene>;;
 }
 
 export function createView(map: WebMap | WebScene, viewProperties: any): IPromise<MapView | SceneView> {
@@ -101,24 +100,40 @@ export function createView(map: WebMap | WebScene, viewProperties: any): IPromis
   });
 }
 
-export function createWebMapFromItem(portalItem: PortalItem): IPromise<WebMap> {
+export function createWebMapFromItem(portalItem: PortalItem, appItem: any): IPromise<WebMap> {
+  console.log("portalItem", portalItem);
   return requireUtils.when(require, "esri/WebMap").then(WebMap => {
     const wm = new WebMap({
       portalItem: portalItem
     });
-    return wm.load();
+    return wm.load().then(() => {
+      return updateProxiedLayers(wm, appItem);
+    });
   });
 }
 
-export function createWebSceneFromItem(portalItem: PortalItem): IPromise<WebScene> {
+export function createWebSceneFromItem(portalItem: PortalItem, appItem: any): IPromise<WebScene> {
   return requireUtils.when(require, "esri/WebScene").then(WebScene => {
     const ws = new WebScene({
       portalItem: portalItem
     });
-    return ws.load();
+    return ws.load().then(() => {
+      return updateProxiedLayers(ws, appItem);
+    });
   });
 }
 
+export function updateProxiedLayers(webItem: WebMap | WebScene, appItem: any): IPromise<WebMap | WebScene> {
+  const proxies = appItem.appProxies;
+  proxies.forEach(proxy => {
+    webItem.layers.forEach(layer => {
+      if (layer.url === proxy.sourceUrl) {
+        layer.url = proxy.proxyUrl;
+      }
+    });
+  });
+  return promiseUtils.resolve(webItem);
+}
 export function getItemTitle(item: PortalItem): string {
   if (item && item.title) {
     return item.title;

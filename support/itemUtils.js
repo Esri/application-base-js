@@ -46,13 +46,14 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         return __assign({}, urlViewProperties);
     }
     exports.getViewProperties = getViewProperties;
-    function createMap(item, appItem) {
+    function createMap(item, appProxies) {
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";
+        var proxies = appProxies || null;
         if (!isWebMap && !isWebScene) {
             return promiseUtils.reject();
         }
-        return isWebMap ? createWebMapFromItem(item, appItem) : createWebSceneFromItem(item, appItem);
+        return isWebMap ? createWebMapFromItem(item, proxies) : createWebSceneFromItem(item, proxies);
         ;
     }
     exports.createMap = createMap;
@@ -69,41 +70,41 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         });
     }
     exports.createView = createView;
-    function createWebMapFromItem(portalItem, appItem) {
-        console.log("portalItem", portalItem);
+    function createWebMapFromItem(portalItem, appProxies) {
         return requireUtils.when(require, "esri/WebMap").then(function (WebMap) {
             var wm = new WebMap({
                 portalItem: portalItem
             });
             return wm.load().then(function () {
-                return updateProxiedLayers(wm, appItem);
+                return _updateProxiedLayers(wm, appProxies);
             });
         });
     }
     exports.createWebMapFromItem = createWebMapFromItem;
-    function createWebSceneFromItem(portalItem, appItem) {
+    function createWebSceneFromItem(portalItem, appProxies) {
         return requireUtils.when(require, "esri/WebScene").then(function (WebScene) {
             var ws = new WebScene({
                 portalItem: portalItem
             });
             return ws.load().then(function () {
-                return updateProxiedLayers(ws, appItem);
+                return _updateProxiedLayers(ws, appProxies);
             });
         });
     }
     exports.createWebSceneFromItem = createWebSceneFromItem;
-    function updateProxiedLayers(webItem, appItem) {
-        var proxies = appItem.appProxies;
-        proxies.forEach(function (proxy) {
+    function _updateProxiedLayers(webItem, appProxies) {
+        if (!appProxies) {
+            return webItem;
+        }
+        appProxies.forEach(function (proxy) {
             webItem.layers.forEach(function (layer) {
                 if (layer.url === proxy.sourceUrl) {
                     layer.url = proxy.proxyUrl;
                 }
             });
         });
-        return promiseUtils.resolve(webItem);
+        return webItem;
     }
-    exports.updateProxiedLayers = updateProxiedLayers;
     function getItemTitle(item) {
         if (item && item.title) {
             return item.title;

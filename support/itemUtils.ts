@@ -33,7 +33,8 @@ import SceneView = require("esri/views/SceneView");
 import PortalItem = require("esri/portal/PortalItem");
 
 import {
-  ApplicationConfig
+  ApplicationConfig,
+  Proxy
 } from "../interfaces";
 
 import {
@@ -73,14 +74,15 @@ export function getViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export function createMap(item: PortalItem, appItem: any): IPromise<WebMap | WebScene> {
+export function createMap(item: PortalItem, appProxies?: Proxy[]): IPromise<WebMap | WebScene> {
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
+  const proxies = appProxies || null;
   if (!isWebMap && !isWebScene) {
     return promiseUtils.reject();
   }
 
-  return isWebMap ? createWebMapFromItem(item, appItem) : createWebSceneFromItem(item, appItem) as IPromise<WebMap | WebScene>;;
+  return isWebMap ? createWebMapFromItem(item, proxies) : createWebSceneFromItem(item, proxies) as IPromise<WebMap | WebScene>;;
 }
 
 export function createView(map: WebMap | WebScene, viewProperties: any): IPromise<MapView | SceneView> {
@@ -100,39 +102,40 @@ export function createView(map: WebMap | WebScene, viewProperties: any): IPromis
   });
 }
 
-export function createWebMapFromItem(portalItem: PortalItem, appItem: any): IPromise<WebMap> {
-  console.log("portalItem", portalItem);
+export function createWebMapFromItem(portalItem: PortalItem, appProxies: Proxy[]): IPromise<WebMap> {
   return requireUtils.when(require, "esri/WebMap").then(WebMap => {
     const wm = new WebMap({
       portalItem: portalItem
     });
     return wm.load().then(() => {
-      return updateProxiedLayers(wm, appItem);
+      return _updateProxiedLayers(wm, appProxies);
     });
   });
 }
 
-export function createWebSceneFromItem(portalItem: PortalItem, appItem: any): IPromise<WebScene> {
+export function createWebSceneFromItem(portalItem: PortalItem, appProxies: Proxy[]): IPromise<WebScene> {
   return requireUtils.when(require, "esri/WebScene").then(WebScene => {
     const ws = new WebScene({
       portalItem: portalItem
     });
     return ws.load().then(() => {
-      return updateProxiedLayers(ws, appItem);
+      return _updateProxiedLayers(ws, appProxies);
     });
   });
 }
 
-export function updateProxiedLayers(webItem: WebMap | WebScene, appItem: any): IPromise<WebMap | WebScene> {
-  const proxies = appItem.appProxies;
-  proxies.forEach(proxy => {
+function _updateProxiedLayers(webItem: WebMap | WebScene, appProxies: Proxy[]): IPromise<WebMap | WebScene> {
+  if (!appProxies) {
+    return webItem;
+  }
+  appProxies.forEach(proxy => {
     webItem.layers.forEach(layer => {
       if (layer.url === proxy.sourceUrl) {
         layer.url = proxy.proxyUrl;
       }
     });
   });
-  return promiseUtils.resolve(webItem);
+  return webItem;
 }
 export function getItemTitle(item: PortalItem): string {
   if (item && item.title) {

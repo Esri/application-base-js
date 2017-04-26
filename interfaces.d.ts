@@ -1,5 +1,6 @@
 import Portal = require("esri/portal/Portal");
 import PortalItem = require("esri/portal/PortalItem");
+import PortalQueryResult = require("esri/portal/PortalQueryResult");
 
 export interface ApplicationConfigs {
   application?: ApplicationConfig;
@@ -72,11 +73,16 @@ export interface ApplicationBasePortalItemResult extends ApplicationBaseResult {
   promise: IPromise<PortalItem>;
 }
 
+export interface ApplicationBasePortalQueryResult extends ApplicationBaseResult {
+  value: PortalQueryResult;
+  promise: IPromise<PortalQueryResult>;
+}
+
 export interface ApplicationBaseResults {
   applicationItem?: ApplicationBasePortalItemResult;
   applicationData?: ApplicationBaseResult;
-  groupInfos?: ApplicationBasePortalItemResult[];
-  groupItems?: ApplicationBasePortalItemResult[];
+  groupInfos?: ApplicationBasePortalQueryResult;
+  groupItems?: ApplicationBasePortalQueryResult;
   localStorage?: ApplicationConfig;
   portal?: Portal;
   urlParams?: ApplicationConfig;

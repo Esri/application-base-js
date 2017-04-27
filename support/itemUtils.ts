@@ -82,7 +82,7 @@ export function createMap(item: PortalItem, appProxies?: ApplicationProxy[]): IP
     return promiseUtils.reject();
   }
 
-  return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies) as IPromise<WebMap | WebScene>;;
+  return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies) as IPromise<WebMap | WebScene>;
 }
 
 export function createView(map: WebMap | WebScene, viewProperties: any): IPromise<MapView | SceneView> {

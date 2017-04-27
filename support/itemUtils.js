@@ -53,7 +53,6 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
             return promiseUtils.reject();
         }
         return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies);
-        ;
     }
     exports.createMap = createMap;
     function createView(map, viewProperties) {

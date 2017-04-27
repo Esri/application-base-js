@@ -153,7 +153,7 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             var defaultMarkerSymbol = {
                 url: require.toUrl("./symbols/marker.png"),
                 width: "32px",
-                height: "32px",
+                height: "32px" // todo: fix typings in next JS API release.
             };
             var symbolOptions = icon_url ? {
                 url: icon_url,
@@ -208,7 +208,6 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
                     referenceLayers: referenceLayer.value ? [referenceLayer.value] : []
                 };
                 return new Basemap(basemapOptions).load();
-                ;
             });
         });
     }
@@ -245,20 +244,20 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             }
         });
     }
-    function _getTiltAndHeading(tiltAndHeading) {
-        if (tiltAndHeading == "") {
+    function _getHeadingAndTilt(headingAndTilt) {
+        if (!headingAndTilt) {
             return null;
         }
-        var tiltHeadingArray = tiltAndHeading.split(",");
+        var tiltHeadingArray = headingAndTilt.split(",");
         return tiltHeadingArray.length >= 0 ? {
             heading: parseFloat(tiltHeadingArray[0]),
             tilt: parseFloat(tiltHeadingArray[1])
         } : null;
     }
-    function _getCameraProperties(cameraString, tiltAndHeading) {
+    function _getCameraProperties(cameraString, headingAndTilt) {
         var cameraPosition = _getCameraPosition(cameraString);
-        var tiltAndHeadingProperties = _getTiltAndHeading(tiltAndHeading);
-        return __assign({ position: cameraPosition }, tiltAndHeadingProperties);
+        var headingAndTiltProperties = _getHeadingAndTilt(headingAndTilt);
+        return __assign({ position: cameraPosition }, headingAndTiltProperties);
     }
 });
 //# sourceMappingURL=urlUtils.js.map

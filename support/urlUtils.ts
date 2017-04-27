@@ -186,7 +186,7 @@ export function getGraphic(marker: string): IPromise<Graphic> {
     const defaultMarkerSymbol = {
       url: require.toUrl("./symbols/marker.png"),
       width: "32px" as any as number, // todo: fix typings in next JS API release.
-      height: "32px" as any as number, // todo: fix typings in next JS API release.
+      height: "32px" as any as number // todo: fix typings in next JS API release.
     };
 
     const symbolOptions = icon_url ? {
@@ -247,7 +247,7 @@ export function getBasemap(basemapUrl: string, basemapReferenceUrl: string): IPr
         baseLayers: [baseLayer.value],
         referenceLayers: referenceLayer.value ? [referenceLayer.value] : []
       };
-      return new Basemap(basemapOptions).load();;
+      return new Basemap(basemapOptions).load();
     });
   });
 }
@@ -294,12 +294,12 @@ function _getCameraPosition(cameraString: string): Point {
   });
 }
 
-function _getTiltAndHeading(tiltAndHeading: string): CameraProperties {
-  if (tiltAndHeading == "") {
+function _getHeadingAndTilt(headingAndTilt: string): CameraProperties {
+  if (!headingAndTilt) {
     return null;
   }
 
-  const tiltHeadingArray = tiltAndHeading.split(",");
+  const tiltHeadingArray = headingAndTilt.split(",");
 
   return tiltHeadingArray.length >= 0 ? {
     heading: parseFloat(tiltHeadingArray[0]),
@@ -307,12 +307,12 @@ function _getTiltAndHeading(tiltAndHeading: string): CameraProperties {
   } : null;
 }
 
-function _getCameraProperties(cameraString: string, tiltAndHeading: string): CameraProperties {
+function _getCameraProperties(cameraString: string, headingAndTilt: string): CameraProperties {
   const cameraPosition = _getCameraPosition(cameraString);
-  const tiltAndHeadingProperties = _getTiltAndHeading(tiltAndHeading);
+  const headingAndTiltProperties = _getHeadingAndTilt(headingAndTilt);
 
   return {
     position: cameraPosition,
-    ...tiltAndHeadingProperties
+    ...headingAndTiltProperties
   };
 }

@@ -81,7 +81,8 @@ Example:
 |direction|Language direction|string|true|
 |locale|Locale string|string|true|
 |portal|`Portal` created by ApplicationBase|[Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)|true|
-|results|ApplicationBase query results|[ApplicationBaseResults](#applicationbaseresults)|true|
+|results|ApplicationBase query results|[ApplicationBaseConfig](#applicationbaseconfig)|true|
+|settings|Config created|[ApplicationBaseResults](#applicationbaseresults)|true|
 |units|Appropriate units of measurement|string|true|
 
 
@@ -93,7 +94,7 @@ Example:
 |value|The value returned from the query|any|
 |promise|The query promise|IPromise&lt;any&gt;|
 
-### ApplicationbaseResults
+### ApplicationBaseResults
 
 |property|description|type|
 |---|---|---|

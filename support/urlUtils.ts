@@ -45,16 +45,16 @@ interface CameraProperties {
 //
 //--------------------------------------------------------------------------
 
-export function getComponents(components: string): string[] {
+export function parseViewComponents(components: string): string[] {
   if (!components) {
     return;
   }
   return components.split(",");
 }
 
-export function getCamera(viewpointString: string): Camera {
+export function parseViewpoint(viewpoint: string): Camera {
   // ?viewpoint=cam:-122.69174973,45.53565982,358.434;117.195,59.777
-  const viewpointArray = viewpointString && viewpointString.split(";");
+  const viewpointArray = viewpoint && viewpoint.split(";");
 
   if (!viewpointArray || !viewpointArray.length) {
     return;
@@ -73,7 +73,7 @@ export function getCamera(viewpointString: string): Camera {
   return;
 }
 
-export function getPoint(center: string): Point {
+export function parseCenter(center: string): Point {
   // ?center=-13044705.25,4036227.41,102113&level=12
   // ?center=-13044705.25;4036227.41;102113&level=12
   // ?center=-117.1825,34.0552&level=12
@@ -106,11 +106,11 @@ export function getPoint(center: string): Point {
   });
 }
 
-export function getZoom(level: string): number {
+export function parseLevel(level: string): number {
   return level && parseInt(level, 10);
 }
 
-export function getExtent(extent: string): Extent {
+export function parseExtent(extent: string): Extent {
   // ?extent=-13054125.21,4029134.71,-13032684.63,4041785.04,102100
   // ?extent=-13054125.21;4029134.71;-13032684.63;4041785.04;102100
   // ?extent=-117.2672,33.9927,-117.0746,34.1064
@@ -148,7 +148,7 @@ export function getExtent(extent: string): Extent {
   return ext;
 }
 
-export function getGraphic(marker: string): IPromise<Graphic> {
+export function parseMarker(marker: string): IPromise<Graphic> {
   // ?marker=-117;34;4326;My Title;http://www.daisysacres.com/images/daisy_icon.gif;My location&level=10
   // ?marker=-117,34,4326,My Title,http://www.daisysacres.com/images/daisy_icon.gif,My location&level=10
   // ?marker=-13044705.25,4036227.41,102100,My Title,http://www.daisysacres.com/images/daisy_icon.gif,My location&level=10
@@ -218,7 +218,7 @@ export function getGraphic(marker: string): IPromise<Graphic> {
   });
 }
 
-export function getBasemap(basemapUrl: string, basemapReferenceUrl: string): IPromise<Basemap> {
+export function parseBasemap(basemapUrl: string, basemapReferenceUrl: string): IPromise<Basemap> {
   // ?basemapUrl=https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer&basemapReferenceUrl=http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer
   if (!basemapUrl) {
     return promiseUtils.resolve();

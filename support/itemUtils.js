@@ -37,16 +37,16 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
     //--------------------------------------------------------------------------
     function getViewProperties(config) {
         var center = config.center, components = config.components, extent = config.extent, level = config.level, viewpoint = config.viewpoint;
-        var ui = components ? { ui: { components: urlUtils_1.getComponents(components) } } : null;
-        var cameraProps = viewpoint ? { camera: urlUtils_1.getCamera(viewpoint) } : null;
-        var centerProps = center ? { center: urlUtils_1.getPoint(center) } : null;
-        var zoomProps = level ? { zoom: urlUtils_1.getZoom(level) } : null;
-        var extentProps = extent ? { extent: urlUtils_1.getExtent(extent) } : null;
+        var ui = components ? { ui: { components: urlUtils_1.parseViewComponents(components) } } : null;
+        var cameraProps = viewpoint ? { camera: urlUtils_1.parseViewpoint(viewpoint) } : null;
+        var centerProps = center ? { center: urlUtils_1.parseCenter(center) } : null;
+        var zoomProps = level ? { zoom: urlUtils_1.parseLevel(level) } : null;
+        var extentProps = extent ? { extent: urlUtils_1.parseExtent(extent) } : null;
         var urlViewProperties = __assign({}, ui, cameraProps, centerProps, zoomProps, extentProps);
         return __assign({}, urlViewProperties);
     }
     exports.getViewProperties = getViewProperties;
-    function createMap(item, appProxies) {
+    function createMapFromItem(item, appProxies) {
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";
         if (!isWebMap && !isWebScene) {
@@ -54,7 +54,7 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         }
         return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies);
     }
-    exports.createMap = createMap;
+    exports.createMapFromItem = createMapFromItem;
     function createView(map, viewProperties) {
         var isWebMap = map.declaredClass === "esri.WebMap";
         var isWebScene = map.declaredClass === "esri.WebScene";
@@ -101,24 +101,24 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         if (!basemapUrl || !map) {
             return promiseUtils.resolve(map);
         }
-        return urlUtils_1.getBasemap(basemapUrl, basemapReferenceUrl).then(function (basemap) {
+        return urlUtils_1.parseBasemap(basemapUrl, basemapReferenceUrl).then(function (basemap) {
             map.basemap = basemap;
             return map;
         });
     }
     exports.setBasemap = setBasemap;
-    function setGraphic(marker, view) {
+    function goToMarker(marker, view) {
         if (!marker || !view) {
             return promiseUtils.resolve();
         }
-        return urlUtils_1.getGraphic(marker).then(function (graphic) {
+        return urlUtils_1.parseMarker(marker).then(function (graphic) {
             view.graphics.add(graphic);
             var view2 = view; // todo: Typings will be fixed in next release.
             return view2.goTo(graphic);
         });
     }
-    exports.setGraphic = setGraphic;
-    function setFindLocation(query, view) {
+    exports.goToMarker = goToMarker;
+    function findQuery(query, view) {
         // ?find=redlands, ca
         if (!query || !view) {
             return promiseUtils.resolve();
@@ -133,7 +133,7 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
             });
         });
     }
-    exports.setFindLocation = setFindLocation;
+    exports.findQuery = findQuery;
     //--------------------------------------------------------------------------
     //
     //  Private Methods

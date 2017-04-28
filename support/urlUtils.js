@@ -35,16 +35,16 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
     //  Public Methods
     //
     //--------------------------------------------------------------------------
-    function getComponents(components) {
+    function parseViewComponents(components) {
         if (!components) {
             return;
         }
         return components.split(",");
     }
-    exports.getComponents = getComponents;
-    function getCamera(viewpointString) {
+    exports.parseViewComponents = parseViewComponents;
+    function parseViewpoint(viewpoint) {
         // ?viewpoint=cam:-122.69174973,45.53565982,358.434;117.195,59.777
-        var viewpointArray = viewpointString && viewpointString.split(";");
+        var viewpointArray = viewpoint && viewpoint.split(";");
         if (!viewpointArray || !viewpointArray.length) {
             return;
         }
@@ -58,8 +58,8 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
         }
         return;
     }
-    exports.getCamera = getCamera;
-    function getPoint(center) {
+    exports.parseViewpoint = parseViewpoint;
+    function parseCenter(center) {
         // ?center=-13044705.25,4036227.41,102113&level=12
         // ?center=-13044705.25;4036227.41;102113&level=12
         // ?center=-117.1825,34.0552&level=12
@@ -86,12 +86,12 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             }
         });
     }
-    exports.getPoint = getPoint;
-    function getZoom(level) {
+    exports.parseCenter = parseCenter;
+    function parseLevel(level) {
         return level && parseInt(level, 10);
     }
-    exports.getZoom = getZoom;
-    function getExtent(extent) {
+    exports.parseLevel = parseLevel;
+    function parseExtent(extent) {
         // ?extent=-13054125.21,4029134.71,-13032684.63,4041785.04,102100
         // ?extent=-13054125.21;4029134.71;-13032684.63;4041785.04;102100
         // ?extent=-117.2672,33.9927,-117.0746,34.1064
@@ -120,8 +120,8 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
         });
         return ext;
     }
-    exports.getExtent = getExtent;
-    function getGraphic(marker) {
+    exports.parseExtent = parseExtent;
+    function parseMarker(marker) {
         // ?marker=-117;34;4326;My Title;http://www.daisysacres.com/images/daisy_icon.gif;My location&level=10
         // ?marker=-117,34,4326,My Title,http://www.daisysacres.com/images/daisy_icon.gif,My location&level=10
         // ?marker=-13044705.25,4036227.41,102100,My Title,http://www.daisysacres.com/images/daisy_icon.gif,My location&level=10
@@ -182,8 +182,8 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             return graphic;
         });
     }
-    exports.getGraphic = getGraphic;
-    function getBasemap(basemapUrl, basemapReferenceUrl) {
+    exports.parseMarker = parseMarker;
+    function parseBasemap(basemapUrl, basemapReferenceUrl) {
         // ?basemapUrl=https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer&basemapReferenceUrl=http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer
         if (!basemapUrl) {
             return promiseUtils.resolve();
@@ -211,7 +211,7 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             });
         });
     }
-    exports.getBasemap = getBasemap;
+    exports.parseBasemap = parseBasemap;
     //--------------------------------------------------------------------------
     //
     //  Private Methods

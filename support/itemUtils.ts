@@ -38,13 +38,13 @@ import {
 } from "../interfaces";
 
 import {
-  getBasemap,
-  getCamera,
-  getComponents,
-  getExtent,
-  getGraphic,
-  getPoint,
-  getZoom
+  parseBasemap,
+  parseViewpoint,
+  parseViewComponents,
+  parseExtent,
+  parseMarker,
+  parseCenter,
+  parseLevel
 } from "./urlUtils";
 
 //--------------------------------------------------------------------------
@@ -55,11 +55,11 @@ import {
 
 export function getViewProperties(config: ApplicationConfig): any {
   const { center, components, extent, level, viewpoint } = config;
-  const ui = components ? { ui: { components: getComponents(components) } } : null;
-  const cameraProps = viewpoint ? { camera: getCamera(viewpoint) } : null;
-  const centerProps = center ? { center: getPoint(center) } : null;
-  const zoomProps = level ? { zoom: getZoom(level) } : null;
-  const extentProps = extent ? { extent: getExtent(extent) } : null;
+  const ui = components ? { ui: { components: parseViewComponents(components) } } : null;
+  const cameraProps = viewpoint ? { camera: parseViewpoint(viewpoint) } : null;
+  const centerProps = center ? { center: parseCenter(center) } : null;
+  const zoomProps = level ? { zoom: parseLevel(level) } : null;
+  const extentProps = extent ? { extent: parseExtent(extent) } : null;
 
   const urlViewProperties = {
     ...ui,
@@ -74,7 +74,7 @@ export function getViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export function createMap(item: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebMap | WebScene> {
+export function createMapFromItem(item: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebMap | WebScene> {
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
 
@@ -137,25 +137,25 @@ export function setBasemap(map: WebMap | WebScene, config: ApplicationConfig): I
     return promiseUtils.resolve(map);
   }
 
-  return getBasemap(basemapUrl, basemapReferenceUrl).then(basemap => {
+  return parseBasemap(basemapUrl, basemapReferenceUrl).then(basemap => {
     map.basemap = basemap;
     return map;
   });
 }
 
-export function setGraphic(marker: string, view: MapView | SceneView): IPromise<any> {
+export function goToMarker(marker: string, view: MapView | SceneView): IPromise<any> {
   if (!marker || !view) {
     return promiseUtils.resolve();
   }
 
-  return getGraphic(marker).then(graphic => {
+  return parseMarker(marker).then(graphic => {
     view.graphics.add(graphic);
     const view2 = view as any; // todo: Typings will be fixed in next release.
     return view2.goTo(graphic);
   });
 }
 
-export function setFindLocation(query: string, view: MapView | SceneView): IPromise<any> {
+export function findQuery(query: string, view: MapView | SceneView): IPromise<any> {
   // ?find=redlands, ca
   if (!query || !view) {
     return promiseUtils.resolve();

@@ -278,15 +278,15 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var userWebsceneSettings = settings.webscene;
             settings.environment = __assign({ isEsri: false, webTierSecurity: false }, userEnvironmentSettings);
             settings.localStorage = __assign({ fetch: true }, userLocalStorageSettings);
-            settings.group = __assign({ default: "908dd46e749d4565a17d2b646ace7b1a", fetchInfo: true, fetchItems: true, itemParams: {
+            settings.group = __assign({ default: "908dd46e749d4565a17d2b646ace7b1a", fetchInfo: true, fetchItems: true, fetchMultiple: true, itemParams: {
                     "sortField": "modified",
                     "sortOrder": "desc",
                     "num": 9,
                     "start": 0
                 } }, userGroupSettings);
             settings.portal = __assign({ fetch: true }, userPortalSettings);
-            settings.webmap = __assign({ default: "1970c1995b8f44749f4b9b6e81b5ba45", fetch: true }, userWebmapSettings);
-            settings.webscene = __assign({ default: "e8f078ba0c1546b6a6e0727f877742a5", fetch: true }, userWebsceneSettings);
+            settings.webmap = __assign({ default: "1970c1995b8f44749f4b9b6e81b5ba45", fetch: true, fetchMultiple: true }, userWebmapSettings);
+            settings.webscene = __assign({ default: "e8f078ba0c1546b6a6e0727f877742a5", fetch: true, fetchMultiple: true }, userWebsceneSettings);
         };
         ApplicationBase.prototype._limitSize = function (items, allowMultiple) {
             return allowMultiple || items.length < 2 ? items : [items[0]];

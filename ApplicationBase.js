@@ -54,7 +54,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         //  Lifecycle
         //
         //--------------------------------------------------------------------------
-        function ApplicationBase(applicationConfig, ApplicationBaseConfig) {
+        function ApplicationBase(applicationConfig, applicationBaseSettings) {
             //--------------------------------------------------------------------------
             //
             //  Properties
@@ -91,11 +91,14 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             if (typeof applicationConfig === "string") {
                 applicationConfig = JSON.parse(applicationConfig);
             }
-            if (typeof ApplicationBaseConfig === "string") {
-                ApplicationBaseConfig = JSON.parse(ApplicationBaseConfig);
+            if (typeof applicationBaseSettings === "string") {
+                applicationBaseSettings = JSON.parse(applicationBaseSettings);
             }
-            this.settings = __assign({}, defaultSettings, ApplicationBaseConfig);
-            this.config = __assign({}, defaultConfig, applicationConfig);
+            var config = __assign({}, defaultConfig, applicationConfig);
+            var settings = __assign({}, defaultSettings, applicationBaseSettings);
+            this._mixinSettingsDefaults(settings);
+            this.settings = settings;
+            this.config = config;
         }
         //--------------------------------------------------------------------------
         //
@@ -114,33 +117,42 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         };
         ApplicationBase.prototype.load = function () {
             var _this = this;
-            var urlParams = this._getUrlParamValues(this.settings.urlParams);
+            var settings = this.settings;
+            var environmentSettings = settings.environment;
+            var isEsri = environmentSettings.isEsri, webTierSecurity = environmentSettings.webTierSecurity;
+            var localStorageSettings = settings.localStorage;
+            var groupSettings = settings.group;
+            var portalSettings = settings.portal;
+            var webmapSettings = settings.webmap;
+            var websceneSettings = settings.webscene;
+            var urlParamsSettings = settings.urlParams;
+            var urlParams = this._getUrlParamValues(urlParamsSettings);
             this.results.urlParams = urlParams;
             this.config = this._mixinAllConfigs({
                 config: this.config,
                 url: urlParams
             });
-            if (this.settings.environment.isEsri) {
+            if (isEsri) {
                 var esriPortalUrl = this._getEsriEnvironmentPortalUrl();
                 this.config.portalUrl = esriPortalUrl;
                 this.config.proxyUrl = this._getEsriEnvironmentProxyUrl(esriPortalUrl);
             }
-            this._setPortalUrl(this.config.portalUrl);
-            this._setProxyUrl(this.config.proxyUrl);
+            var _a = this.config, portalUrl = _a.portalUrl, proxyUrl = _a.proxyUrl, oauthappid = _a.oauthappid, appid = _a.appid;
+            this._setPortalUrl(portalUrl);
+            this._setProxyUrl(proxyUrl);
             this.direction = this._getLanguageDirection();
-            var checkSignIn = this._checkSignIn(this.config.oauthappid, this.config.portalUrl);
+            var checkSignIn = this._checkSignIn(oauthappid, portalUrl);
             return checkSignIn.always(function () {
-                var appId = _this.config.appid;
-                var queryApplicationItem = appId ?
-                    _this._queryItem(appId) : promiseUtils.resolve();
-                var queryApplicationData = appId ?
+                var queryApplicationItem = appid ?
+                    _this._queryItem(appid) : promiseUtils.resolve();
+                var queryApplicationData = appid ?
                     queryApplicationItem.then(function (itemInfo) {
                         return itemInfo instanceof PortalItem ?
                             itemInfo.fetchData() :
                             undefined;
                     }) :
                     promiseUtils.resolve();
-                var queryPortal = _this.settings.portal.fetch ?
+                var queryPortal = portalSettings.fetch ?
                     _this._queryPortal() :
                     promiseUtils.resolve();
                 return promiseUtils.eachAlways([
@@ -155,8 +167,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                     var applicationData = applicationDataResponse ?
                         applicationDataResponse.value :
                         null;
-                    var localStorage = _this.settings.localStorage.fetch ?
-                        _this._getLocalConfig(appId) :
+                    var localStorage = localStorageSettings.fetch ?
+                        _this._getLocalConfig(appid) :
                         null;
                     _this.results.localStorage = localStorage;
                     _this.results.applicationItem = applicationItemResponse;
@@ -173,38 +185,44 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         local: localStorage,
                         application: applicationConfig
                     });
-                    _this._setupCORS(portal.authorizedCrossOriginDomains, _this.settings.environment.webTierSecurity);
+                    _this._setupCORS(portal.authorizedCrossOriginDomains, webTierSecurity);
                     _this._setGeometryService(_this.config, portal);
                     var _a = _this.config, webmap = _a.webmap, webscene = _a.webscene, group = _a.group;
                     var webmapPromises = [];
                     var webscenePromises = [];
                     var groupInfoPromises = [];
                     var groupItemsPromises = [];
-                    var isWebMapEnabled = _this.settings.webmap.fetch && webmap;
-                    var isWebSceneEnabled = _this.settings.webscene.fetch && webscene;
-                    var isGroupInfoEnabled = _this.settings.group.fetchInfo && group;
-                    var isGroupItemsEnabled = _this.settings.group.fetchItems && group;
-                    var itemParams = _this.settings.group.itemParams;
-                    var defaultWebMap = _this.settings.webmap.default;
-                    var defaultWebScene = _this.settings.webscene.default;
-                    var defaultGroup = _this.settings.group.default;
+                    var isWebMapEnabled = webmapSettings.fetch && webmap;
+                    var isWebSceneEnabled = websceneSettings.fetch && webscene;
+                    var isGroupInfoEnabled = groupSettings.fetchInfo && group;
+                    var isGroupItemsEnabled = groupSettings.fetchItems && group;
+                    var itemParams = groupSettings.itemParams;
+                    var defaultWebMap = webmapSettings.default;
+                    var defaultWebScene = websceneSettings.default;
+                    var defaultGroup = groupSettings.default;
+                    var fetchMultipleWebmaps = webmapSettings.fetchMultiple;
+                    var fetchMultipleWebscenes = websceneSettings.fetchMultiple;
+                    var fetchMultipleGroups = groupSettings.fetchMultiple;
                     if (isWebMapEnabled) {
                         var webmaps = _this._getPropertyArray(webmap);
-                        webmaps.forEach(function (id) {
+                        var allowedWebmaps = _this._limitSize(webmaps, fetchMultipleWebmaps);
+                        allowedWebmaps.forEach(function (id) {
                             var webMapId = _this._getDefaultId(id, defaultWebMap);
                             webmapPromises.push(_this._queryItem(webMapId));
                         });
                     }
                     if (isWebSceneEnabled) {
                         var webscenes = _this._getPropertyArray(webscene);
-                        webscenes.forEach(function (id) {
+                        var allowedWebsenes = _this._limitSize(webscenes, fetchMultipleWebscenes);
+                        allowedWebsenes.forEach(function (id) {
                             var webSceneId = _this._getDefaultId(id, defaultWebScene);
                             webscenePromises.push(_this._queryItem(webSceneId));
                         });
                     }
                     if (isGroupInfoEnabled) {
                         var groups = _this._getPropertyArray(group);
-                        groups.forEach(function (id) {
+                        var allowedGroups = _this._limitSize(groups, fetchMultipleGroups);
+                        allowedGroups.forEach(function (id) {
                             var groupId = _this._getDefaultId(id, defaultGroup);
                             groupInfoPromises.push(_this._queryGroupInfo(groupId, portal));
                         });
@@ -251,6 +269,28 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         //  Private Methods
         //
         //--------------------------------------------------------------------------
+        ApplicationBase.prototype._mixinSettingsDefaults = function (settings) {
+            var userEnvironmentSettings = settings.environment;
+            var userLocalStorageSettings = settings.localStorage;
+            var userGroupSettings = settings.group;
+            var userPortalSettings = settings.portal;
+            var userWebmapSettings = settings.webmap;
+            var userWebsceneSettings = settings.webscene;
+            settings.environment = __assign({ isEsri: false, webTierSecurity: false }, userEnvironmentSettings);
+            settings.localStorage = __assign({ fetch: true }, userLocalStorageSettings);
+            settings.group = __assign({ default: "908dd46e749d4565a17d2b646ace7b1a", fetchInfo: true, fetchItems: true, itemParams: {
+                    "sortField": "modified",
+                    "sortOrder": "desc",
+                    "num": 9,
+                    "start": 0
+                } }, userGroupSettings);
+            settings.portal = __assign({ fetch: true }, userPortalSettings);
+            settings.webmap = __assign({ default: "1970c1995b8f44749f4b9b6e81b5ba45", fetch: true }, userWebmapSettings);
+            settings.webscene = __assign({ default: "e8f078ba0c1546b6a6e0727f877742a5", fetch: true }, userWebsceneSettings);
+        };
+        ApplicationBase.prototype._limitSize = function (items, allowMultiple) {
+            return allowMultiple || items.length < 2 ? items : [items[0]];
+        };
         ApplicationBase.prototype._getPropertyArray = function (property) {
             if (typeof property === "string") {
                 return property.split(",");

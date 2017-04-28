@@ -47,6 +47,7 @@ export interface ApplicationBaseSettings {
     };
     fetchItems?: boolean;
     fetchInfo?: boolean;
+    fetchMultiple?: boolean;
   };
   portal?: {
     fetch?: boolean;
@@ -55,10 +56,12 @@ export interface ApplicationBaseSettings {
   webmap?: {
     default?: string;
     fetch?: boolean;
+    fetchMultiple?: boolean;
   };
   webscene?: {
     default?: string;
     fetch?: boolean;
+    fetchMultiple?: boolean;
   }
 }
 

@@ -80,23 +80,29 @@ class ApplicationBase {
   //
   //--------------------------------------------------------------------------
 
-  constructor(applicationConfig: any, ApplicationBaseConfig: any) {
+  constructor(applicationConfig: string | ApplicationConfig, applicationBaseSettings: string | ApplicationBaseSettings) {
     if (typeof applicationConfig === "string") {
-      applicationConfig = JSON.parse(applicationConfig);
+      applicationConfig = JSON.parse(applicationConfig) as ApplicationConfig;
     }
 
-    if (typeof ApplicationBaseConfig === "string") {
-      ApplicationBaseConfig = JSON.parse(ApplicationBaseConfig);
+    if (typeof applicationBaseSettings === "string") {
+      applicationBaseSettings = JSON.parse(applicationBaseSettings) as ApplicationBaseSettings;
     }
 
-    this.settings = {
-      ...defaultSettings,
-      ...ApplicationBaseConfig
-    };
-    this.config = {
+    const config = {
       ...defaultConfig,
       ...applicationConfig
     };
+
+    const settings = {
+      ...defaultSettings,
+      ...applicationBaseSettings
+    };
+
+    this._mixinSettingsDefaults(settings);
+
+    this.settings = settings;
+    this.config = config;
   }
 
   //--------------------------------------------------------------------------
@@ -169,7 +175,17 @@ class ApplicationBase {
   }
 
   load(): IPromise<ApplicationBase> {
-    const urlParams = this._getUrlParamValues(this.settings.urlParams);
+    const { settings } = this;
+    const environmentSettings = settings.environment;
+    const { isEsri, webTierSecurity } = environmentSettings;
+    const localStorageSettings = settings.localStorage;
+    const groupSettings = settings.group;
+    const portalSettings = settings.portal;
+    const webmapSettings = settings.webmap;
+    const websceneSettings = settings.webscene;
+    const urlParamsSettings = settings.urlParams;
+
+    const urlParams = this._getUrlParamValues(urlParamsSettings);
     this.results.urlParams = urlParams;
 
     this.config = this._mixinAllConfigs({
@@ -177,25 +193,25 @@ class ApplicationBase {
       url: urlParams
     });
 
-    if (this.settings.environment.isEsri) {
+    if (isEsri) {
       const esriPortalUrl = this._getEsriEnvironmentPortalUrl();
       this.config.portalUrl = esriPortalUrl;
       this.config.proxyUrl = this._getEsriEnvironmentProxyUrl(esriPortalUrl);
     }
 
-    this._setPortalUrl(this.config.portalUrl);
-    this._setProxyUrl(this.config.proxyUrl);
+    const { portalUrl, proxyUrl, oauthappid, appid } = this.config;
+
+    this._setPortalUrl(portalUrl);
+    this._setProxyUrl(proxyUrl);
 
     this.direction = this._getLanguageDirection();
 
-    const checkSignIn = this._checkSignIn(this.config.oauthappid, this.config.portalUrl);
+    const checkSignIn = this._checkSignIn(oauthappid, portalUrl);
     return checkSignIn.always(() => {
-      const appId = this.config.appid;
+      const queryApplicationItem = appid ?
+        this._queryItem(appid) : promiseUtils.resolve();
 
-      const queryApplicationItem = appId ?
-        this._queryItem(appId) : promiseUtils.resolve();
-
-      const queryApplicationData = appId ?
+      const queryApplicationData = appid ?
         queryApplicationItem.then(itemInfo => {
           return itemInfo instanceof PortalItem ?
             itemInfo.fetchData() :
@@ -203,7 +219,7 @@ class ApplicationBase {
         }) :
         promiseUtils.resolve();
 
-      const queryPortal = this.settings.portal.fetch ?
+      const queryPortal = portalSettings.fetch ?
         this._queryPortal() :
         promiseUtils.resolve();
 
@@ -222,8 +238,8 @@ class ApplicationBase {
           applicationDataResponse.value :
           null;
 
-        const localStorage = this.settings.localStorage.fetch ?
-          this._getLocalConfig(appId) :
+        const localStorage = localStorageSettings.fetch ?
+          this._getLocalConfig(appid) :
           null;
 
         this.results.localStorage = localStorage;
@@ -246,7 +262,7 @@ class ApplicationBase {
           application: applicationConfig
         });
 
-        this._setupCORS(portal.authorizedCrossOriginDomains, this.settings.environment.webTierSecurity);
+        this._setupCORS(portal.authorizedCrossOriginDomains, webTierSecurity);
         this._setGeometryService(this.config, portal);
 
         const { webmap, webscene, group } = this.config;
@@ -256,18 +272,22 @@ class ApplicationBase {
         const groupInfoPromises = [];
         const groupItemsPromises = [];
 
-        const isWebMapEnabled = this.settings.webmap.fetch && webmap;
-        const isWebSceneEnabled = this.settings.webscene.fetch && webscene;
-        const isGroupInfoEnabled = this.settings.group.fetchInfo && group;
-        const isGroupItemsEnabled = this.settings.group.fetchItems && group;
-        const itemParams = this.settings.group.itemParams;
-        const defaultWebMap = this.settings.webmap.default;
-        const defaultWebScene = this.settings.webscene.default;
-        const defaultGroup = this.settings.group.default;
+        const isWebMapEnabled = webmapSettings.fetch && webmap;
+        const isWebSceneEnabled = websceneSettings.fetch && webscene;
+        const isGroupInfoEnabled = groupSettings.fetchInfo && group;
+        const isGroupItemsEnabled = groupSettings.fetchItems && group;
+        const itemParams = groupSettings.itemParams;
+        const defaultWebMap = webmapSettings.default;
+        const defaultWebScene = websceneSettings.default;
+        const defaultGroup = groupSettings.default;
+        const fetchMultipleWebmaps = webmapSettings.fetchMultiple;
+        const fetchMultipleWebscenes = websceneSettings.fetchMultiple;
+        const fetchMultipleGroups = groupSettings.fetchMultiple;
 
         if (isWebMapEnabled) {
           const webmaps = this._getPropertyArray(webmap);
-          webmaps.forEach(id => {
+          const allowedWebmaps = this._limitSize(webmaps, fetchMultipleWebmaps);
+          allowedWebmaps.forEach(id => {
             const webMapId = this._getDefaultId(id, defaultWebMap);
             webmapPromises.push(this._queryItem(webMapId));
           });
@@ -275,7 +295,8 @@ class ApplicationBase {
 
         if (isWebSceneEnabled) {
           const webscenes = this._getPropertyArray(webscene);
-          webscenes.forEach(id => {
+          const allowedWebsenes = this._limitSize(webscenes, fetchMultipleWebscenes);
+          allowedWebsenes.forEach(id => {
             const webSceneId = this._getDefaultId(id, defaultWebScene);
             webscenePromises.push(this._queryItem(webSceneId));
           });
@@ -283,7 +304,8 @@ class ApplicationBase {
 
         if (isGroupInfoEnabled) {
           const groups = this._getPropertyArray(group);
-          groups.forEach(id => {
+          const allowedGroups = this._limitSize(groups, fetchMultipleGroups);
+          allowedGroups.forEach(id => {
             const groupId = this._getDefaultId(id, defaultGroup);
             groupInfoPromises.push(this._queryGroupInfo(groupId, portal));
           });
@@ -337,6 +359,60 @@ class ApplicationBase {
   //  Private Methods
   //
   //--------------------------------------------------------------------------
+
+  private _mixinSettingsDefaults(settings: ApplicationBaseSettings): void {
+    const userEnvironmentSettings = settings.environment;
+    const userLocalStorageSettings = settings.localStorage;
+    const userGroupSettings = settings.group;
+    const userPortalSettings = settings.portal;
+    const userWebmapSettings = settings.webmap;
+    const userWebsceneSettings = settings.webscene;
+
+    settings.environment = {
+      isEsri: false,
+      webTierSecurity: false,
+      ...userEnvironmentSettings
+    };
+
+    settings.localStorage = {
+      fetch: true,
+      ...userLocalStorageSettings
+    };
+
+    settings.group = {
+      default: "908dd46e749d4565a17d2b646ace7b1a",
+      fetchInfo: true,
+      fetchItems: true,
+      itemParams: {
+        "sortField": "modified",
+        "sortOrder": "desc",
+        "num": 9,
+        "start": 0
+      },
+      ...userGroupSettings
+    };
+
+    settings.portal = {
+      fetch: true,
+      ...userPortalSettings
+    };
+
+    settings.webmap = {
+      default: "1970c1995b8f44749f4b9b6e81b5ba45",
+      fetch: true,
+      ...userWebmapSettings
+    };
+
+    settings.webscene = {
+      default: "e8f078ba0c1546b6a6e0727f877742a5",
+      fetch: true,
+      ...userWebsceneSettings
+    };
+  }
+
+  private _limitSize(items: string[], allowMultiple: boolean): string[] {
+    return allowMultiple || items.length < 2 ? items : [items[0]];
+  }
 
   private _getPropertyArray(property: string | string[]): string[] {
     if (typeof property === "string") {

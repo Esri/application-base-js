@@ -47,11 +47,14 @@ See [ApplicationConfig](#applicationconfig) and [ApplicationBaseConfig](#applica
 |---|---|---|---|
 |webscene.default|The default id to query when not set|string|""|
 |webscene.fetch|When true the application will query for a webscene|Boolean|true|
+|webscene.fetchMultiple|When true the application will query for multiple webscenes if necessary|Boolean|true|
 |webmap.default|The default id to query when not set|string|""|
 |webmap.fetch|When true the application will query for a webmap|Boolean|false|
+|webmap.fetchMultiple|When true the application will query for multiple webmaps if necessary|Boolean|true|
 |group.fetchInfo|When true the application will query for a group's information|Boolean|false|
 |group.fetchItems|When true the application will query for a group's items|Boolean|false|
 |group.itemParams|Defines query paramaters for fetching group items|[itemParams](#itemparams)|{}|
+|group.fetchMultiple|When true the application will query for multiple groups if necessary|Boolean|true|
 |portal.fetch|When true the application will query arcgis.com for default settings for helper services, units etc. If you want to use custom settings for units or any of the helper services set this to false then enter default values for any items you need using the helper services and units properties.|Boolean|true|
 |urlParams|Defines which URL parameters should be captured and stored into the config for use within the application|String[]|See below|
 |environment.webTierSecurity|Support sending credentials with AJAX requests to specific domains. This will allow editing of feature services secured with web-tier authentication|Boolean|false|

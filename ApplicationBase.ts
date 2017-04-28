@@ -383,6 +383,7 @@ class ApplicationBase {
       default: "908dd46e749d4565a17d2b646ace7b1a",
       fetchInfo: true,
       fetchItems: true,
+      fetchMultiple: true,
       itemParams: {
         "sortField": "modified",
         "sortOrder": "desc",
@@ -400,12 +401,14 @@ class ApplicationBase {
     settings.webmap = {
       default: "1970c1995b8f44749f4b9b6e81b5ba45",
       fetch: true,
+      fetchMultiple: true,
       ...userWebmapSettings
     };
 
     settings.webscene = {
       default: "e8f078ba0c1546b6a6e0727f877742a5",
       fetch: true,
+      fetchMultiple: true,
       ...userWebsceneSettings
     };
   }

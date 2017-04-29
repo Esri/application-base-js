@@ -1,6 +1,6 @@
 # urlUtils
 
-A utility containing common methods used to parse URL parameters and convert them into their appropriate class instance or formatting.
+A utility module containing common methods used to parse URL parameters and convert them into their appropriate class instance or formatting.
 
 ## Methods
 

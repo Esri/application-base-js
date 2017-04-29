@@ -1,6 +1,6 @@
 # itemUtils
 
-A utility containing common methods used to read, create and modify a PortalItem, WebMaps, WebScenes, MapView, SceneView.
+A utility module containing common methods used to read, create and modify a PortalItem, WebMaps, WebScenes, MapView, SceneView.
 
 ## Methods
 

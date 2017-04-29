@@ -268,12 +268,12 @@ function _splitURLString(value: string): string[] {
   return splitValues.length === 1 ? value.split(",") : splitValues;
 }
 
-function _getCameraPosition(cameraString: string): Point {
-  if (!cameraString) {
+function _getCameraPosition(camera: string): Point {
+  if (!camera) {
     return null;
   }
 
-  const cameraValues = cameraString.substr(4, cameraString.length - 4);
+  const cameraValues = camera.substr(4, camera.length - 4);
   const positionArray = cameraValues.split(",");
 
   if (positionArray.length < 3) {
@@ -307,8 +307,8 @@ function _getHeadingAndTilt(headingAndTilt: string): CameraProperties {
   } : null;
 }
 
-function _getCameraProperties(cameraString: string, headingAndTilt: string): CameraProperties {
-  const cameraPosition = _getCameraPosition(cameraString);
+function _getCameraProperties(camera: string, headingAndTilt: string): CameraProperties {
+  const cameraPosition = _getCameraPosition(camera);
   const headingAndTiltProperties = _getHeadingAndTilt(headingAndTilt);
 
   return {

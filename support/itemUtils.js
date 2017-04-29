@@ -35,17 +35,16 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
     //  Public Methods
     //
     //--------------------------------------------------------------------------
-    function getViewProperties(config) {
+    function getConfigViewProperties(config) {
         var center = config.center, components = config.components, extent = config.extent, level = config.level, viewpoint = config.viewpoint;
         var ui = components ? { ui: { components: urlUtils_1.parseViewComponents(components) } } : null;
         var cameraProps = viewpoint ? { camera: urlUtils_1.parseViewpoint(viewpoint) } : null;
         var centerProps = center ? { center: urlUtils_1.parseCenter(center) } : null;
         var zoomProps = level ? { zoom: urlUtils_1.parseLevel(level) } : null;
         var extentProps = extent ? { extent: urlUtils_1.parseExtent(extent) } : null;
-        var urlViewProperties = __assign({}, ui, cameraProps, centerProps, zoomProps, extentProps);
-        return __assign({}, urlViewProperties);
+        return __assign({}, ui, cameraProps, centerProps, zoomProps, extentProps);
     }
-    exports.getViewProperties = getViewProperties;
+    exports.getConfigViewProperties = getConfigViewProperties;
     function createMapFromItem(item, appProxies) {
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";

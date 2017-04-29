@@ -224,11 +224,11 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
         var splitValues = value.split(";");
         return splitValues.length === 1 ? value.split(",") : splitValues;
     }
-    function _getCameraPosition(cameraString) {
-        if (!cameraString) {
+    function _getCameraPosition(camera) {
+        if (!camera) {
             return null;
         }
-        var cameraValues = cameraString.substr(4, cameraString.length - 4);
+        var cameraValues = camera.substr(4, camera.length - 4);
         var positionArray = cameraValues.split(",");
         if (positionArray.length < 3) {
             return null;
@@ -254,8 +254,8 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             tilt: parseFloat(tiltHeadingArray[1])
         } : null;
     }
-    function _getCameraProperties(cameraString, headingAndTilt) {
-        var cameraPosition = _getCameraPosition(cameraString);
+    function _getCameraProperties(camera, headingAndTilt) {
+        var cameraPosition = _getCameraPosition(camera);
         var headingAndTiltProperties = _getHeadingAndTilt(headingAndTilt);
         return __assign({ position: cameraPosition }, headingAndTiltProperties);
     }

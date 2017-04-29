@@ -53,7 +53,7 @@ import {
 //
 //--------------------------------------------------------------------------
 
-export function getViewProperties(config: ApplicationConfig): any {
+export function getConfigViewProperties(config: ApplicationConfig): any {
   const { center, components, extent, level, viewpoint } = config;
   const ui = components ? { ui: { components: parseViewComponents(components) } } : null;
   const cameraProps = viewpoint ? { camera: parseViewpoint(viewpoint) } : null;
@@ -61,16 +61,12 @@ export function getViewProperties(config: ApplicationConfig): any {
   const zoomProps = level ? { zoom: parseLevel(level) } : null;
   const extentProps = extent ? { extent: parseExtent(extent) } : null;
 
-  const urlViewProperties = {
+  return {
     ...ui,
     ...cameraProps,
     ...centerProps,
     ...zoomProps,
     ...extentProps
-  };
-
-  return {
-    ...urlViewProperties
   };
 }
 

@@ -117,7 +117,7 @@ Example:
 
 Loads the requested ApplicationBase resources and returns the class once complete.
 
-### queryGroupItems(groupId: string, itemParams: [itemParams](#itemparams), portal: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : IPromise&lt;any&gt;
+### queryGroupItems(groupId: string, itemParams: [itemParams](#itemparams), portal?: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : IPromise&lt;any&gt;
 
 Query a group by parameters. `ApplicationBase.queryGroupItems("myid", {}, myPortal)`.
 

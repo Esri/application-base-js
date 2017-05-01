@@ -107,7 +107,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         //
         //--------------------------------------------------------------------------
         ApplicationBase.prototype.queryGroupItems = function (groupId, itemParams, portal) {
-            if (!portal) {
+            if (!portal || !groupId) {
                 portal = this.portal;
             }
             var defaultGroup = this.settings.group.default;
@@ -254,8 +254,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         var groupInfoResponses = itemArgs.groupInfo.value || [];
                         var groupItemsResponses = itemArgs.groupItems.value || [];
                         var itemInfo = applicationItem ? applicationItem.itemInfo : null;
-                        _this._overwriteItems(webmapResponses, itemInfo);
-                        _this._overwriteItems(websceneResponses, itemInfo);
+                        _this._overwriteItemsExtent(webmapResponses, itemInfo);
+                        _this._overwriteItemsExtent(websceneResponses, itemInfo);
                         _this.results.webMapItems = webmapResponses;
                         _this.results.webSceneItems = websceneResponses;
                         _this.results.groupInfos = groupInfoResponses;
@@ -320,8 +320,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             if (!(window.localStorage && appid)) {
                 return;
             }
-            var localStoragePrefix = "application_base_config_";
-            var lsItem = localStorage.getItem(localStoragePrefix + appid);
+            var lsItemId = "application_base_config_" + appid;
+            var lsItem = localStorage.getItem(lsItemId);
             var localConfig = lsItem && JSON.parse(lsItem);
             return localConfig;
         };
@@ -354,7 +354,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         ApplicationBase.prototype._queryPortal = function () {
             return new Portal().load();
         };
-        ApplicationBase.prototype._overwriteItems = function (responses, applicationItem) {
+        ApplicationBase.prototype._overwriteItemsExtent = function (responses, applicationItem) {
             var _this = this;
             if (!responses) {
                 return;
@@ -435,7 +435,6 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             return portalUrl + "/sharing/proxy";
         };
         ApplicationBase.prototype._checkSignIn = function (oauthappid, portalUrl) {
-            var sharingPath = "/sharing";
             var info = oauthappid ?
                 new OAuthInfo({
                     appId: oauthappid,
@@ -445,7 +444,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             if (info) {
                 IdentityManager.registerOAuthInfos([info]);
             }
-            var signedIn = IdentityManager.checkSignInStatus(portalUrl + sharingPath);
+            var resUrl = portalUrl + "/sharing";
+            var signedIn = IdentityManager.checkSignInStatus(resUrl);
             return signedIn.always(promiseUtils.resolve);
         };
         ApplicationBase.prototype._getUrlParamValues = function (urlParams) {

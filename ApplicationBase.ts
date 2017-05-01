@@ -155,8 +155,8 @@ class ApplicationBase {
   //
   //--------------------------------------------------------------------------
 
-  queryGroupItems(groupId: string, itemParams: any, portal: Portal): IPromise<any> {
-    if (!portal) {
+  queryGroupItems(groupId: string, itemParams: any, portal?: Portal): IPromise<any> {
+    if (!portal || !groupId) {
       portal = this.portal;
     }
 
@@ -342,8 +342,8 @@ class ApplicationBase {
           const groupItemsResponses = itemArgs.groupItems.value || [];
 
           const itemInfo = applicationItem ? applicationItem.itemInfo : null;
-          this._overwriteItems(webmapResponses, itemInfo);
-          this._overwriteItems(websceneResponses, itemInfo);
+          this._overwriteItemsExtent(webmapResponses, itemInfo);
+          this._overwriteItemsExtent(websceneResponses, itemInfo);
 
           this.results.webMapItems = webmapResponses;
           this.results.webSceneItems = websceneResponses;
@@ -451,8 +451,8 @@ class ApplicationBase {
       return;
     }
 
-    const localStoragePrefix = "application_base_config_";
-    const lsItem = localStorage.getItem(localStoragePrefix + appid);
+    const lsItemId = `application_base_config_${appid}`;
+    const lsItem = localStorage.getItem(lsItemId);
     const localConfig = lsItem && JSON.parse(lsItem);
     return localConfig;
   }
@@ -491,7 +491,7 @@ class ApplicationBase {
     return new Portal().load();
   }
 
-  private _overwriteItems(responses: ApplicationBaseResult[], applicationItem: PortalItem): void {
+  private _overwriteItemsExtent(responses: ApplicationBaseResult[], applicationItem: PortalItem): void {
     if (!responses) {
       return;
     }
@@ -591,7 +591,6 @@ class ApplicationBase {
   }
 
   private _checkSignIn(oauthappid: string, portalUrl: string): IPromise<void> {
-    const sharingPath = "/sharing";
     const info = oauthappid ?
       new OAuthInfo({
         appId: oauthappid,
@@ -603,7 +602,8 @@ class ApplicationBase {
       IdentityManager.registerOAuthInfos([info]);
     }
 
-    const signedIn = IdentityManager.checkSignInStatus(portalUrl + sharingPath);
+    const resUrl = `${portalUrl}/sharing`;
+    const signedIn = IdentityManager.checkSignInStatus(resUrl);
     return signedIn.always(promiseUtils.resolve);
   }
 
@@ -654,7 +654,7 @@ class ApplicationBase {
     return urlParamValue;
   }
 
-  private _stripStringTags(value: string) {
+  private _stripStringTags(value: string): string {
     const tagsRE = /<\/?[^>]+>/g;
     return value.replace(tagsRE, "");
   }

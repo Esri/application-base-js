@@ -125,9 +125,9 @@ Query a group by parameters. `ApplicationBase.queryGroupItems("myid", {}, myPort
 
 There are helper modules and utilities you can use that contain common application functionality. See the following documentation:
 
-- [domHelper](domHelper.MD)
-- [itemUtils](itemUtils.MD)
-- [urlUtils](urlUtils.MD)
+- [domHelper](support/domHelper.MD)
+- [itemUtils](support/itemUtils.MD)
+- [urlUtils](support/urlUtils.MD)
 
 ## Requirements
 

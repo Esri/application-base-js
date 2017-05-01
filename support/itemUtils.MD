@@ -1,6 +1,6 @@
 # itemUtils
 
-A utility module containing common methods used to read, create and modify a PortalItem, WebMaps, WebScenes, MapView, SceneView.
+A utility module containing common methods used to read, create and modify a PortalItem, WebMap, WebScene, MapView, or SceneView.
 
 ## Methods
 
@@ -30,11 +30,11 @@ Returns the title of the `PortalItem`.
 
 ### setBasemap(map: WebMap | WebScene, config: ApplicationConfig): IPromise&lt;WebMap | WebScene&gt;
 
-Sets the basemap on a `WebMap` or `WebScene` if a `basemapUrl` is defined in the `ApplicationConfig`.
+Sets the basemap on a `WebMap` or `WebScene` if a `basemapUrl` string is defined in the `ApplicationConfig`.
 
 ### goToMarker(marker: string, view: MapView | SceneView): IPromise&lt;any&gt;
 
-Adds a `Graphic` marker and animates the view to its location if a `marker` is defined.
+Adds a `Graphic` marker and animates the view to its location if a `marker` string is defined.
 
 
 ### findQuery(query: string, view: MapView | SceneView): IPromise&lt;any&gt;

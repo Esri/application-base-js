@@ -1,6 +1,6 @@
 # domHelper
 
-A helper module that contains public methods for modifying the DOM of configurable ArcGIS applications.
+A helper module that contains public methods for modifying the HTML document of configurable ArcGIS applications.
 
 ## Methods
 

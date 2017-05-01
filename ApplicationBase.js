@@ -44,6 +44,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         group: {},
         localStorage: {},
         portal: {},
+        rightToLeftLocales: ["ar", "he"],
         urlParams: [],
         webmap: {},
         webscene: {}
@@ -141,7 +142,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var _a = this.config, portalUrl = _a.portalUrl, proxyUrl = _a.proxyUrl, oauthappid = _a.oauthappid, appid = _a.appid;
             this._setPortalUrl(portalUrl);
             this._setProxyUrl(proxyUrl);
-            this.direction = this._getLanguageDirection();
+            var RTLLocales = this.settings.rightToLeftLocales;
+            this.direction = this._getLanguageDirection(RTLLocales);
             var checkSignIn = this._checkSignIn(oauthappid, portalUrl);
             return checkSignIn.always(function () {
                 var queryApplicationItem = appid ?
@@ -302,22 +304,24 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             return [];
         };
         ApplicationBase.prototype._getUnits = function (portal) {
+            var USRegion = "US";
+            var USLocale = "en-us";
             var user = portal.user;
             var userRegion = user && user.region;
             var userUnits = user && user.units;
             var responseUnits = portal.units;
             var responseRegion = portal.region;
             var ipCountryCode = portal.ipCntryCode;
-            var isEnglishUnits = (userRegion === "US") ||
-                (userRegion && responseRegion === "US") ||
+            var isEnglishUnits = (userRegion === USRegion) ||
+                (userRegion && responseRegion === USRegion) ||
                 (userRegion && !responseRegion) ||
-                (!user && ipCountryCode === "US") ||
-                (!user && !ipCountryCode && kernel.locale === "en-us");
+                (!user && ipCountryCode === USRegion) ||
+                (!user && !ipCountryCode && kernel.locale === USLocale);
             var units = userUnits ? userUnits : responseUnits ? responseUnits : isEnglishUnits ? "english" : "metric";
             return units;
         };
         ApplicationBase.prototype._getLocalConfig = function (appid) {
-            if (!(window.localStorage && appid)) {
+            if (!window.localStorage || !appid) {
                 return;
             }
             var lsItemId = "application_base_config_" + appid;
@@ -379,29 +383,24 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var portalHelperServices = portal && portal.helperServices;
             var configGeometryUrl = configHelperServices && configHelperServices.geometry && configHelperServices.geometry.url;
             var portalGeometryUrl = portalHelperServices && portalHelperServices.geometry && portalHelperServices.geometry.url;
-            var geometryUrl = portalGeometryUrl || configGeometryUrl;
-            if (!geometryUrl) {
+            var geometryServiceUrl = portalGeometryUrl || configGeometryUrl;
+            if (!geometryServiceUrl) {
                 return;
             }
-            esriConfig.geometryServiceUrl = geometryUrl;
+            esriConfig.geometryServiceUrl = geometryServiceUrl;
         };
         ApplicationBase.prototype._getDefaultId = function (id, defaultId) {
             var defaultUrlParam = "default";
             var trimmedId = id ? id.trim() : "";
             var useDefaultId = (!trimmedId || trimmedId === defaultUrlParam) && defaultId;
-            if (useDefaultId) {
-                return defaultId;
-            }
-            return id;
+            return useDefaultId ? defaultId : id;
         };
-        ApplicationBase.prototype._getLanguageDirection = function () {
-            var LTR = "ltr";
-            var RTL = "rtl";
-            var RTLLangs = ["ar", "he"];
-            var isRTL = RTLLangs.some(function (language) {
+        ApplicationBase.prototype._getLanguageDirection = function (RTLLocales) {
+            if (RTLLocales === void 0) { RTLLocales = ["ar", "he"]; }
+            var isRTL = RTLLocales.some(function (language) {
                 return kernel.locale.indexOf(language) !== -1;
             });
-            return isRTL ? RTL : LTR;
+            return isRTL ? "rtl" : "ltr";
         };
         ApplicationBase.prototype._mixinAllConfigs = function (params) {
             var config = params.config || null;
@@ -411,9 +410,15 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             return __assign({}, config, appConfig, localConfig, urlConfig);
         };
         ApplicationBase.prototype._setPortalUrl = function (portalUrl) {
+            if (!portalUrl) {
+                return;
+            }
             esriConfig.portalUrl = portalUrl;
         };
         ApplicationBase.prototype._setProxyUrl = function (proxyUrl) {
+            if (!proxyUrl) {
+                return;
+            }
             esriConfig.request.proxyUrl = proxyUrl;
         };
         ApplicationBase.prototype._getEsriEnvironmentPortalUrl = function () {
@@ -432,6 +437,9 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             return "https://" + host + portalInstance;
         };
         ApplicationBase.prototype._getEsriEnvironmentProxyUrl = function (portalUrl) {
+            if (!portalUrl) {
+                return;
+            }
             return portalUrl + "/sharing/proxy";
         };
         ApplicationBase.prototype._checkSignIn = function (oauthappid, portalUrl) {

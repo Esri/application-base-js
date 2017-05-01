@@ -68,6 +68,7 @@ const defaultSettings = {
   group: {},
   localStorage: {},
   portal: {},
+  rightToLeftLocales: ["ar", "he"],
   urlParams: [],
   webmap: {},
   webscene: {}
@@ -206,7 +207,8 @@ class ApplicationBase {
     this._setPortalUrl(portalUrl);
     this._setProxyUrl(proxyUrl);
 
-    this.direction = this._getLanguageDirection();
+    const RTLLocales = this.settings.rightToLeftLocales;
+    this.direction = this._getLanguageDirection(RTLLocales);
 
     const checkSignIn = this._checkSignIn(oauthappid, portalUrl);
     return checkSignIn.always(() => {
@@ -423,6 +425,7 @@ class ApplicationBase {
     if (typeof property === "string") {
       return property.split(",");
     }
+
     if (Array.isArray(property)) {
       return property;
     }
@@ -431,23 +434,25 @@ class ApplicationBase {
   }
 
   private _getUnits(portal: Portal): string {
+    const USRegion = "US";
+    const USLocale = "en-us";
     const user = portal.user;
     const userRegion = user && user.region;
     const userUnits = user && user.units;
     const responseUnits = portal.units;
     const responseRegion = portal.region;
     const ipCountryCode = portal.ipCntryCode;
-    const isEnglishUnits = (userRegion === "US") ||
-      (userRegion && responseRegion === "US") ||
+    const isEnglishUnits = (userRegion === USRegion) ||
+      (userRegion && responseRegion === USRegion) ||
       (userRegion && !responseRegion) ||
-      (!user && ipCountryCode === "US") ||
-      (!user && !ipCountryCode && kernel.locale === "en-us");
+      (!user && ipCountryCode === USRegion) ||
+      (!user && !ipCountryCode && kernel.locale === USLocale);
     const units = userUnits ? userUnits : responseUnits ? responseUnits : isEnglishUnits ? "english" : "metric";
     return units;
   }
 
   private _getLocalConfig(appid: string): ApplicationConfig {
-    if (!(window.localStorage && appid)) {
+    if (!window.localStorage || !appid) {
       return;
     }
 
@@ -510,7 +515,6 @@ class ApplicationBase {
     }
 
     const applicationExtent = applicationItem.extent;
-
     item.extent = applicationExtent ? applicationExtent : item.extent;
   }
 
@@ -520,31 +524,29 @@ class ApplicationBase {
     const portalHelperServices = portal && portal.helperServices;
     const configGeometryUrl = configHelperServices && configHelperServices.geometry && configHelperServices.geometry.url;
     const portalGeometryUrl = portalHelperServices && portalHelperServices.geometry && portalHelperServices.geometry.url;
-    const geometryUrl = portalGeometryUrl || configGeometryUrl;
-    if (!geometryUrl) {
+    const geometryServiceUrl = portalGeometryUrl || configGeometryUrl;
+
+    if (!geometryServiceUrl) {
       return;
     }
-    esriConfig.geometryServiceUrl = geometryUrl;
+
+    esriConfig.geometryServiceUrl = geometryServiceUrl;
   }
 
   private _getDefaultId(id: string, defaultId: string): string {
     const defaultUrlParam = "default";
     const trimmedId = id ? id.trim() : "";
     const useDefaultId = (!trimmedId || trimmedId === defaultUrlParam) && defaultId;
-    if (useDefaultId) {
-      return defaultId;
-    }
-    return id;
+
+    return useDefaultId ? defaultId : id;
   }
 
-  private _getLanguageDirection(): Direction {
-    const LTR = "ltr";
-    const RTL = "rtl";
-    const RTLLangs = ["ar", "he"];
-    const isRTL = RTLLangs.some(language => {
+  private _getLanguageDirection(RTLLocales: string[] = ["ar", "he"]): Direction {
+    const isRTL = RTLLocales.some(language => {
       return kernel.locale.indexOf(language) !== -1;
     });
-    return isRTL ? RTL : LTR;
+
+    return isRTL ? "rtl" : "ltr";
   }
 
   private _mixinAllConfigs(params: ApplicationConfigs): ApplicationConfig {
@@ -561,10 +563,18 @@ class ApplicationBase {
   }
 
   private _setPortalUrl(portalUrl: string): void {
+    if (!portalUrl) {
+      return;
+    }
+
     esriConfig.portalUrl = portalUrl;
   }
 
   private _setProxyUrl(proxyUrl: string): void {
+    if (!proxyUrl) {
+      return;
+    }
+
     esriConfig.request.proxyUrl = proxyUrl;
   }
 
@@ -587,6 +597,10 @@ class ApplicationBase {
   }
 
   private _getEsriEnvironmentProxyUrl(portalUrl: string): string {
+    if (!portalUrl) {
+      return;
+    }
+
     return `${portalUrl}/sharing/proxy`;
   }
 

@@ -116,6 +116,6 @@ export interface CreateMapFromItemOptions {
 export interface SetBasemapOptions {
   map: WebMap | WebScene;
   basemapUrl: string;
-  basemapReferenceUrl: string;
+  basemapReferenceUrl?: string;
 }
 

@@ -432,8 +432,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             return "https://" + host + portalInstance;
         };
         ApplicationBase.prototype._getEsriEnvironmentProxyUrl = function (portalUrl) {
-            var esriProxyPath = "/sharing/proxy";
-            return "" + portalUrl + esriProxyPath;
+            return portalUrl + "/sharing/proxy";
         };
         ApplicationBase.prototype._checkSignIn = function (oauthappid, portalUrl) {
             var sharingPath = "/sharing";
@@ -475,15 +474,15 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             return map;
         };
         ApplicationBase.prototype._foramatUrlParamValue = function (urlParamValue) {
-            if (typeof urlParamValue === "string") {
-                switch (urlParamValue.toLowerCase()) {
-                    case "true":
-                        return true;
-                    case "false":
-                        return false;
-                    default:
-                        return urlParamValue;
-                }
+            if (typeof urlParamValue !== "string") {
+                return urlParamValue;
+            }
+            var lowerCaseValue = urlParamValue.toLowerCase();
+            if (lowerCaseValue === "true") {
+                return true;
+            }
+            if (lowerCaseValue === "false") {
+                return false;
             }
             return urlParamValue;
         };

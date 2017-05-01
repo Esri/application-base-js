@@ -587,8 +587,7 @@ class ApplicationBase {
   }
 
   private _getEsriEnvironmentProxyUrl(portalUrl: string): string {
-    const esriProxyPath = "/sharing/proxy";
-    return `${portalUrl}${esriProxyPath}`;
+    return `${portalUrl}/sharing/proxy`;
   }
 
   private _checkSignIn(oauthappid: string, portalUrl: string): IPromise<void> {
@@ -638,16 +637,20 @@ class ApplicationBase {
   }
 
   private _foramatUrlParamValue(urlParamValue: any): any {
-    if (typeof urlParamValue === "string") {
-      switch (urlParamValue.toLowerCase()) {
-        case "true":
-          return true;
-        case "false":
-          return false;
-        default:
-          return urlParamValue;
-      }
+    if (typeof urlParamValue !== "string") {
+      return urlParamValue;
     }
+
+    const lowerCaseValue = urlParamValue.toLowerCase();
+
+    if (lowerCaseValue === "true") {
+      return true;
+    }
+
+    if (lowerCaseValue === "false") {
+      return false;
+    }
+
     return urlParamValue;
   }
 

@@ -41,6 +41,22 @@ See [ApplicationConfig](#applicationconfig) and [ApplicationBaseConfig](#applica
 |units|Application measurement units|string|""|
 |helperServices|Object containing URLs to various helper services|[HelperServices](https://developers.arcgis.com/javascript/latest/api-reference/esri-portal-Portal.html#helperServices)|null|
 
+Example:
+
+```
+{
+  "appid": "",
+  "group": "",
+  "title": "",
+  "webmap": "default",
+  "webscene": "",
+  "portalUrl": "https://www.arcgis.com",
+  "oauthappid": "",
+  "proxyUrl": "",
+  "units": "",
+ }
+```
+
 ### ApplicationBaseConfig
 
 |property|description|type|default|
@@ -59,6 +75,61 @@ See [ApplicationConfig](#applicationconfig) and [ApplicationBaseConfig](#applica
 |urlParams|Defines which URL parameters should be captured and stored into the config for use within the application|String[]|See below|
 |environment.webTierSecurity|Support sending credentials with AJAX requests to specific domains. This will allow editing of feature services secured with web-tier authentication|Boolean|false|
 |environment.isEsri|Most users will not need to modify this value. For Esri hosting environments only. Will automatically create a `portalUrl` and `proxyUrl` for the application. Only set this is to true if the app is going to be stored on Esri's hosting servers. If you are using your own custom hosted portal, set the `portalUrl` in instead of setting this to true.|   Boolean|false|
+
+
+Example:
+
+```
+{
+  "environment": {
+    "isEsri": false,
+    "webTierSecurity": false
+  },
+  "localStorage": {
+    "fetch": true
+  },
+  "group": {
+    "default": "908dd46e749d4565a17d2b646ace7b1a",
+    "fetchInfo": false,
+    "fetchItems": false,
+    "itemParams": {
+      "sortField": "modified",
+      "sortOrder": "desc",
+      "num": 9,
+      "start": 0
+    }
+  },
+  "portal": {
+    "fetch": true
+  },
+  "urlParams": [
+    "appid",
+    "basemapUrl",
+    "basemapReferenceUrl",
+    "center",
+    "components",
+    "embed",
+    "extent",
+    "find",
+    "group",
+    "level",
+    "marker",
+    "oauthappid",
+    "portalUrl",
+    "viewpoint",
+    "webmap",
+    "webscene"
+  ],
+  "webmap": {
+    "default": "1970c1995b8f44749f4b9b6e81b5ba45",
+    "fetch": true
+  },
+  "webscene": {
+    "default": "e8f078ba0c1546b6a6e0727f877742a5",
+    "fetch": false
+  }
+}
+```
 
 #### itemParams
 

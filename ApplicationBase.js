@@ -54,7 +54,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         //  Lifecycle
         //
         //--------------------------------------------------------------------------
-        function ApplicationBase(applicationConfig, applicationBaseSettings) {
+        function ApplicationBase(options) {
             //--------------------------------------------------------------------------
             //
             //  Properties
@@ -88,17 +88,18 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             //  units
             //----------------------------------
             this.units = null;
-            if (typeof applicationConfig === "string") {
-                applicationConfig = JSON.parse(applicationConfig);
-            }
-            if (typeof applicationBaseSettings === "string") {
-                applicationBaseSettings = JSON.parse(applicationBaseSettings);
-            }
-            var config = __assign({}, defaultConfig, applicationConfig);
-            var settings = __assign({}, defaultSettings, applicationBaseSettings);
-            this._mixinSettingsDefaults(settings);
-            this.settings = settings;
-            this.config = config;
+            var config = options.config, settings = options.settings;
+            var applicationConfig = typeof config === "string" ?
+                JSON.parse(config) :
+                config;
+            var applicationBaseSettings = typeof settings === "string" ?
+                JSON.parse(settings) :
+                settings;
+            var configMixin = __assign({}, defaultConfig, applicationConfig);
+            var settingsMixin = __assign({}, defaultSettings, applicationBaseSettings);
+            this._mixinSettingsDefaults(settingsMixin);
+            this.config = configMixin;
+            this.settings = settingsMixin;
         }
         //--------------------------------------------------------------------------
         //

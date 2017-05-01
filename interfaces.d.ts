@@ -98,3 +98,8 @@ export interface ApplicationProxy {
   proxyUrl: string,
   proxyId: string
 }
+
+export interface ApplicationBaseConstructorOptions {
+  config: ApplicationConfig | string;
+  settings: ApplicationBaseSettings | string;
+}

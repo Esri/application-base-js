@@ -36,11 +36,12 @@ import PortalItem = require("esri/portal/PortalItem");
 import PortalQueryParams = require("esri/portal/PortalQueryParams");
 
 import {
-  ApplicationConfig,
-  ApplicationConfigs,
+  ApplicationBaseConstructorOptions,
   ApplicationBaseResult,
   ApplicationBaseResults,
-  ApplicationBaseSettings
+  ApplicationBaseSettings,
+  ApplicationConfig,
+  ApplicationConfigs
 } from "./interfaces";
 
 type Direction = "ltr" | "rtl";
@@ -80,29 +81,31 @@ class ApplicationBase {
   //
   //--------------------------------------------------------------------------
 
-  constructor(applicationConfig: string | ApplicationConfig, applicationBaseSettings: string | ApplicationBaseSettings) {
-    if (typeof applicationConfig === "string") {
-      applicationConfig = JSON.parse(applicationConfig) as ApplicationConfig;
-    }
+  constructor(options: ApplicationBaseConstructorOptions) {
+    const { config, settings } = options;
 
-    if (typeof applicationBaseSettings === "string") {
-      applicationBaseSettings = JSON.parse(applicationBaseSettings) as ApplicationBaseSettings;
-    }
+    const applicationConfig = typeof config === "string" ?
+      JSON.parse(config) as ApplicationConfig :
+      config;
 
-    const config = {
+    const applicationBaseSettings = typeof settings === "string" ?
+      JSON.parse(settings) as ApplicationBaseSettings :
+      settings;
+
+    const configMixin = {
       ...defaultConfig,
       ...applicationConfig
     };
 
-    const settings = {
+    const settingsMixin = {
       ...defaultSettings,
       ...applicationBaseSettings
     };
 
-    this._mixinSettingsDefaults(settings);
+    this._mixinSettingsDefaults(settingsMixin);
 
-    this.settings = settings;
-    this.config = config;
+    this.config = configMixin;
+    this.settings = settingsMixin;
   }
 
   //--------------------------------------------------------------------------
@@ -153,7 +156,6 @@ class ApplicationBase {
   //--------------------------------------------------------------------------
 
   queryGroupItems(groupId: string, itemParams: any, portal: Portal): IPromise<any> {
-
     if (!portal) {
       portal = this.portal;
     }

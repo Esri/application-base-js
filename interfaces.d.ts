@@ -2,6 +2,9 @@ import Portal = require("esri/portal/Portal");
 import PortalItem = require("esri/portal/PortalItem");
 import PortalQueryResult = require("esri/portal/PortalQueryResult");
 
+import WebMap = require("esri/WebMap");
+import WebScene = require("esri/WebScene");
+
 export interface ApplicationConfigs {
   application?: ApplicationConfig;
   config: ApplicationConfig;
@@ -104,3 +107,15 @@ export interface ApplicationBaseConstructorOptions {
   config: ApplicationConfig | string;
   settings: ApplicationBaseSettings | string;
 }
+
+export interface CreateMapFromItemOptions {
+  item: PortalItem;
+  appProxies?: ApplicationProxy[];
+}
+
+export interface SetBasemapOptions {
+  map: WebMap | WebScene;
+  basemapUrl: string;
+  basemapReferenceUrl: string;
+}
+

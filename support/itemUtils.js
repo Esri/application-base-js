@@ -45,32 +45,37 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         return __assign({}, ui, cameraProps, centerProps, zoomProps, extentProps);
     }
     exports.getConfigViewProperties = getConfigViewProperties;
-    function createMapFromItem(item, appProxies) {
+    function createView(properties) {
+        var map = properties.map;
+        if (!map) {
+            return promiseUtils.reject("properties does not contain a \"map\"");
+        }
+        var isWebMap = map.declaredClass === "esri.WebMap";
+        var isWebScene = map.declaredClass === "esri.WebScene";
+        if (!isWebMap && !isWebScene) {
+            return promiseUtils.reject("map is not a \"WebMap\" or \"WebScene\"");
+        }
+        var viewTypePath = isWebMap ? "esri/views/MapView" : "esri/views/SceneView";
+        return requireUtils.when(require, viewTypePath).then(function (ViewType) {
+            return new ViewType(properties);
+        });
+    }
+    exports.createView = createView;
+    function createMapFromItem(options) {
+        var item = options.item, appProxies = options.appProxies;
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";
         if (!isWebMap && !isWebScene) {
             return promiseUtils.reject();
         }
-        return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies);
+        return isWebMap ? createWebMapFromItem(options) : createWebSceneFromItem(options);
     }
     exports.createMapFromItem = createMapFromItem;
-    function createView(map, viewProperties) {
-        var isWebMap = map.declaredClass === "esri.WebMap";
-        var isWebScene = map.declaredClass === "esri.WebScene";
-        if (!isWebMap && !isWebScene) {
-            return promiseUtils.reject();
-        }
-        var viewTypePath = isWebMap ? "esri/views/MapView" : "esri/views/SceneView";
-        viewProperties.map = map;
-        return requireUtils.when(require, viewTypePath).then(function (ViewType) {
-            return new ViewType(viewProperties);
-        });
-    }
-    exports.createView = createView;
-    function createWebMapFromItem(portalItem, appProxies) {
+    function createWebMapFromItem(options) {
+        var item = options.item, appProxies = options.appProxies;
         return requireUtils.when(require, "esri/WebMap").then(function (WebMap) {
             var wm = new WebMap({
-                portalItem: portalItem
+                portalItem: item
             });
             return wm.load().then(function () {
                 return _updateProxiedLayers(wm, appProxies);
@@ -78,10 +83,11 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         });
     }
     exports.createWebMapFromItem = createWebMapFromItem;
-    function createWebSceneFromItem(portalItem, appProxies) {
+    function createWebSceneFromItem(options) {
+        var item = options.item, appProxies = options.appProxies;
         return requireUtils.when(require, "esri/WebScene").then(function (WebScene) {
             var ws = new WebScene({
-                portalItem: portalItem
+                portalItem: item
             });
             return ws.load().then(function () {
                 return _updateProxiedLayers(ws, appProxies);
@@ -95,8 +101,8 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         }
     }
     exports.getItemTitle = getItemTitle;
-    function setBasemap(map, config) {
-        var basemapUrl = config.basemapUrl, basemapReferenceUrl = config.basemapReferenceUrl;
+    function setBasemap(options) {
+        var basemapUrl = options.basemapUrl, basemapReferenceUrl = options.basemapReferenceUrl, map = options.map;
         if (!basemapUrl || !map) {
             return promiseUtils.resolve(map);
         }

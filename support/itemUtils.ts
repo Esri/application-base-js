@@ -33,8 +33,10 @@ import SceneView = require("esri/views/SceneView");
 import PortalItem = require("esri/portal/PortalItem");
 
 import {
+  CreateMapFromItemOptions,
   ApplicationConfig,
-  ApplicationProxy
+  ApplicationProxy,
+  SetBasemapOptions
 } from "../interfaces";
 
 import {
@@ -70,7 +72,29 @@ export function getConfigViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export function createMapFromItem(item: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebMap | WebScene> {
+export function createView(properties: any): IPromise<MapView | SceneView> {
+  const { map } = properties;
+
+  if (!map) {
+    return promiseUtils.reject(`properties does not contain a "map"`);
+  }
+
+  const isWebMap = map.declaredClass === "esri.WebMap";
+  const isWebScene = map.declaredClass === "esri.WebScene";
+
+  if (!isWebMap && !isWebScene) {
+    return promiseUtils.reject(`map is not a "WebMap" or "WebScene"`);
+  }
+
+  const viewTypePath = isWebMap ? "esri/views/MapView" : "esri/views/SceneView";
+
+  return requireUtils.when(require, viewTypePath).then(ViewType => {
+    return new ViewType(properties);
+  });
+}
+
+export function createMapFromItem(options: CreateMapFromItemOptions): IPromise<WebMap | WebScene> {
+  const { item, appProxies } = options;
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
 
@@ -78,30 +102,14 @@ export function createMapFromItem(item: PortalItem, appProxies?: ApplicationProx
     return promiseUtils.reject();
   }
 
-  return isWebMap ? createWebMapFromItem(item, appProxies) : createWebSceneFromItem(item, appProxies) as IPromise<WebMap | WebScene>;
+  return isWebMap ? createWebMapFromItem(options) : createWebSceneFromItem(options) as IPromise<WebMap | WebScene>;
 }
 
-export function createView(map: WebMap | WebScene, viewProperties: any): IPromise<MapView | SceneView> {
-  const isWebMap = map.declaredClass === "esri.WebMap";
-  const isWebScene = map.declaredClass === "esri.WebScene";
-
-  if (!isWebMap && !isWebScene) {
-    return promiseUtils.reject();
-  }
-
-  const viewTypePath = isWebMap ? "esri/views/MapView" : "esri/views/SceneView";
-
-  viewProperties.map = map;
-
-  return requireUtils.when(require, viewTypePath).then(ViewType => {
-    return new ViewType(viewProperties);
-  });
-}
-
-export function createWebMapFromItem(portalItem: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebMap> {
+export function createWebMapFromItem(options: CreateMapFromItemOptions): IPromise<WebMap> {
+  const { item, appProxies } = options;
   return requireUtils.when(require, "esri/WebMap").then(WebMap => {
     const wm = new WebMap({
-      portalItem: portalItem
+      portalItem: item
     });
     return wm.load().then(() => {
       return _updateProxiedLayers(wm, appProxies);
@@ -109,10 +117,11 @@ export function createWebMapFromItem(portalItem: PortalItem, appProxies?: Applic
   });
 }
 
-export function createWebSceneFromItem(portalItem: PortalItem, appProxies?: ApplicationProxy[]): IPromise<WebScene> {
+export function createWebSceneFromItem(options: CreateMapFromItemOptions): IPromise<WebScene> {
+  const { item, appProxies } = options;
   return requireUtils.when(require, "esri/WebScene").then(WebScene => {
     const ws = new WebScene({
-      portalItem: portalItem
+      portalItem: item
     });
     return ws.load().then(() => {
       return _updateProxiedLayers(ws, appProxies);
@@ -126,8 +135,8 @@ export function getItemTitle(item: PortalItem): string {
   }
 }
 
-export function setBasemap(map: WebMap | WebScene, config: ApplicationConfig): IPromise<WebMap | WebScene> {
-  const { basemapUrl, basemapReferenceUrl } = config;
+export function setBasemap(options: SetBasemapOptions): IPromise<WebMap | WebScene> {
+  const { basemapUrl, basemapReferenceUrl, map } = options;
 
   if (!basemapUrl || !map) {
     return promiseUtils.resolve(map);

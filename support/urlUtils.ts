@@ -170,9 +170,10 @@ export function parseMarker(marker: string): IPromise<Graphic> {
   return requireUtils.when(require, [
     "esri/Graphic",
     "esri/PopupTemplate",
-    "esri/symbols/PictureMarkerSymbol"
+    "esri/symbols/PictureMarkerSymbol",
+    "esri/symbols/SimpleMarkerSymbol"
   ]).then(modules => {
-    const [Graphic, PopupTemplate, PictureMarkerSymbol] = modules;
+    const [Graphic, PopupTemplate, PictureMarkerSymbol, SimpleMarkerSymbol] = modules;
 
     const x = parseFloat(markerArray[0]);
     const y = parseFloat(markerArray[1]);
@@ -180,20 +181,19 @@ export function parseMarker(marker: string): IPromise<Graphic> {
     const icon_url = markerArray[4];
     const label = markerArray[5];
     const wkid = markerArray[2] ? parseInt(markerArray[2], 10) : 4326;
-    const symbolSize = "32px" as any as number; // todo: fix typings in next JS API release.
 
-    const defaultMarkerSymbol = {
-      url: require.toUrl("./symbols/marker.png"),
-      width: "32px" as any as number, // todo: fix typings in next JS API release.
-      height: "32px" as any as number // todo: fix typings in next JS API release.
-    };
-
-    const symbolOptions = icon_url ? {
+    const markerSymbol = icon_url ? new PictureMarkerSymbol({
       url: icon_url,
-      height: symbolSize,
-      width: symbolSize
-    } : defaultMarkerSymbol;
-    const markerSymbol = new PictureMarkerSymbol(symbolOptions);
+      height: "32px",
+      width: "32px"
+    }) : new SimpleMarkerSymbol({
+      outline: {
+        width: 1
+      },
+      size: 14,
+      color: [255, 255, 255, 0]
+    });
+
     const point = new Point({
       "x": x,
       "y": y,
@@ -201,6 +201,7 @@ export function parseMarker(marker: string): IPromise<Graphic> {
         "wkid": wkid
       }
     });
+
     const hasPopupDetails = content || label;
     const popupTemplate = hasPopupDetails ?
       new PopupTemplate({

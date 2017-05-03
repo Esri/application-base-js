@@ -140,27 +140,27 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
         return requireUtils.when(require, [
             "esri/Graphic",
             "esri/PopupTemplate",
-            "esri/symbols/PictureMarkerSymbol"
+            "esri/symbols/PictureMarkerSymbol",
+            "esri/symbols/SimpleMarkerSymbol"
         ]).then(function (modules) {
-            var Graphic = modules[0], PopupTemplate = modules[1], PictureMarkerSymbol = modules[2];
+            var Graphic = modules[0], PopupTemplate = modules[1], PictureMarkerSymbol = modules[2], SimpleMarkerSymbol = modules[3];
             var x = parseFloat(markerArray[0]);
             var y = parseFloat(markerArray[1]);
             var content = markerArray[3];
             var icon_url = markerArray[4];
             var label = markerArray[5];
             var wkid = markerArray[2] ? parseInt(markerArray[2], 10) : 4326;
-            var symbolSize = "32px"; // todo: fix typings in next JS API release.
-            var defaultMarkerSymbol = {
-                url: require.toUrl("./symbols/marker.png"),
-                width: "32px",
-                height: "32px" // todo: fix typings in next JS API release.
-            };
-            var symbolOptions = icon_url ? {
+            var markerSymbol = icon_url ? new PictureMarkerSymbol({
                 url: icon_url,
-                height: symbolSize,
-                width: symbolSize
-            } : defaultMarkerSymbol;
-            var markerSymbol = new PictureMarkerSymbol(symbolOptions);
+                height: "32px",
+                width: "32px"
+            }) : new SimpleMarkerSymbol({
+                outline: {
+                    width: 1
+                },
+                size: 14,
+                color: [255, 255, 255, 0]
+            });
             var point = new Point({
                 "x": x,
                 "y": y,

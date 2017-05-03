@@ -20,7 +20,6 @@
   limitations under the License.​
 */
 
-import Basemap = require("esri/Basemap");
 import Camera = require("esri/Camera");
 import Graphic = require("esri/Graphic");
 
@@ -215,40 +214,6 @@ export function parseMarker(marker: string): IPromise<Graphic> {
       popupTemplate: popupTemplate
     });
     return graphic;
-  });
-}
-
-export function parseBasemap(basemapUrl: string, basemapReferenceUrl: string): IPromise<Basemap> {
-  // ?basemapUrl=https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer&basemapReferenceUrl=http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer
-  if (!basemapUrl) {
-    return promiseUtils.resolve();
-  }
-
-  return requireUtils.when(require, ["esri/layers/Layer", "esri/Basemap"]).then(modules => {
-    const [Layer, Basemap] = modules;
-
-    const getBaseLayer = Layer.fromArcGISServerUrl({
-      url: basemapUrl
-    });
-
-    const getReferenceLayer = basemapReferenceUrl ? Layer.fromArcGISServerUrl({
-      url: basemapReferenceUrl
-    }) : promiseUtils.resolve();
-
-    const getBaseLayers = promiseUtils.eachAlways({
-      baseLayer: getBaseLayer,
-      referenceLayer: getReferenceLayer
-    });
-
-    return getBaseLayers.then(response => {
-      const baseLayer = response.baseLayer;
-      const referenceLayer = response.referenceLayer;
-      const basemapOptions = {
-        baseLayers: [baseLayer.value],
-        referenceLayers: referenceLayer.value ? [referenceLayer.value] : []
-      };
-      return new Basemap(basemapOptions).load();
-    });
   });
 }
 

@@ -35,18 +35,6 @@ Creates a `MapView` or `SceneView` with a `WebMap` or `WebScene` depending on th
 
 Returns the title of the `PortalItem`.
 
-### setBasemap(map: WebMap | WebScene, config: ApplicationConfig): IPromise&lt;WebMap | WebScene&gt;
-
-Sets the basemap on a `WebMap` or `WebScene` if a `basemapUrl` string is defined in the `ApplicationConfig`.
-
-#### SetBasemapOptions
-
-|property|description|type|
-|---|---|---|
-|map|A WebMap or WebScene to set the basemap on|WebMap or WebScene|
-|basemapUrl|A URL to the basemap layer|string|
-|basemapReferenceUrl?|A URL to the basemap reference layer|string|
-
 ### goToMarker(marker: string, view: MapView | SceneView): IPromise&lt;any&gt;
 
 Adds a `Graphic` marker and animates the view to its location if a `marker` string is defined.

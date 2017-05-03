@@ -183,35 +183,6 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
         });
     }
     exports.parseMarker = parseMarker;
-    function parseBasemap(basemapUrl, basemapReferenceUrl) {
-        // ?basemapUrl=https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer&basemapReferenceUrl=http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer
-        if (!basemapUrl) {
-            return promiseUtils.resolve();
-        }
-        return requireUtils.when(require, ["esri/layers/Layer", "esri/Basemap"]).then(function (modules) {
-            var Layer = modules[0], Basemap = modules[1];
-            var getBaseLayer = Layer.fromArcGISServerUrl({
-                url: basemapUrl
-            });
-            var getReferenceLayer = basemapReferenceUrl ? Layer.fromArcGISServerUrl({
-                url: basemapReferenceUrl
-            }) : promiseUtils.resolve();
-            var getBaseLayers = promiseUtils.eachAlways({
-                baseLayer: getBaseLayer,
-                referenceLayer: getReferenceLayer
-            });
-            return getBaseLayers.then(function (response) {
-                var baseLayer = response.baseLayer;
-                var referenceLayer = response.referenceLayer;
-                var basemapOptions = {
-                    baseLayers: [baseLayer.value],
-                    referenceLayers: referenceLayer.value ? [referenceLayer.value] : []
-                };
-                return new Basemap(basemapOptions).load();
-            });
-        });
-    }
-    exports.parseBasemap = parseBasemap;
     //--------------------------------------------------------------------------
     //
     //  Private Methods

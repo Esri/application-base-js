@@ -28,7 +28,3 @@ Parses an extent string into an `Extent`.
 
 Parses a marker string into a `Graphic`.
 
-### parseBasemap(basemapUrl: string, basemapReferenceUrl: string): IPromise&lt;Basemap&gt;
-
-Parses a basemapUrl string and basemapReferenceUrl string into a `Basemap`.
-

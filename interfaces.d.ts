@@ -14,8 +14,6 @@ export interface ApplicationConfigs {
 
 export interface ApplicationConfig {
   appid?: string;
-  basemapUrl?: string;
-  basemapReferenceUrl?: string;
   center?: string;
   components?: string;
   embed?: boolean;
@@ -112,10 +110,3 @@ export interface CreateMapFromItemOptions {
   item: PortalItem;
   appProxies?: ApplicationProxy[];
 }
-
-export interface SetBasemapOptions {
-  map: WebMap | WebScene;
-  basemapUrl: string;
-  basemapReferenceUrl?: string;
-}
-

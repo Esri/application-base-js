@@ -101,17 +101,6 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         }
     }
     exports.getItemTitle = getItemTitle;
-    function setBasemap(options) {
-        var basemapUrl = options.basemapUrl, basemapReferenceUrl = options.basemapReferenceUrl, map = options.map;
-        if (!basemapUrl || !map) {
-            return promiseUtils.resolve(map);
-        }
-        return urlUtils_1.parseBasemap(basemapUrl, basemapReferenceUrl).then(function (basemap) {
-            map.basemap = basemap;
-            return map;
-        });
-    }
-    exports.setBasemap = setBasemap;
     function goToMarker(marker, view) {
         if (!marker || !view) {
             return promiseUtils.resolve();

@@ -35,12 +35,10 @@ import PortalItem = require("esri/portal/PortalItem");
 import {
   CreateMapFromItemOptions,
   ApplicationConfig,
-  ApplicationProxy,
-  SetBasemapOptions
+  ApplicationProxy
 } from "../interfaces";
 
 import {
-  parseBasemap,
   parseViewpoint,
   parseViewComponents,
   parseExtent,
@@ -133,19 +131,6 @@ export function getItemTitle(item: PortalItem): string {
   if (item && item.title) {
     return item.title;
   }
-}
-
-export function setBasemap(options: SetBasemapOptions): IPromise<WebMap | WebScene> {
-  const { basemapUrl, basemapReferenceUrl, map } = options;
-
-  if (!basemapUrl || !map) {
-    return promiseUtils.resolve(map);
-  }
-
-  return parseBasemap(basemapUrl, basemapReferenceUrl).then(basemap => {
-    map.basemap = basemap;
-    return map;
-  });
 }
 
 export function goToMarker(marker: string, view: MapView | SceneView): IPromise<any> {

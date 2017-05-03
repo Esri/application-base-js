@@ -104,8 +104,6 @@ Example:
   },
   "urlParams": [
     "appid",
-    "basemapUrl",
-    "basemapReferenceUrl",
     "center",
     "components",
     "embed",

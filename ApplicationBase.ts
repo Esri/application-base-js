@@ -579,19 +579,24 @@ class ApplicationBase {
   }
 
   private _getEsriEnvironmentPortalUrl(): string {
+    const pathname = location.pathname;
     const esriAppsPath = "/apps/";
     const esriHomePath = "/home/";
-    const esriAppsPathIndex = location.pathname.indexOf(esriAppsPath);
-    const esriHomePathIndex = location.pathname.indexOf(esriHomePath);
+    const esriAppsPathIndex = pathname.indexOf(esriAppsPath);
+    const esriHomePathIndex = pathname.indexOf(esriHomePath);
     const isEsriAppsPath = esriAppsPathIndex !== -1 ? true : false;
     const isEsriHomePath = esriHomePathIndex !== -1 ? true : false;
-    const appLocationIndex = isEsriAppsPath ? esriAppsPathIndex : isEsriHomePath ? esriHomePathIndex : null;
+    const appLocationIndex = isEsriAppsPath ?
+      esriAppsPathIndex :
+      isEsriHomePath ?
+        esriHomePathIndex :
+        undefined;
 
-    if (!appLocationIndex) {
+    if (appLocationIndex === undefined) {
       return;
     }
 
-    const portalInstance = location.pathname.substr(0, appLocationIndex);
+    const portalInstance = pathname.substr(0, appLocationIndex);
     const host = location.host;
     return `https://${host}${portalInstance}`;
   }

@@ -1,9 +1,19 @@
 import Portal = require("esri/portal/Portal");
 import PortalItem = require("esri/portal/PortalItem");
 import PortalQueryResult = require("esri/portal/PortalQueryResult");
+import PortalQueryParams = require("esri/portal/PortalQueryParams");
 
 import WebMap = require("esri/WebMap");
 import WebScene = require("esri/WebScene");
+
+export type Direction = "ltr" | "rtl";
+
+export interface ApplicationBaseItemPromises {
+  webMap?: IPromise<any>;
+  webScene?: IPromise<any>;
+  groupInfo?: IPromise<any>;
+  groupItems?: IPromise<any>;
+}
 
 export interface ApplicationConfigs {
   application?: ApplicationConfig;
@@ -43,9 +53,7 @@ export interface ApplicationBaseSettings {
   };
   group?: {
     default?: string;
-    itemParams?: {
-      [propname: string]: any;
-    };
+    itemParams?: PortalQueryParams;
     fetchItems?: boolean;
     fetchInfo?: boolean;
     fetchMultiple?: boolean;
@@ -55,12 +63,12 @@ export interface ApplicationBaseSettings {
   };
   rightToLeftLocales?: string[];
   urlParams?: string[];
-  webmap?: {
+  webMap?: {
     default?: string;
     fetch?: boolean;
     fetchMultiple?: boolean;
   };
-  webscene?: {
+  webScene?: {
     default?: string;
     fetch?: boolean;
     fetchMultiple?: boolean;
@@ -110,3 +118,4 @@ export interface CreateMapFromItemOptions {
   item: PortalItem;
   appProxies?: ApplicationProxy[];
 }
+

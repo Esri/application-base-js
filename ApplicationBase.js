@@ -35,7 +35,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/promiseUtils", "esri/identity/IdentityManager", "esri/identity/OAuthInfo", "esri/portal/Portal", "esri/portal/PortalItem", "esri/portal/PortalQueryParams", "./declareDecorator"], function (require, exports, kernel, esriConfig, promiseUtils, IdentityManager, OAuthInfo, Portal, PortalItem, PortalQueryParams, declareDecorator_1) {
     "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
     var defaultConfig = {
         portalUrl: "https://www.arcgis.com",
         helperServices: {
@@ -529,6 +528,6 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
     ApplicationBase = __decorate([
         declareDecorator_1.default()
     ], ApplicationBase);
-    exports.default = ApplicationBase;
+    return ApplicationBase;
 });
 //# sourceMappingURL=ApplicationBase.js.map

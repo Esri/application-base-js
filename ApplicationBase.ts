@@ -702,4 +702,4 @@ class ApplicationBase {
 
 }
 
-export default ApplicationBase;
+export = ApplicationBase;

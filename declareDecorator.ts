@@ -5,8 +5,8 @@ import * as declare from "dojo/_base/declare";
  * This allows declare constructors to be defined as classes, which nicely
  * hides away the `declare([], {})` boilerplate.
  */
-export default function(...mixins: Object[]): ClassDecorator {
-  return function(target: Function) {
-    return declare(mixins, target.prototype);
+export default function (...mixins: Object[]): ClassDecorator {
+  return function (target: Function) {
+    return <any>declare(mixins, target.prototype);
   };
 }

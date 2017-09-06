@@ -54,7 +54,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         webMap: {},
         webScene: {}
     };
-    var ApplicationBase = (function () {
+    var ApplicationBase = /** @class */ (function () {
         //--------------------------------------------------------------------------
         //
         //  Lifecycle

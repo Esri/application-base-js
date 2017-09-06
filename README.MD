@@ -2,6 +2,8 @@
 
 A class designed to handle common tasks of configurable ArcGIS Web Applications.
 
+**See [Configurable App Examples](https://github.com/Esri/configurable-app-examples-4x-js) using this class**.
+
 ## Purpose
 
 The purpose of this ApplicationBase is to handle fetching and managing ArcGIS Online information used in configurable applications. The ApplicationBase queries and maintains:
@@ -206,6 +208,7 @@ There are helper modules and utilities you can use that contain common applicati
 
 ## Resources
 
+* [Configurable App Examples](https://github.com/Esri/configurable-app-examples-4x-js) using this class.
 * [Community](https://developers.arcgis.com/en/javascript/jshelp/community.html)
 * [ArcGIS for JavaScript API Resource Center](https://js.arcgis.com)
 * [ArcGIS Blog](http://blogs.esri.com/esri/arcgis/)

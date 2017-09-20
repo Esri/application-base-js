@@ -2,7 +2,7 @@
   "name": "application-base-js",
   "version": "0.0.1",
   "description": "A core class for creating a configurable application using JavaScript/TypeScript",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN license.txt",
   "main": "ApplicationBase.js",
   "repository": {
     "type": "git",
@@ -10,7 +10,9 @@
   },
   "keywords": [
     "Esri",
+    "esrijs",
     "ArcGIS",
+    "gis",
     "JavaScript",
     "TypeScript"
   ],

@@ -54,7 +54,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         webMap: {},
         webScene: {}
     };
-    var ApplicationBase = /** @class */ (function () {
+    var ApplicationBase = (function () {
         //--------------------------------------------------------------------------
         //
         //  Lifecycle
@@ -523,11 +523,11 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var tagsRE = /<\/?[^>]+>/g;
             return value.replace(tagsRE, "");
         };
-        ApplicationBase = __decorate([
-            declareDecorator_1.default()
-        ], ApplicationBase);
         return ApplicationBase;
     }());
+    ApplicationBase = __decorate([
+        declareDecorator_1.default()
+    ], ApplicationBase);
     return ApplicationBase;
 });
 //# sourceMappingURL=ApplicationBase.js.map

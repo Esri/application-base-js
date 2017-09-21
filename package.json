@@ -18,10 +18,9 @@
     "JavaScript",
     "TypeScript"
   ],
-  "dependencies": {
-    "typescript": "^2.2.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "typescript": "^2.2.1",
     "@types/arcgis-js-api": "^4.4.0",
     "dojo-typings": "^1.11.7",
     "tslint": "^5.1.0"

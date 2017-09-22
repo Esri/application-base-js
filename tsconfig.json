@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     "sourceMap": true,
+    "declaration": true,
     "noImplicitAny": false,
     "module": "amd",
     "target": "es5",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "jsx": "react",
     "jsxFactory": "tsx"
@@ -25,4 +27,3 @@
     "./node_modules/dojo-typings/dojox/1.11/modules.d.ts"
   ]
 }
-

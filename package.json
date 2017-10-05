@@ -20,13 +20,15 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "typescript": "^2.2.1",
-    "@types/arcgis-js-api": "^4.4.0",
-    "dojo-typings": "^1.11.7",
-    "tslint": "^5.1.0"
+    "typescript": "^2.5.3",
+    "@types/arcgis-js-api": "^4.5.0",
+    "dojo-typings": "^1.11.9",
+    "tslint": "^5.7.0",
+    "dts-generator": "^2.1.0"
   },
   "scripts": {
-    "start": "npm run watch -s",
-    "watch": "tsc --watch"
+    "start": "npm run build; npm run watch -s",
+    "watch": "tsc --watch",
+    "build": "dts-generator --name ApplicationBase --project ./ --out index.d.ts"
   }
 }

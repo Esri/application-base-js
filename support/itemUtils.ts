@@ -174,7 +174,7 @@ function _updateProxiedLayers(webItem: WebMap | WebScene, appProxies?: Applicati
   }
 
   appProxies.forEach(proxy => {
-    webItem.layers.forEach(layer => {
+    webItem.layers.forEach((layer: any) => {
       if (layer.url === proxy.sourceUrl) {
         layer.url = proxy.proxyUrl;
       }

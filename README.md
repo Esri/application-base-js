@@ -45,7 +45,7 @@ See [ApplicationConfig](#applicationconfig) and [ApplicationBaseConfig](#applica
 
 Example:
 
-```
+```json
 {
   "appid": "",
   "group": "",
@@ -81,7 +81,7 @@ Example:
 
 Example:
 
-```
+```json
 {
   "environment": {
     "isEsri": false,
@@ -137,7 +137,7 @@ See [PortalQueryParams](https://developers.arcgis.com/javascript//latest/api-ref
 
 Example:
 
-```js
+```json
 {
   "query": "group:\"{groupid}\" AND -type:\"Code Attachment\"",
   "sortField": "modified",

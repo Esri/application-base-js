@@ -290,7 +290,7 @@ class ApplicationBase {
         const fetchMultipleWebscenes = websceneSettings.fetchMultiple;
         const fetchMultipleGroups = groupSettings.fetchMultiple;
 
-        if (isWebMapEnabled) {
+        /*if (isWebMapEnabled) {
           const webMaps = this._getPropertyArray(webmap);
           const allowedWebmaps = this._limitItemSize(webMaps, fetchMultipleWebmaps);
           allowedWebmaps.forEach(id => {
@@ -306,8 +306,32 @@ class ApplicationBase {
             const webSceneId = this._getDefaultId(id, defaultWebScene);
             webScenePromises.push(this._loadItem(webSceneId));
           });
+        }*/
+        if (isWebMapEnabled) {
+          if (isWebMapEnabled === "default") {
+            webMapPromises.push(this._loadItem(defaultWebMap));
+          } else {
+            const webMaps = this._getPropertyArray(webmap);
+            const allowedWebmaps = this._limitItemSize(webMaps, fetchMultipleWebmaps);
+            allowedWebmaps.forEach(function(id) {
+              const webMapId = this._getDefaultId(id, defaultWebMap);
+              webMapPromises.push(this._loadItem(webMapId));
+            });
+          }
+        } else if (isWebSceneEnabled) {
+          if (isWebSceneEnabled === "default") {
+            webScenePromises.push(this._loadItem(defaultWebScene));
+          } else {
+            const webScenes = this._getPropertyArray(webscene);
+            const allowedWebsenes = this._limitItemSize(webScenes, fetchMultipleWebscenes);
+            allowedWebsenes.forEach(id => {
+              const webSceneId = this._getDefaultId(id, defaultWebScene);
+              webScenePromises.push(this._loadItem(webSceneId));
+            });
+          }
+        } else {
+          webMapPromises.push(this._loadItem(defaultWebMap));
         }
-
         if (isGroupInfoEnabled) {
           const groups = this._getPropertyArray(group);
           const allowedGroups = this._limitItemSize(groups, fetchMultipleGroups);

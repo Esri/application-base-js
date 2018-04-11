@@ -114,9 +114,9 @@ declare module 'ApplicationBase/interfaces' {
 	}
 
 	export interface ApplicationProxy {
-	  sourceUrl: string,
-	  proxyUrl: string,
-	  proxyId: string
+	  sourceUrl: string;
+	  proxyUrl: string;
+	  proxyId: string;
 	}
 
 	export interface ApplicationBaseConstructorOptions {

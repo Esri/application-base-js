@@ -104,9 +104,9 @@ export interface ApplicationBaseResults {
 }
 
 export interface ApplicationProxy {
-  sourceUrl: string,
-  proxyUrl: string,
-  proxyId: string
+  sourceUrl: string;
+  proxyUrl: string;
+  proxyId: string;
 }
 
 export interface ApplicationBaseConstructorOptions {

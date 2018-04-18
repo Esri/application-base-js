@@ -208,21 +208,51 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                     var fetchMultipleWebmaps = webMapSettings.fetchMultiple;
                     var fetchMultipleWebscenes = websceneSettings.fetchMultiple;
                     var fetchMultipleGroups = groupSettings.fetchMultiple;
-                    if (isWebMapEnabled) {
-                        var webMaps = _this._getPropertyArray(webmap);
-                        var allowedWebmaps = _this._limitItemSize(webMaps, fetchMultipleWebmaps);
-                        allowedWebmaps.forEach(function (id) {
-                            var webMapId = _this._getDefaultId(id, defaultWebMap);
-                            webMapPromises.push(_this._loadItem(webMapId));
-                        });
+                    /*if (isWebMapEnabled) {
+                      const webMaps = this._getPropertyArray(webmap);
+                      const allowedWebmaps = this._limitItemSize(webMaps, fetchMultipleWebmaps);
+                      allowedWebmaps.forEach(id => {
+                        const webMapId = this._getDefaultId(id, defaultWebMap);
+                        webMapPromises.push(this._loadItem(webMapId));
+                      });
                     }
+            
                     if (isWebSceneEnabled) {
-                        var webScenes = _this._getPropertyArray(webscene);
-                        var allowedWebsenes = _this._limitItemSize(webScenes, fetchMultipleWebscenes);
-                        allowedWebsenes.forEach(function (id) {
-                            var webSceneId = _this._getDefaultId(id, defaultWebScene);
-                            webScenePromises.push(_this._loadItem(webSceneId));
-                        });
+                      const webScenes = this._getPropertyArray(webscene);
+                      const allowedWebsenes = this._limitItemSize(webScenes, fetchMultipleWebscenes);
+                      allowedWebsenes.forEach(id => {
+                        const webSceneId = this._getDefaultId(id, defaultWebScene);
+                        webScenePromises.push(this._loadItem(webSceneId));
+                      });
+                    }*/
+                    if (isWebMapEnabled) {
+                        if (isWebMapEnabled === "default") {
+                            webMapPromises.push(_this._loadItem(defaultWebMap));
+                        }
+                        else {
+                            var webMaps = _this._getPropertyArray(webmap);
+                            var allowedWebmaps = _this._limitItemSize(webMaps, fetchMultipleWebmaps);
+                            allowedWebmaps.forEach(function (id) {
+                                var webMapId = this._getDefaultId(id, defaultWebMap);
+                                webMapPromises.push(this._loadItem(webMapId));
+                            });
+                        }
+                    }
+                    else if (isWebSceneEnabled) {
+                        if (isWebSceneEnabled === "default") {
+                            webScenePromises.push(_this._loadItem(defaultWebScene));
+                        }
+                        else {
+                            var webScenes = _this._getPropertyArray(webscene);
+                            var allowedWebsenes = _this._limitItemSize(webScenes, fetchMultipleWebscenes);
+                            allowedWebsenes.forEach(function (id) {
+                                var webSceneId = _this._getDefaultId(id, defaultWebScene);
+                                webScenePromises.push(_this._loadItem(webSceneId));
+                            });
+                        }
+                    }
+                    else {
+                        webMapPromises.push(_this._loadItem(defaultWebMap));
                     }
                     if (isGroupInfoEnabled) {
                         var groups = _this._getPropertyArray(group);

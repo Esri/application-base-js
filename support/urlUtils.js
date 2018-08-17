@@ -137,12 +137,14 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
         if (markerLength < 2) {
             return promiseUtils.reject();
         }
-        return requireUtils.when(require, [
+        return requireUtils
+            .when(require, [
             "esri/Graphic",
             "esri/PopupTemplate",
             "esri/symbols/PictureMarkerSymbol",
             "esri/symbols/SimpleMarkerSymbol"
-        ]).then(function (modules) {
+        ])
+            .then(function (modules) {
             var Graphic = modules[0], PopupTemplate = modules[1], PictureMarkerSymbol = modules[2], SimpleMarkerSymbol = modules[3];
             var x = parseFloat(markerArray[0]);
             var y = parseFloat(markerArray[1]);
@@ -150,30 +152,33 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             var icon_url = markerArray[4];
             var label = markerArray[5];
             var wkid = markerArray[2] ? parseInt(markerArray[2], 10) : 4326;
-            var markerSymbol = icon_url ? new PictureMarkerSymbol({
-                url: icon_url,
-                height: "32px",
-                width: "32px"
-            }) : new SimpleMarkerSymbol({
-                outline: {
-                    width: 1
-                },
-                size: 14,
-                color: [255, 255, 255, 0]
-            });
+            var markerSymbol = icon_url
+                ? new PictureMarkerSymbol({
+                    url: icon_url,
+                    height: "32px",
+                    width: "32px"
+                })
+                : new SimpleMarkerSymbol({
+                    outline: {
+                        width: 1
+                    },
+                    size: 14,
+                    color: [255, 255, 255, 0]
+                });
             var point = new Point({
-                "x": x,
-                "y": y,
-                "spatialReference": {
-                    "wkid": wkid
+                x: x,
+                y: y,
+                spatialReference: {
+                    wkid: wkid
                 }
             });
             var hasPopupDetails = content || label;
-            var popupTemplate = hasPopupDetails ?
-                new PopupTemplate({
-                    "title": content || null,
-                    "content": label || null
-                }) : null;
+            var popupTemplate = hasPopupDetails
+                ? new PopupTemplate({
+                    title: content || null,
+                    content: label || null
+                })
+                : null;
             var graphic = new Graphic({
                 geometry: point,
                 symbol: markerSymbol,
@@ -220,10 +225,12 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/cor
             return null;
         }
         var tiltHeadingArray = headingAndTilt.split(",");
-        return tiltHeadingArray.length >= 0 ? {
-            heading: parseFloat(tiltHeadingArray[0]),
-            tilt: parseFloat(tiltHeadingArray[1])
-        } : null;
+        return tiltHeadingArray.length >= 0
+            ? {
+                heading: parseFloat(tiltHeadingArray[0]),
+                tilt: parseFloat(tiltHeadingArray[1])
+            }
+            : null;
     }
     function _getCameraProperties(camera, headingAndTilt) {
         var cameraPosition = _getCameraPosition(camera);

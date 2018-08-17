@@ -37,7 +37,9 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
     //--------------------------------------------------------------------------
     function getConfigViewProperties(config) {
         var center = config.center, components = config.components, extent = config.extent, level = config.level, viewpoint = config.viewpoint;
-        var ui = components ? { ui: { components: urlUtils_1.parseViewComponents(components) } } : null;
+        var ui = components
+            ? { ui: { components: urlUtils_1.parseViewComponents(components) } }
+            : null;
         var cameraProps = viewpoint ? { camera: urlUtils_1.parseViewpoint(viewpoint) } : null;
         var centerProps = center ? { center: urlUtils_1.parseCenter(center) } : null;
         var zoomProps = level ? { zoom: urlUtils_1.parseLevel(level) } : null;
@@ -68,7 +70,9 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         if (!isWebMap && !isWebScene) {
             return promiseUtils.reject();
         }
-        return isWebMap ? createWebMapFromItem(options) : createWebSceneFromItem(options);
+        return isWebMap
+            ? createWebMapFromItem(options)
+            : createWebSceneFromItem(options);
     }
     exports.createMapFromItem = createMapFromItem;
     function createWebMapFromItem(options) {
@@ -117,12 +121,16 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
         if (!query || !view) {
             return promiseUtils.resolve();
         }
-        return requireUtils.when(require, "esri/widgets/Search/SearchViewModel").then(function (SearchViewModel) {
+        return requireUtils
+            .when(require, "esri/widgets/Search/SearchViewModel")
+            .then(function (SearchViewModel) {
             var searchVM = new SearchViewModel({
                 view: view
             });
             return searchVM.search(query).then(function (result) {
-                watchUtils.whenFalseOnce(view, "popup.visible", function () { return searchVM.destroy(); });
+                watchUtils.whenFalseOnce(view, "popup.visible", function () {
+                    return searchVM.destroy();
+                });
                 return result;
             });
         });

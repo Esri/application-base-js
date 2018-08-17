@@ -95,12 +95,12 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             //----------------------------------
             this.units = null;
             var config = options.config, settings = options.settings;
-            var applicationConfig = typeof config === "string" ?
-                JSON.parse(config) :
-                config;
-            var applicationBaseSettings = typeof settings === "string" ?
-                JSON.parse(settings) :
-                settings;
+            var applicationConfig = typeof config === "string"
+                ? JSON.parse(config)
+                : config;
+            var applicationBaseSettings = typeof settings === "string"
+                ? JSON.parse(settings)
+                : settings;
             var configMixin = __assign({}, defaultConfig, applicationConfig);
             var settingsMixin = __assign({}, defaultSettings, applicationBaseSettings);
             this._mixinSettingsDefaults(settingsMixin);
@@ -146,42 +146,39 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             this._registerOauthInfos(oauthappid, portalUrl);
             var checkSignIn = IdentityManager.checkSignInStatus(portalUrl + "/sharing");
             return checkSignIn.always(function () {
-                var loadApplicationItem = appid ?
-                    _this._loadItem(appid) :
-                    promiseUtils.resolve();
-                var fetchApplicationData = appid ?
-                    loadApplicationItem.then(function (itemInfo) {
-                        return itemInfo instanceof PortalItem ?
-                            itemInfo.fetchData() :
-                            undefined;
-                    }) :
-                    promiseUtils.resolve();
-                var loadPortal = portalSettings.fetch ?
-                    new Portal().load() :
-                    promiseUtils.resolve();
-                return promiseUtils.eachAlways([
-                    loadApplicationItem,
-                    fetchApplicationData,
-                    loadPortal
-                ]).always(function (applicationArgs) {
+                var loadApplicationItem = appid
+                    ? _this._loadItem(appid)
+                    : promiseUtils.resolve();
+                var fetchApplicationData = appid
+                    ? loadApplicationItem.then(function (itemInfo) {
+                        return itemInfo instanceof PortalItem
+                            ? itemInfo.fetchData()
+                            : undefined;
+                    })
+                    : promiseUtils.resolve();
+                var loadPortal = portalSettings.fetch
+                    ? new Portal().load()
+                    : promiseUtils.resolve();
+                return promiseUtils
+                    .eachAlways([loadApplicationItem, fetchApplicationData, loadPortal])
+                    .always(function (applicationArgs) {
                     var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2];
-                    var applicationItem = applicationItemResponse ?
-                        applicationItemResponse.value :
-                        null;
-                    var applicationData = applicationDataResponse ?
-                        applicationDataResponse.value :
-                        null;
-                    var localStorage = localStorageSettings.fetch ?
-                        _this._getLocalConfig(appid) :
-                        null;
+                    var applicationItem = applicationItemResponse
+                        ? applicationItemResponse.value
+                        : null;
+                    var applicationData = applicationDataResponse
+                        ? applicationDataResponse.value
+                        : null;
+                    var localStorage = localStorageSettings.fetch
+                        ? _this._getLocalConfig(appid)
+                        : null;
                     _this.results.localStorage = localStorage;
                     _this.results.applicationItem = applicationItemResponse;
                     _this.results.applicationData = applicationDataResponse;
-                    var applicationConfig = applicationData ?
-                        applicationData.values :
-                        null;
-                    var portal = portalResponse ? portalResponse.value :
-                        null;
+                    var applicationConfig = applicationData
+                        ? applicationData.values
+                        : null;
+                    var portal = portalResponse ? portalResponse.value : null;
                     _this.portal = portal;
                     _this.units = _this._getUnits(portal);
                     _this.config = _this._mixinAllConfigs({
@@ -239,27 +236,25 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         });
                     }
                     var promises = {
-                        webMap: webMapPromises ?
-                            promiseUtils.eachAlways(webMapPromises) :
-                            promiseUtils.resolve(),
-                        webScene: webScenePromises ?
-                            promiseUtils.eachAlways(webScenePromises) :
-                            promiseUtils.resolve(),
-                        groupInfo: groupInfoPromises ?
-                            promiseUtils.eachAlways(groupInfoPromises) :
-                            promiseUtils.resolve(),
-                        groupItems: groupItemsPromises ?
-                            promiseUtils.eachAlways(groupItemsPromises) :
-                            promiseUtils.resolve()
+                        webMap: webMapPromises
+                            ? promiseUtils.eachAlways(webMapPromises)
+                            : promiseUtils.resolve(),
+                        webScene: webScenePromises
+                            ? promiseUtils.eachAlways(webScenePromises)
+                            : promiseUtils.resolve(),
+                        groupInfo: groupInfoPromises
+                            ? promiseUtils.eachAlways(groupInfoPromises)
+                            : promiseUtils.resolve(),
+                        groupItems: groupItemsPromises
+                            ? promiseUtils.eachAlways(groupItemsPromises)
+                            : promiseUtils.resolve()
                     };
                     return promiseUtils.eachAlways(promises).always(function (itemArgs) {
                         var webMapResponses = itemArgs.webMap.value;
                         var webSceneResponses = itemArgs.webScene.value;
                         var groupInfoResponses = itemArgs.groupInfo.value;
                         var groupItemsResponses = itemArgs.groupItems.value;
-                        var itemInfo = applicationItem ?
-                            applicationItem.itemInfo :
-                            null;
+                        var itemInfo = applicationItem ? applicationItem.itemInfo : null;
                         _this._overwriteItemsExtent(webMapResponses, itemInfo);
                         _this._overwriteItemsExtent(webSceneResponses, itemInfo);
                         _this.results.webMapItems = webMapResponses;
@@ -286,10 +281,10 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             settings.environment = __assign({ isEsri: false, webTierSecurity: false }, userEnvironmentSettings);
             settings.localStorage = __assign({ fetch: true }, userLocalStorageSettings);
             var itemParams = {
-                "sortField": "modified",
-                "sortOrder": "desc",
-                "num": 9,
-                "start": 0
+                sortField: "modified",
+                sortOrder: "desc",
+                num: 9,
+                start: 0
             };
             settings.group = __assign({ default: "908dd46e749d4565a17d2b646ace7b1a", fetchInfo: true, fetchItems: true, fetchMultiple: true, itemParams: itemParams }, userGroupSettings);
             settings.portal = __assign({ fetch: true }, userPortalSettings);
@@ -298,11 +293,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         };
         ApplicationBase.prototype._limitItemSize = function (items, allowMultiple) {
             var firstItem = items[0];
-            return allowMultiple ?
-                items :
-                firstItem ?
-                    [firstItem] :
-                    [];
+            return allowMultiple ? items : firstItem ? [firstItem] : [];
         };
         ApplicationBase.prototype._getPropertyArray = function (property) {
             if (typeof property === "string") {
@@ -321,11 +312,11 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var esriHomePathIndex = pathname.indexOf(esriHomePath);
             var isEsriAppsPath = esriAppsPathIndex !== -1;
             var isEsriHomePath = esriHomePathIndex !== -1;
-            var appLocationIndex = isEsriAppsPath ?
-                esriAppsPathIndex :
-                isEsriHomePath ?
-                    esriHomePathIndex :
-                    undefined;
+            var appLocationIndex = isEsriAppsPath
+                ? esriAppsPathIndex
+                : isEsriHomePath
+                    ? esriHomePathIndex
+                    : undefined;
             if (appLocationIndex === undefined) {
                 return;
             }
@@ -348,17 +339,18 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var responseUnits = portal.units;
             var responseRegion = portal.region;
             var ipCountryCode = portal.ipCntryCode;
-            var isEnglishUnits = (userRegion === USRegion) ||
+            var isEnglishUnits = userRegion === USRegion ||
                 (userRegion && responseRegion === USRegion) ||
                 (userRegion && !responseRegion) ||
                 (!user && ipCountryCode === USRegion) ||
                 (!user && !ipCountryCode && kernel.locale === USLocale);
-            var units = userUnits ?
-                userUnits :
-                responseUnits ?
-                    responseUnits :
-                    isEnglishUnits ?
-                        "english" : "metric";
+            var units = userUnits
+                ? userUnits
+                : responseUnits
+                    ? responseUnits
+                    : isEnglishUnits
+                        ? "english"
+                        : "metric";
             return units;
         };
         ApplicationBase.prototype._queryGroupInfo = function (groupId, portal) {
@@ -399,28 +391,20 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                 return;
             }
             var applicationExtent = applicationItem.extent;
-            item.extent = applicationExtent ?
-                applicationExtent :
-                item.extent;
+            item.extent = applicationExtent ? applicationExtent : item.extent;
         };
         ApplicationBase.prototype._getDefaultId = function (id, defaultId) {
             var defaultUrlParam = "default";
-            var trimmedId = id ?
-                id.trim() :
-                "";
+            var trimmedId = id ? id.trim() : "";
             var useDefaultId = (!trimmedId || trimmedId === defaultUrlParam) && defaultId;
-            return useDefaultId ?
-                defaultId :
-                id;
+            return useDefaultId ? defaultId : id;
         };
         ApplicationBase.prototype._getLanguageDirection = function (rtlLocales) {
             if (rtlLocales === void 0) { rtlLocales = ["ar", "he"]; }
             var isRTL = rtlLocales.some(function (language) {
                 return kernel.locale.indexOf(language) !== -1;
             });
-            return isRTL ?
-                "rtl" :
-                "ltr";
+            return isRTL ? "rtl" : "ltr";
         };
         ApplicationBase.prototype._mixinAllConfigs = function (params) {
             var config = params.config || null;
@@ -434,7 +418,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                 return;
             }
             authorizedDomains.forEach(function (authorizedDomain) {
-                var isDefined = (authorizedDomain !== undefined) && (authorizedDomain !== null);
+                var isDefined = authorizedDomain !== undefined && authorizedDomain !== null;
                 if (isDefined && authorizedDomain.length) {
                     esriConfig.request.corsEnabledServers.push({
                         host: authorizedDomain,
@@ -447,8 +431,12 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var configHelperServices = config.helperServices;
             var anyPortal = portal;
             var portalHelperServices = anyPortal && anyPortal.helperServices;
-            var configGeometryUrl = configHelperServices && configHelperServices.geometry && configHelperServices.geometry.url;
-            var portalGeometryUrl = portalHelperServices && portalHelperServices.geometry && portalHelperServices.geometry.url;
+            var configGeometryUrl = configHelperServices &&
+                configHelperServices.geometry &&
+                configHelperServices.geometry.url;
+            var portalGeometryUrl = portalHelperServices &&
+                portalHelperServices.geometry &&
+                portalHelperServices.geometry.url;
             var geometryServiceUrl = portalGeometryUrl || configGeometryUrl;
             if (!geometryServiceUrl) {
                 return;

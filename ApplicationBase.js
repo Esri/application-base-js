@@ -187,7 +187,6 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         local: localStorage,
                         application: applicationConfig
                     });
-                    _this._setUpCORS(portal.authorizedCrossOriginDomains, webTierSecurity);
                     _this._setGeometryService(_this.config, portal);
                     var _a = _this.config, webmap = _a.webmap, webscene = _a.webscene, group = _a.group;
                     var webMapPromises = [];
@@ -412,20 +411,6 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var localConfig = params.local || null;
             var urlConfig = params.url || null;
             return __assign({}, config, appConfig, localConfig, urlConfig);
-        };
-        ApplicationBase.prototype._setUpCORS = function (authorizedDomains, webTierSecurity) {
-            if (!webTierSecurity || !authorizedDomains || !authorizedDomains.length) {
-                return;
-            }
-            authorizedDomains.forEach(function (authorizedDomain) {
-                var isDefined = authorizedDomain !== undefined && authorizedDomain !== null;
-                if (isDefined && authorizedDomain.length) {
-                    esriConfig.request.corsEnabledServers.push({
-                        host: authorizedDomain,
-                        withCredentials: true
-                    });
-                }
-            });
         };
         ApplicationBase.prototype._setGeometryService = function (config, portal) {
             var configHelperServices = config.helperServices;

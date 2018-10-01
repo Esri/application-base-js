@@ -24,8 +24,6 @@ import kernel = require("dojo/_base/kernel");
 
 import esriConfig = require("esri/config");
 
-import Extent = require("esri/geometry/Extent");
-
 import promiseUtils = require("esri/core/promiseUtils");
 
 import IdentityManager = require("esri/identity/IdentityManager");
@@ -225,10 +223,10 @@ class ApplicationBase {
 
       const fetchApplicationData = appid
         ? loadApplicationItem.then(itemInfo => {
-            return itemInfo instanceof PortalItem
-              ? itemInfo.fetchData()
-              : undefined;
-          })
+          return itemInfo instanceof PortalItem
+            ? itemInfo.fetchData()
+            : undefined;
+        })
         : promiseUtils.resolve();
 
       const loadPortal = portalSettings.fetch
@@ -276,7 +274,6 @@ class ApplicationBase {
             application: applicationConfig
           });
 
-          this._setUpCORS(portal.authorizedCrossOriginDomains, webTierSecurity);
           this._setGeometryService(this.config, portal);
 
           const { webmap, webscene, group } = this.config;
@@ -596,26 +593,6 @@ class ApplicationBase {
       ...localConfig,
       ...urlConfig
     };
-  }
-
-  private _setUpCORS(
-    authorizedDomains: string[],
-    webTierSecurity: boolean
-  ): void {
-    if (!webTierSecurity || !authorizedDomains || !authorizedDomains.length) {
-      return;
-    }
-
-    authorizedDomains.forEach(authorizedDomain => {
-      const isDefined =
-        authorizedDomain !== undefined && authorizedDomain !== null;
-      if (isDefined && authorizedDomain.length) {
-        esriConfig.request.corsEnabledServers.push({
-          host: authorizedDomain,
-          withCredentials: true
-        });
-      }
-    });
   }
 
   private _setGeometryService(config: ApplicationConfig, portal: Portal): void {

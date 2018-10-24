@@ -173,12 +173,15 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                     ? _this._getLocalConfig(appid)
                     : null;
                 var appAccess = checkAppAccessResponse ? checkAppAccessResponse.value : null;
-                if (applicationItem.access && applicationItem.access !== "public") {
+                if (applicationItem && applicationItem.access && applicationItem.access !== "public") {
                     // do we have permission to access app
                     if (appAccess && appAccess.name && appAccess.name === "identity-manager:not-authorized") {
                         //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
                         return promiseUtils.reject(appAccess.name);
                     }
+                }
+                else if (applicationItemResponse.error) {
+                    return promiseUtils.reject(applicationItemResponse.error);
                 }
                 _this.results.localStorage = localStorage;
                 _this.results.applicationItem = applicationItemResponse;

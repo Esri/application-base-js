@@ -1,6 +1,6 @@
 {
   "name": "@esri/application-base-js",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "A core class for creating a configurable application using JavaScript/TypeScript",
   "author": "Matt Driscoll <mdriscoll@esri.com>",
   "homepage": "https://github.com/Esri/application-base-js",
@@ -23,7 +23,7 @@
     "@types/arcgis-js-api": "^4.10.0",
     "dojo-typings": "^1.11.9",
     "dts-generator": "^2.1.0",
-    "tslint": "^5.12.0",
+    "tslint": "^5.14.0",
     "typescript": "^2.9.2"
   },
   "scripts": {

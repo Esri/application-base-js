@@ -19,13 +19,16 @@
 
   limitations under the License.​
 */
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -148,7 +151,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var loadApplicationItem = appid
                 ? this._loadItem(appid)
                 : promiseUtils.resolve();
-            var checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid).always(function (response) { return response; });
+            var checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid).catch(function (response) { return response; }).then(function (response) { return response; });
             var fetchApplicationData = appid
                 ? loadApplicationItem.then(function (itemInfo) {
                     return itemInfo instanceof PortalItem
@@ -161,7 +164,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                 : promiseUtils.resolve();
             return promiseUtils
                 .eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
-                .always(function (applicationArgs) {
+                .catch(function (applicationArgs) { return applicationArgs; }).then(function (applicationArgs) {
                 var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
                 var applicationItem = applicationItemResponse
                     ? applicationItemResponse.value
@@ -259,7 +262,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         ? promiseUtils.eachAlways(groupItemsPromises)
                         : promiseUtils.resolve()
                 };
-                return promiseUtils.eachAlways(promises).always(function (itemArgs) {
+                return promiseUtils.eachAlways(promises).catch(function (itemArgs) { return itemArgs; }).then(function (itemArgs) {
+                    //.always(itemArgs => {
                     var webMapResponses = itemArgs.webMap.value;
                     var webSceneResponses = itemArgs.webScene.value;
                     var groupInfoResponses = itemArgs.groupInfo.value;

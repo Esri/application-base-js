@@ -216,8 +216,7 @@ class ApplicationBase {
     const loadApplicationItem = appid
       ? this._loadItem(appid)
       : promiseUtils.resolve();
-    const checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid).always((response) => { return response; });
-
+    const checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid).catch((response) => response).then((response) => { return response; });
     const fetchApplicationData = appid
       ? loadApplicationItem.then(itemInfo => {
         return itemInfo instanceof PortalItem
@@ -232,7 +231,7 @@ class ApplicationBase {
 
     return promiseUtils
       .eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
-      .always(applicationArgs => {
+      .catch((applicationArgs) => applicationArgs).then((applicationArgs) => {
         const [
           applicationItemResponse,
           applicationDataResponse,
@@ -365,7 +364,7 @@ class ApplicationBase {
             : promiseUtils.resolve()
         };
 
-        return promiseUtils.eachAlways(promises).always(itemArgs => {
+        return promiseUtils.eachAlways(promises).catch((itemArgs) => itemArgs).then((itemArgs) => {
           const webMapResponses = itemArgs.webMap.value;
           const webSceneResponses = itemArgs.webScene.value;
           const groupInfoResponses = itemArgs.groupInfo.value;

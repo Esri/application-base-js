@@ -82,7 +82,9 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
                 portalItem: item
             });
             return wm.load().then(function () {
-                return _updateProxiedLayers(wm, appProxies);
+                return wm.basemap.load().then(function () {
+                    return _updateProxiedLayers(wm, appProxies);
+                });
             });
         });
     }
@@ -94,7 +96,9 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
                 portalItem: item
             });
             return ws.load().then(function () {
-                return _updateProxiedLayers(ws, appProxies);
+                return ws.basemap.load().then(function () {
+                    return _updateProxiedLayers(ws, appProxies);
+                });
             });
         });
     }
@@ -146,7 +150,7 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
             return webItem;
         }
         appProxies.forEach(function (proxy) {
-            webItem.layers.forEach(function (layer) {
+            webItem.allLayers.forEach(function (layer) {
                 if (layer.url === proxy.sourceUrl) {
                     layer.url = proxy.proxyUrl;
                 }

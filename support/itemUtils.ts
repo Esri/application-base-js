@@ -118,7 +118,9 @@ export function createWebMapFromItem(
       portalItem: item
     });
     return wm.load().then(() => {
-      return _updateProxiedLayers(wm, appProxies);
+      return wm.basemap.load().then(() => {
+        return _updateProxiedLayers(wm, appProxies);
+      });
     });
   });
 }
@@ -132,7 +134,9 @@ export function createWebSceneFromItem(
       portalItem: item
     });
     return ws.load().then(() => {
-      return _updateProxiedLayers(ws, appProxies);
+      return ws.basemap.load().then(() => {
+        return _updateProxiedLayers(ws, appProxies);
+      });
     });
   });
 }

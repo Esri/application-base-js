@@ -150,7 +150,7 @@ define(["require", "exports", "esri/core/requireUtils", "esri/core/promiseUtils"
             return webItem;
         }
         appProxies.forEach(function (proxy) {
-            webItem.layers.forEach(function (layer) {
+            webItem.allLayers.forEach(function (layer) {
                 if (layer.url === proxy.sourceUrl) {
                     layer.url = proxy.proxyUrl;
                 }

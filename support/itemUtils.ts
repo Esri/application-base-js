@@ -201,7 +201,7 @@ function _updateProxiedLayers(
   }
 
   appProxies.forEach(proxy => {
-    webItem.layers.forEach((layer: any) => {
+    webItem.allLayers.forEach((layer: any) => {
       if (layer.url === proxy.sourceUrl) {
         layer.url = proxy.proxyUrl;
       }

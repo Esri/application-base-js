@@ -141,8 +141,11 @@ export async function goToMarker(
     return resolve();
   }
   const graphic = await parseMarker(marker);
+  await view.when();
+
   view.graphics.add(graphic as esri.Graphic);
-  view.watch("ready", () => { view.goTo(graphic); });
+  view.goTo(graphic);
+
   return graphic;
 }
 

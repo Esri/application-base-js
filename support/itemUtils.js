@@ -175,8 +175,11 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         return [4 /*yield*/, urlUtils_1.parseMarker(marker)];
                     case 1:
                         graphic = _a.sent();
+                        return [4 /*yield*/, view.when()];
+                    case 2:
+                        _a.sent();
                         view.graphics.add(graphic);
-                        view.watch("ready", function () { view.goTo(graphic); });
+                        view.goTo(graphic);
                         return [2 /*return*/, graphic];
                 }
             });

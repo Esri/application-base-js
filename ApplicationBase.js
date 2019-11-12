@@ -60,18 +60,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/promiseUtils", "esri/identity/IdentityManager", "esri/identity/OAuthInfo", "esri/portal/Portal", "esri/portal/PortalItem", "esri/portal/PortalQueryParams"], function (require, exports, kernel_1, config_1, promiseUtils, IdentityManager_1, OAuthInfo_1, Portal_1, PortalItem_1, PortalQueryParams_1) {
+define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/promiseUtils", "esri/identity/IdentityManager", "esri/identity/OAuthInfo", "esri/portal/Portal", "esri/portal/PortalItem", "esri/portal/PortalQueryParams"], function (require, exports, kernel_1, config_1, promiseUtils_1, IdentityManager_1, OAuthInfo_1, Portal_1, PortalItem_1, PortalQueryParams_1) {
     "use strict";
     kernel_1 = __importDefault(kernel_1);
     config_1 = __importDefault(config_1);
-    promiseUtils = __importStar(promiseUtils);
     IdentityManager_1 = __importDefault(IdentityManager_1);
     OAuthInfo_1 = __importDefault(OAuthInfo_1);
     Portal_1 = __importDefault(Portal_1);
@@ -200,7 +192,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             var sharingUrl = portalUrl + "/sharing";
             var loadApplicationItem = appid
                 ? this._loadItem(appid)
-                : promiseUtils.resolve();
+                : promiseUtils_1.resolve();
             var checkAppAccess = IdentityManager_1.default.checkAppAccess(sharingUrl, oauthappid).catch(function (response) { return response; }).then(function (response) { return response; });
             var fetchApplicationData = appid
                 ? loadApplicationItem.then(function (itemInfo) {
@@ -208,12 +200,11 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                         ? itemInfo.fetchData()
                         : undefined;
                 })
-                : promiseUtils.resolve();
+                : promiseUtils_1.resolve();
             var loadPortal = portalSettings.fetch
                 ? new Portal_1.default().load()
-                : promiseUtils.resolve();
-            return promiseUtils
-                .eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
+                : promiseUtils_1.resolve();
+            return promiseUtils_1.eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
                 .catch(function (applicationArgs) { return applicationArgs; }).then(function (applicationArgs) {
                 var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
                 var applicationItem = applicationItemResponse
@@ -230,11 +221,11 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                     // do we have permission to access app
                     if (appAccess && appAccess.name && appAccess.name === "identity-manager:not-authorized") {
                         //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
-                        return promiseUtils.reject(appAccess.name);
+                        return promiseUtils_1.reject(appAccess.name);
                     }
                 }
                 else if (applicationItemResponse.error) {
-                    return promiseUtils.reject(applicationItemResponse.error);
+                    return promiseUtils_1.reject(applicationItemResponse.error);
                 }
                 _this.results.localStorage = localStorage;
                 _this.results.applicationItem = applicationItemResponse;
@@ -300,19 +291,19 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                 }
                 var promises = {
                     webMap: webMapPromises
-                        ? promiseUtils.eachAlways(webMapPromises)
-                        : promiseUtils.resolve(),
+                        ? promiseUtils_1.eachAlways(webMapPromises)
+                        : promiseUtils_1.resolve(),
                     webScene: webScenePromises
-                        ? promiseUtils.eachAlways(webScenePromises)
-                        : promiseUtils.resolve(),
+                        ? promiseUtils_1.eachAlways(webScenePromises)
+                        : promiseUtils_1.resolve(),
                     groupInfo: groupInfoPromises
-                        ? promiseUtils.eachAlways(groupInfoPromises)
-                        : promiseUtils.resolve(),
+                        ? promiseUtils_1.eachAlways(groupInfoPromises)
+                        : promiseUtils_1.resolve(),
                     groupItems: groupItemsPromises
-                        ? promiseUtils.eachAlways(groupItemsPromises)
-                        : promiseUtils.resolve()
+                        ? promiseUtils_1.eachAlways(groupItemsPromises)
+                        : promiseUtils_1.resolve()
                 };
-                return promiseUtils.eachAlways(promises).catch(function (itemArgs) { return itemArgs; }).then(function (itemArgs) {
+                return promiseUtils_1.eachAlways(promises).catch(function (itemArgs) { return itemArgs; }).then(function (itemArgs) {
                     var webMapResponses = itemArgs.webMap.value;
                     var webSceneResponses = itemArgs.webScene.value;
                     var groupInfoResponses = itemArgs.groupInfo.value;

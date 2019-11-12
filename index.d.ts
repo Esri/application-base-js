@@ -172,15 +172,15 @@ declare module 'ApplicationBase/support/domHelper' {
 declare module 'ApplicationBase/support/urlUtils' {
 	/// <reference types="arcgis-js-api" />
 	import Camera from "esri/Camera";
-	import Graphic from "esri/Graphic";
 	import Extent from "esri/geometry/Extent";
 	import Point from "esri/geometry/Point";
+	import esri = __esri;
 	export function parseViewComponents(components: string): string[];
 	export function parseViewpoint(viewpoint: string): Camera;
 	export function parseCenter(center: string): Point;
 	export function parseLevel(level: string): number;
 	export function parseExtent(extent: string): Extent;
-	export function parseMarker(marker: string): Promise<Graphic | {}>;
+	export function parseMarker(marker: string): Promise<esri.Graphic | {}>;
 
 }
 declare module 'ApplicationBase/support/itemUtils' {

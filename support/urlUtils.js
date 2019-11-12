@@ -76,11 +76,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geometry/Extent", "esri/geometry/Point"], function (require, exports, Camera_1, promiseUtils, Extent_1, Point_1) {
+define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geometry/Extent", "esri/geometry/Point"], function (require, exports, Camera_1, promiseUtils_1, Extent_1, Point_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Camera_1 = __importDefault(Camera_1);
-    promiseUtils = __importStar(promiseUtils);
     Extent_1 = __importDefault(Extent_1);
     Point_1 = __importDefault(Point_1);
     //--------------------------------------------------------------------------
@@ -188,12 +187,12 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geo
                         // ?marker=-117,34&level=10
                         // ?marker=10406557.402,6590748.134,2526
                         if (!marker) {
-                            return [2 /*return*/, promiseUtils.reject()];
+                            return [2 /*return*/, promiseUtils_1.reject()];
                         }
                         markerArray = _splitURLString(marker);
                         markerLength = markerArray.length;
                         if (markerLength < 2) {
-                            return [2 /*return*/, promiseUtils.reject()];
+                            return [2 /*return*/, promiseUtils_1.reject()];
                         }
                         return [4 /*yield*/, Promise.all([
                                 new Promise(function (resolve_1, reject_1) { require(["esri/Graphic"], resolve_1, reject_1); }).then(__importStar),

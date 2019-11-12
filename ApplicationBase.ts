@@ -15,7 +15,7 @@ import kernel from "dojo/_base/kernel";
 
 import esriConfig from "esri/config";
 
-import * as promiseUtils from "esri/core/promiseUtils";
+import { resolve, reject, eachAlways } from "esri/core/promiseUtils";
 
 import IdentityManager from "esri/identity/IdentityManager";
 import OAuthInfo from "esri/identity/OAuthInfo";
@@ -204,7 +204,7 @@ class ApplicationBase {
 
     const loadApplicationItem = appid
       ? this._loadItem(appid)
-      : promiseUtils.resolve();
+      : resolve();
     const checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid).catch((response) => response).then((response) => { return response; });
 
     const fetchApplicationData = appid
@@ -213,13 +213,12 @@ class ApplicationBase {
           ? itemInfo.fetchData()
           : undefined;
       })
-      : promiseUtils.resolve();
+      : resolve();
     const loadPortal = portalSettings.fetch
       ? new Portal().load()
-      : promiseUtils.resolve();
+      : resolve();
 
-    return promiseUtils
-      .eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
+    return eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
       .catch((applicationArgs) => applicationArgs).then((applicationArgs) => {
         const [
           applicationItemResponse,
@@ -244,10 +243,10 @@ class ApplicationBase {
           // do we have permission to access app
           if (appAccess && appAccess.name && appAccess.name === "identity-manager:not-authorized") {
             //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
-            return promiseUtils.reject(appAccess.name);
+            return reject(appAccess.name);
           }
         } else if (applicationItemResponse.error) {
-          return promiseUtils.reject(applicationItemResponse.error);
+          return reject(applicationItemResponse.error);
         }
 
         this.results.localStorage = localStorage;
@@ -339,20 +338,20 @@ class ApplicationBase {
 
         const promises: ApplicationBaseItemPromises = {
           webMap: webMapPromises
-            ? promiseUtils.eachAlways(webMapPromises)
-            : promiseUtils.resolve(),
+            ? eachAlways(webMapPromises)
+            : resolve(),
           webScene: webScenePromises
-            ? promiseUtils.eachAlways(webScenePromises)
-            : promiseUtils.resolve(),
+            ? eachAlways(webScenePromises)
+            : resolve(),
           groupInfo: groupInfoPromises
-            ? promiseUtils.eachAlways(groupInfoPromises)
-            : promiseUtils.resolve(),
+            ? eachAlways(groupInfoPromises)
+            : resolve(),
           groupItems: groupItemsPromises
-            ? promiseUtils.eachAlways(groupItemsPromises)
-            : promiseUtils.resolve()
+            ? eachAlways(groupItemsPromises)
+            : resolve()
         };
 
-        return promiseUtils.eachAlways(promises).catch((itemArgs) => itemArgs).then((itemArgs) => {
+        return eachAlways(promises).catch((itemArgs) => itemArgs).then((itemArgs) => {
           const webMapResponses = itemArgs.webMap.value;
           const webSceneResponses = itemArgs.webScene.value;
           const groupInfoResponses = itemArgs.groupInfo.value;

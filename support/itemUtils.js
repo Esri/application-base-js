@@ -1,24 +1,3 @@
-/*
-  Copyright 2017 Esri
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-
-  you may not use this file except in compliance with the License.
-
-  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-
-  distributed under the License is distributed on an "AS IS" BASIS,
-
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-
-  See the License for the specific language governing permissions and
-
-  limitations under the License.​
-*/
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -66,6 +45,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -73,14 +55,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", "esri/views/MapView", "esri/views/SceneView", "./urlUtils"], function (require, exports, promiseUtils, watchUtils, MapView_1, SceneView_1, urlUtils_1) {
+define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", "esri/views/MapView", "esri/views/SceneView", "./urlUtils"], function (require, exports, promiseUtils_1, watchUtils_1, MapView_1, SceneView_1, urlUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    promiseUtils = __importStar(promiseUtils);
-    watchUtils = __importStar(watchUtils);
     MapView_1 = __importDefault(MapView_1);
     SceneView_1 = __importDefault(SceneView_1);
     //--------------------------------------------------------------------------
@@ -106,12 +83,12 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
             return __generator(this, function (_a) {
                 map = properties.map;
                 if (!map) {
-                    return [2 /*return*/, promiseUtils.reject("properties does not contain a \"map\"")];
+                    return [2 /*return*/, promiseUtils_1.reject("properties does not contain a \"map\"")];
                 }
                 isWebMap = map.declaredClass === "esri.WebMap";
                 isWebScene = map.declaredClass === "esri.WebScene";
                 if (!isWebMap && !isWebScene) {
-                    return [2 /*return*/, promiseUtils.reject("map is not a \"WebMap\" or \"WebScene\"")];
+                    return [2 /*return*/, promiseUtils_1.reject("map is not a \"WebMap\" or \"WebScene\"")];
                 }
                 return [2 /*return*/, isWebMap ? new MapView_1.default(properties) : new SceneView_1.default(properties)];
             });
@@ -123,7 +100,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
         var isWebMap = item.type === "Web Map";
         var isWebScene = item.type === "Web Scene";
         if (!isWebMap && !isWebScene) {
-            return promiseUtils.reject();
+            return promiseUtils_1.reject();
         }
         return isWebMap
             ? createWebMapFromItem(options)
@@ -143,11 +120,13 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         wm = new WebMap.default({
                             portalItem: item
                         });
-                        return [2 /*return*/, wm.load().then(function () {
-                                return wm.basemap.load().then(function () {
-                                    return _updateProxiedLayers(wm, appProxies);
-                                });
-                            })];
+                        return [4 /*yield*/, wm.load()];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, wm.basemap.load()];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/, _updateProxiedLayers(wm, appProxies)];
                 }
             });
         });
@@ -166,11 +145,13 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         ws = new WebScene.default({
                             portalItem: item
                         });
-                        return [2 /*return*/, ws.load().then(function () {
-                                return ws.basemap.load().then(function () {
-                                    return _updateProxiedLayers(ws, appProxies);
-                                });
-                            })];
+                        return [4 /*yield*/, ws.load()];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, ws.basemap.load()];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/, _updateProxiedLayers(ws, appProxies)];
                 }
             });
         });
@@ -184,7 +165,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
     exports.getItemTitle = getItemTitle;
     function goToMarker(marker, view) {
         if (!marker || !view) {
-            return promiseUtils.resolve();
+            return promiseUtils_1.resolve();
         }
         return urlUtils_1.parseMarker(marker).then(function (graphic) {
             view.graphics.add(graphic);
@@ -196,13 +177,13 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
     exports.goToMarker = goToMarker;
     function findQuery(query, view) {
         return __awaiter(this, void 0, void 0, function () {
-            var SearchViewModel, searchVM;
+            var SearchViewModel, searchVM, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         // ?find=redlands, ca
                         if (!query || !view) {
-                            return [2 /*return*/, promiseUtils.resolve()];
+                            return [2 /*return*/, promiseUtils_1.resolve()];
                         }
                         return [4 /*yield*/, new Promise(function (resolve_3, reject_3) { require(["esri/widgets/Search/SearchViewModel"], resolve_3, reject_3); }).then(__importStar)];
                     case 1:
@@ -210,12 +191,13 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         searchVM = new SearchViewModel.default({
                             view: view
                         });
-                        return [2 /*return*/, searchVM.search(query).then(function (result) {
-                                watchUtils.whenFalseOnce(view, "popup.visible", function () {
-                                    return searchVM.destroy();
-                                });
-                                return result;
-                            })];
+                        return [4 /*yield*/, searchVM.search(query)];
+                    case 2:
+                        result = _a.sent();
+                        watchUtils_1.whenFalseOnce(view, "popup.visible", function () {
+                            searchVM.destroy();
+                        });
+                        return [2 /*return*/, result];
                 }
             });
         });

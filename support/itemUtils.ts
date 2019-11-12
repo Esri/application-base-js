@@ -19,10 +19,8 @@
 
   limitations under the License.​
 */
-
-import * as requireUtils from "esri/core/requireUtils";
-import * as promiseUtils from "esri/core/promiseUtils";
-import * as  watchUtils from "esri/core/watchUtils";
+import { reject, resolve } from "esri/core/promiseUtils";
+import { whenFalseOnce } from "esri/core/watchUtils";
 
 import MapView from "esri/views/MapView";
 import SceneView from "esri/views/SceneView";
@@ -73,14 +71,14 @@ export async function createView(properties: any): Promise<esri.MapView | esri.S
   const { map } = properties;
 
   if (!map) {
-    return promiseUtils.reject(`properties does not contain a "map"`);
+    return reject(`properties does not contain a "map"`);
   }
 
   const isWebMap = map.declaredClass === "esri.WebMap";
   const isWebScene = map.declaredClass === "esri.WebScene";
 
   if (!isWebMap && !isWebScene) {
-    return promiseUtils.reject(`map is not a "WebMap" or "WebScene"`);
+    return reject(`map is not a "WebMap" or "WebScene"`);
   }
 
   return isWebMap ? new MapView(properties) : new SceneView(properties);
@@ -95,7 +93,7 @@ export function createMapFromItem(
   const isWebScene = item.type === "Web Scene";
 
   if (!isWebMap && !isWebScene) {
-    return promiseUtils.reject();
+    return reject();
   }
 
   return isWebMap
@@ -111,11 +109,9 @@ export async function createWebMapFromItem(
   const wm = new WebMap.default({
     portalItem: item
   });
-  return wm.load().then(() => {
-    return wm.basemap.load().then(() => {
-      return _updateProxiedLayers(wm, appProxies) as __esri.WebMap;
-    });
-  });
+  await wm.load();
+  await wm.basemap.load();
+  return _updateProxiedLayers(wm, appProxies) as __esri.WebMap;
 }
 
 export async function createWebSceneFromItem(
@@ -126,12 +122,9 @@ export async function createWebSceneFromItem(
   const ws = new WebScene.default({
     portalItem: item
   });
-  return ws.load().then(() => {
-    return ws.basemap.load().then(() => {
-      return _updateProxiedLayers(ws, appProxies) as __esri.WebScene;
-    });
-  });
-
+  await ws.load();
+  await ws.basemap.load();
+  return _updateProxiedLayers(ws, appProxies) as __esri.WebScene;
 }
 
 export function getItemTitle(item: PortalItem): string {
@@ -145,7 +138,7 @@ export function goToMarker(
   view: esri.MapView | esri.SceneView
 ): Promise<any> {
   if (!marker || !view) {
-    return promiseUtils.resolve();
+    return resolve();
   }
 
   return parseMarker(marker).then(graphic => {
@@ -162,19 +155,18 @@ export async function findQuery(
 ): Promise<any> {
   // ?find=redlands, ca
   if (!query || !view) {
-    return promiseUtils.resolve();
+    return resolve();
   }
 
   const SearchViewModel = await import("esri/widgets/Search/SearchViewModel");
   const searchVM = new SearchViewModel.default({
     view
   });
-  return searchVM.search(query).then(result => {
-    watchUtils.whenFalseOnce(view, "popup.visible", () =>
-      searchVM.destroy()
-    );
-    return result;
+  const result = await searchVM.search(query);
+  whenFalseOnce(view, "popup.visible", () => {
+    searchVM.destroy();
   });
+  return result;
 }
 
 //--------------------------------------------------------------------------
@@ -198,6 +190,5 @@ function _updateProxiedLayers(
       }
     });
   });
-
   return webItem;
 }

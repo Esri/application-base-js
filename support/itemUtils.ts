@@ -20,17 +20,14 @@
   limitations under the License.​
 */
 
-import requireUtils = require("esri/core/requireUtils");
-import promiseUtils = require("esri/core/promiseUtils");
-import watchUtils = require("esri/core/watchUtils");
+import * as requireUtils from "esri/core/requireUtils";
+import * as promiseUtils from "esri/core/promiseUtils";
+import * as  watchUtils from "esri/core/watchUtils";
 
-import WebMap = require("esri/WebMap");
-import WebScene = require("esri/WebScene");
+import MapView from "esri/views/MapView";
+import SceneView from "esri/views/SceneView";
 
-import MapView = require("esri/views/MapView");
-import SceneView = require("esri/views/SceneView");
-
-import PortalItem = require("esri/portal/PortalItem");
+import PortalItem from "esri/portal/PortalItem";
 
 import {
   CreateMapFromItemOptions,
@@ -46,7 +43,7 @@ import {
   parseCenter,
   parseLevel
 } from "./urlUtils";
-
+import esri = __esri;
 //--------------------------------------------------------------------------
 //
 //  Public Methods
@@ -72,7 +69,7 @@ export function getConfigViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export function createView(properties: any): IPromise<MapView | SceneView> {
+export async function createView(properties: any): Promise<esri.MapView | esri.SceneView> {
   const { map } = properties;
 
   if (!map) {
@@ -86,17 +83,14 @@ export function createView(properties: any): IPromise<MapView | SceneView> {
     return promiseUtils.reject(`map is not a "WebMap" or "WebScene"`);
   }
 
-  const viewTypePath = isWebMap ? "esri/views/MapView" : "esri/views/SceneView";
+  return isWebMap ? new MapView(properties) : new SceneView(properties);
 
-  return requireUtils.when(require, viewTypePath).then(ViewType => {
-    return new ViewType(properties);
-  });
 }
 
 export function createMapFromItem(
   options: CreateMapFromItemOptions
-): IPromise<WebMap | WebScene> {
-  const { item, appProxies } = options;
+): Promise<esri.WebMap | esri.WebScene> {
+  const { item } = options;
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
 
@@ -106,39 +100,38 @@ export function createMapFromItem(
 
   return isWebMap
     ? createWebMapFromItem(options)
-    : (createWebSceneFromItem(options) as IPromise<WebMap | WebScene>);
+    : (createWebSceneFromItem(options) as Promise<esri.WebMap | esri.WebScene>);
 }
 
-export function createWebMapFromItem(
+export async function createWebMapFromItem(
   options: CreateMapFromItemOptions
-): IPromise<WebMap> {
+): Promise<esri.WebMap> {
   const { item, appProxies } = options;
-  return requireUtils.when(require, "esri/WebMap").then(WebMap => {
-    const wm = new WebMap({
-      portalItem: item
-    });
-    return wm.load().then(() => {
-      return wm.basemap.load().then(() => {
-        return _updateProxiedLayers(wm, appProxies);
-      });
+  const WebMap = await import("esri/WebMap");
+  const wm = new WebMap.default({
+    portalItem: item
+  });
+  return wm.load().then(() => {
+    return wm.basemap.load().then(() => {
+      return _updateProxiedLayers(wm, appProxies) as __esri.WebMap;
     });
   });
 }
 
-export function createWebSceneFromItem(
+export async function createWebSceneFromItem(
   options: CreateMapFromItemOptions
-): IPromise<WebScene> {
+): Promise<esri.WebScene> {
   const { item, appProxies } = options;
-  return requireUtils.when(require, "esri/WebScene").then(WebScene => {
-    const ws = new WebScene({
-      portalItem: item
-    });
-    return ws.load().then(() => {
-      return ws.basemap.load().then(() => {
-        return _updateProxiedLayers(ws, appProxies);
-      });
+  const WebScene = await import("esri/WebScene");
+  const ws = new WebScene.default({
+    portalItem: item
+  });
+  return ws.load().then(() => {
+    return ws.basemap.load().then(() => {
+      return _updateProxiedLayers(ws, appProxies) as __esri.WebScene;
     });
   });
+
 }
 
 export function getItemTitle(item: PortalItem): string {
@@ -149,41 +142,39 @@ export function getItemTitle(item: PortalItem): string {
 
 export function goToMarker(
   marker: string,
-  view: MapView | SceneView
-): IPromise<any> {
+  view: esri.MapView | esri.SceneView
+): Promise<any> {
   if (!marker || !view) {
     return promiseUtils.resolve();
   }
 
   return parseMarker(marker).then(graphic => {
-    view.graphics.add(graphic);
-    const view2 = view as any; // todo: Typings will be fixed in next release.
-    return view2.goTo(graphic);
+    view.graphics.add(graphic as __esri.Graphic);
+    view.watch("ready", () => {
+      return view.goTo(graphic);
+    });
   });
 }
 
-export function findQuery(
+export async function findQuery(
   query: string,
-  view: MapView | SceneView
-): IPromise<any> {
+  view: esri.MapView | esri.SceneView
+): Promise<any> {
   // ?find=redlands, ca
   if (!query || !view) {
     return promiseUtils.resolve();
   }
 
-  return requireUtils
-    .when(require, "esri/widgets/Search/SearchViewModel")
-    .then(SearchViewModel => {
-      const searchVM = new SearchViewModel({
-        view: view
-      });
-      return searchVM.search(query).then(result => {
-        watchUtils.whenFalseOnce(view, "popup.visible", () =>
-          searchVM.destroy()
-        );
-        return result;
-      });
-    });
+  const SearchViewModel = await import("esri/widgets/Search/SearchViewModel");
+  const searchVM = new SearchViewModel.default({
+    view
+  });
+  return searchVM.search(query).then(result => {
+    watchUtils.whenFalseOnce(view, "popup.visible", () =>
+      searchVM.destroy()
+    );
+    return result;
+  });
 }
 
 //--------------------------------------------------------------------------
@@ -193,9 +184,9 @@ export function findQuery(
 //--------------------------------------------------------------------------
 
 function _updateProxiedLayers(
-  webItem: WebMap | WebScene,
+  webItem: esri.WebMap | esri.WebScene,
   appProxies?: ApplicationProxy[]
-): WebMap | WebScene {
+): esri.WebMap | esri.WebScene {
   if (!appProxies) {
     return webItem;
   }

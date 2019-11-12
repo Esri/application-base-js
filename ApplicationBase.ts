@@ -11,21 +11,20 @@
   limitations under the License.​
 */
 
-import kernel = require("dojo/_base/kernel");
+import kernel from "dojo/_base/kernel";
 
-import esriConfig = require("esri/config");
+import esriConfig from "esri/config";
 
-import promiseUtils = require("esri/core/promiseUtils");
+import * as promiseUtils from "esri/core/promiseUtils";
 
-import IdentityManager = require("esri/identity/IdentityManager");
-import OAuthInfo = require("esri/identity/OAuthInfo");
+import IdentityManager from "esri/identity/IdentityManager";
+import OAuthInfo from "esri/identity/OAuthInfo";
 
-import Portal = require("esri/portal/Portal");
-import PortalItem = require("esri/portal/PortalItem");
-import PortalQueryParams = require("esri/portal/PortalQueryParams");
+import Portal from "esri/portal/Portal";
+import PortalItem from "esri/portal/PortalItem";
+import PortalQueryParams from "esri/portal/PortalQueryParams";
 
 
-import declare from "./declareDecorator";
 import {
   Direction,
   ApplicationBaseItemPromises,
@@ -58,7 +57,6 @@ const defaultSettings = {
   webScene: {}
 };
 
-@declare()
 class ApplicationBase {
   //--------------------------------------------------------------------------
   //
@@ -142,11 +140,11 @@ class ApplicationBase {
   //
   //--------------------------------------------------------------------------
 
-  queryGroupItems(
+  async  queryGroupItems(
     groupId: string,
     itemParams: PortalQueryParams,
     portal?: Portal
-  ): IPromise<any> {
+  ): Promise<__esri.PortalQueryResult> {
     if (!portal || !groupId) {
       portal = this.portal;
     }
@@ -164,10 +162,11 @@ class ApplicationBase {
     };
 
     const params = new PortalQueryParams(paramOptions);
-    return portal.queryItems(params);
+    const result = await portal.queryItems(params);
+    return result as __esri.PortalQueryResult;
   }
 
-  load(): IPromise<ApplicationBase> {
+  load(): Promise<ApplicationBase> {
     const { settings } = this;
     const {
       environment: environmentSettings,
@@ -179,7 +178,6 @@ class ApplicationBase {
       urlParams: urlParamsSettings
     } = settings;
     const { isEsri } = environmentSettings;
-
     const urlParams = this._getUrlParamValues(urlParamsSettings);
     this.results.urlParams = urlParams;
 
@@ -208,6 +206,7 @@ class ApplicationBase {
       ? this._loadItem(appid)
       : promiseUtils.resolve();
     const checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid).catch((response) => response).then((response) => { return response; });
+
     const fetchApplicationData = appid
       ? loadApplicationItem.then(itemInfo => {
         return itemInfo instanceof PortalItem
@@ -215,7 +214,6 @@ class ApplicationBase {
           : undefined;
       })
       : promiseUtils.resolve();
-
     const loadPortal = portalSettings.fetch
       ? new Portal().load()
       : promiseUtils.resolve();
@@ -229,7 +227,6 @@ class ApplicationBase {
           portalResponse,
           checkAppAccessResponse
         ] = applicationArgs;
-
         const applicationItem = applicationItemResponse
           ? applicationItemResponse.value
           : null;
@@ -356,7 +353,6 @@ class ApplicationBase {
         };
 
         return promiseUtils.eachAlways(promises).catch((itemArgs) => itemArgs).then((itemArgs) => {
-          //.always(itemArgs => {
           const webMapResponses = itemArgs.webMap.value;
           const webSceneResponses = itemArgs.webScene.value;
           const groupInfoResponses = itemArgs.groupInfo.value;
@@ -510,14 +506,14 @@ class ApplicationBase {
     return units;
   }
 
-  private _queryGroupInfo(groupId: string, portal: Portal): IPromise<any> {
+  private async _queryGroupInfo(groupId: string, portal: Portal): Promise<__esri.PortalQueryResult> {
     const params = new PortalQueryParams({
       query: `id:"${groupId}"`
     });
-    return portal.queryGroups(params);
+    return await portal.queryGroups(params) as __esri.PortalQueryResult;
   }
 
-  private _loadItem(id: string): IPromise<PortalItem> {
+  private _loadItem(id: string): Promise<PortalItem> {
     const item = new PortalItem({
       id
     });

@@ -133,20 +133,17 @@ export function getItemTitle(item: PortalItem): string {
   }
 }
 
-export function goToMarker(
+export async function goToMarker(
   marker: string,
   view: esri.MapView | esri.SceneView
 ): Promise<any> {
   if (!marker || !view) {
     return resolve();
   }
-
-  return parseMarker(marker).then(graphic => {
-    view.graphics.add(graphic as __esri.Graphic);
-    view.watch("ready", () => {
-      return view.goTo(graphic);
-    });
-  });
+  const graphic = await parseMarker(marker);
+  view.graphics.add(graphic as esri.Graphic);
+  view.watch("ready", () => { view.goTo(graphic); });
+  return graphic;
 }
 
 export async function findQuery(

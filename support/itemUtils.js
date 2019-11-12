@@ -164,13 +164,21 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
     }
     exports.getItemTitle = getItemTitle;
     function goToMarker(marker, view) {
-        if (!marker || !view) {
-            return promiseUtils_1.resolve();
-        }
-        return urlUtils_1.parseMarker(marker).then(function (graphic) {
-            view.graphics.add(graphic);
-            view.watch("ready", function () {
-                return view.goTo(graphic);
+        return __awaiter(this, void 0, void 0, function () {
+            var graphic;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!marker || !view) {
+                            return [2 /*return*/, promiseUtils_1.resolve()];
+                        }
+                        return [4 /*yield*/, urlUtils_1.parseMarker(marker)];
+                    case 1:
+                        graphic = _a.sent();
+                        view.graphics.add(graphic);
+                        view.watch("ready", function () { view.goTo(graphic); });
+                        return [2 /*return*/, graphic];
+                }
             });
         });
     }

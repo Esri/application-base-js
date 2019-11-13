@@ -168,154 +168,161 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             });
         };
         ApplicationBase.prototype.load = function () {
-            var _this = this;
-            var settings = this.settings;
-            var environmentSettings = settings.environment, groupSettings = settings.group, localStorageSettings = settings.localStorage, portalSettings = settings.portal, webMapSettings = settings.webMap, websceneSettings = settings.webScene, urlParamsSettings = settings.urlParams;
-            var isEsri = environmentSettings.isEsri;
-            var urlParams = this._getUrlParamValues(urlParamsSettings);
-            this.results.urlParams = urlParams;
-            this.config = this._mixinAllConfigs({
-                config: this.config,
-                url: urlParams
-            });
-            if (isEsri) {
-                var esriPortalUrl = this._getEsriEnvironmentPortalUrl();
-                this.config.portalUrl = esriPortalUrl;
-                this.config.proxyUrl = this._getEsriEnvironmentProxyUrl(esriPortalUrl);
-            }
-            var _a = this.config, portalUrl = _a.portalUrl, proxyUrl = _a.proxyUrl, oauthappid = _a.oauthappid, appid = _a.appid;
-            this._setPortalUrl(portalUrl);
-            this._setProxyUrl(proxyUrl);
-            var rtlLocales = this.settings.rightToLeftLocales;
-            this.direction = this._getLanguageDirection(rtlLocales);
-            this._registerOauthInfos(oauthappid, portalUrl);
-            var sharingUrl = portalUrl + "/sharing";
-            var loadApplicationItem = appid
-                ? this._loadItem(appid)
-                : promiseUtils_1.resolve();
-            var checkAppAccess = IdentityManager_1.default.checkAppAccess(sharingUrl, oauthappid).catch(function (response) { return response; }).then(function (response) { return response; });
-            var fetchApplicationData = appid
-                ? loadApplicationItem.then(function (itemInfo) {
-                    return itemInfo instanceof PortalItem_1.default
-                        ? itemInfo.fetchData()
-                        : undefined;
-                })
-                : promiseUtils_1.resolve();
-            var loadPortal = portalSettings.fetch
-                ? new Portal_1.default().load()
-                : promiseUtils_1.resolve();
-            return promiseUtils_1.eachAlways([loadApplicationItem, fetchApplicationData, loadPortal, checkAppAccess])
-                .catch(function (applicationArgs) { return applicationArgs; }).then(function (applicationArgs) {
-                var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
-                var applicationItem = applicationItemResponse
-                    ? applicationItemResponse.value
-                    : null;
-                var applicationData = applicationDataResponse
-                    ? applicationDataResponse.value
-                    : null;
-                var localStorage = localStorageSettings.fetch
-                    ? _this._getLocalConfig(appid)
-                    : null;
-                var appAccess = checkAppAccessResponse ? checkAppAccessResponse.value : null;
-                if (applicationItem && applicationItem.access && applicationItem.access !== "public") {
-                    // do we have permission to access app
-                    if (appAccess && appAccess.name && appAccess.name === "identity-manager:not-authorized") {
-                        //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
-                        return promiseUtils_1.reject(appAccess.name);
+            return __awaiter(this, void 0, void 0, function () {
+                var settings, environmentSettings, groupSettings, localStorageSettings, portalSettings, webMapSettings, websceneSettings, urlParamsSettings, isEsri, urlParams, esriPortalUrl, _a, portalUrl, proxyUrl, oauthappid, appid, rtlLocales, sharingUrl, loadApplicationItem, checkAppAccess, itemInfoData, fetchApplicationData, loadPortal, applicationArgs, applicationItemResponse, applicationDataResponse, portalResponse, checkAppAccessResponse, applicationItem, applicationData, localStorage, appAccess, applicationConfig, portal, _b, webmap, webscene, group, webMapPromises, webScenePromises, groupInfoPromises, groupItemsPromises, isWebMapEnabled, isWebSceneEnabled, isGroupInfoEnabled, isGroupItemsEnabled, itemParams, defaultWebMap, defaultWebScene, defaultGroup, fetchMultipleWebmaps, fetchMultipleWebscenes, fetchMultipleGroups, webMaps, allowedWebmaps, webScenes, allowedWebsenes, groups, allowedGroups, groups, promises, itemArgs, webMapResponses, webSceneResponses, groupInfoResponses, groupItemsResponses, itemInfo;
+                var _this = this;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            settings = this.settings;
+                            environmentSettings = settings.environment, groupSettings = settings.group, localStorageSettings = settings.localStorage, portalSettings = settings.portal, webMapSettings = settings.webMap, websceneSettings = settings.webScene, urlParamsSettings = settings.urlParams;
+                            isEsri = environmentSettings.isEsri;
+                            urlParams = this._getUrlParamValues(urlParamsSettings);
+                            this.results.urlParams = urlParams;
+                            this.config = this._mixinAllConfigs({
+                                config: this.config,
+                                url: urlParams
+                            });
+                            if (isEsri) {
+                                esriPortalUrl = this._getEsriEnvironmentPortalUrl();
+                                this.config.portalUrl = esriPortalUrl;
+                                this.config.proxyUrl = this._getEsriEnvironmentProxyUrl(esriPortalUrl);
+                            }
+                            _a = this.config, portalUrl = _a.portalUrl, proxyUrl = _a.proxyUrl, oauthappid = _a.oauthappid, appid = _a.appid;
+                            this._setPortalUrl(portalUrl);
+                            this._setProxyUrl(proxyUrl);
+                            rtlLocales = this.settings.rightToLeftLocales;
+                            this.direction = this._getLanguageDirection(rtlLocales);
+                            this._registerOauthInfos(oauthappid, portalUrl);
+                            sharingUrl = portalUrl + "/sharing";
+                            loadApplicationItem = appid ? this._loadItem(appid) : promiseUtils_1.resolve();
+                            return [4 /*yield*/, IdentityManager_1.default.checkAppAccess(sharingUrl, oauthappid)];
+                        case 1:
+                            checkAppAccess = _c.sent();
+                            itemInfoData = loadApplicationItem instanceof PortalItem_1.default
+                                ? loadApplicationItem.fetchData()
+                                : undefined;
+                            fetchApplicationData = appid ? itemInfoData : promiseUtils_1.resolve();
+                            loadPortal = portalSettings.fetch ? new Portal_1.default().load() : promiseUtils_1.resolve();
+                            return [4 /*yield*/, promiseUtils_1.eachAlways([
+                                    loadApplicationItem,
+                                    fetchApplicationData,
+                                    loadPortal,
+                                    checkAppAccess
+                                ])];
+                        case 2:
+                            applicationArgs = _c.sent();
+                            applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
+                            applicationItem = applicationItemResponse
+                                ? applicationItemResponse.value
+                                : null;
+                            applicationData = applicationDataResponse
+                                ? applicationDataResponse.value
+                                : null;
+                            localStorage = localStorageSettings.fetch
+                                ? this._getLocalConfig(appid)
+                                : null;
+                            appAccess = checkAppAccessResponse
+                                ? checkAppAccessResponse.value
+                                : null;
+                            if (applicationItem &&
+                                applicationItem.access &&
+                                applicationItem.access !== "public") {
+                                // do we have permission to access app
+                                if (appAccess &&
+                                    appAccess.name &&
+                                    appAccess.name === "identity-manager:not-authorized") {
+                                    //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
+                                    return [2 /*return*/, promiseUtils_1.reject(appAccess.name)];
+                                }
+                            }
+                            else if (applicationItemResponse.error) {
+                                return [2 /*return*/, promiseUtils_1.reject(applicationItemResponse.error)];
+                            }
+                            this.results.localStorage = localStorage;
+                            this.results.applicationItem = applicationItemResponse;
+                            this.results.applicationData = applicationDataResponse;
+                            applicationConfig = applicationData ? applicationData.values : null;
+                            portal = portalResponse ? portalResponse.value : null;
+                            this.portal = portal;
+                            this.units = this._getUnits(portal);
+                            this.config = this._mixinAllConfigs({
+                                config: this.config,
+                                url: urlParams,
+                                local: localStorage,
+                                application: applicationConfig
+                            });
+                            this._setGeometryService(this.config, portal);
+                            _b = this.config, webmap = _b.webmap, webscene = _b.webscene, group = _b.group;
+                            webMapPromises = [];
+                            webScenePromises = [];
+                            groupInfoPromises = [];
+                            groupItemsPromises = [];
+                            isWebMapEnabled = webMapSettings.fetch && webmap;
+                            isWebSceneEnabled = websceneSettings.fetch && webscene;
+                            isGroupInfoEnabled = groupSettings.fetchInfo && group;
+                            isGroupItemsEnabled = groupSettings.fetchItems && group;
+                            itemParams = groupSettings.itemParams;
+                            defaultWebMap = webMapSettings.default;
+                            defaultWebScene = websceneSettings.default;
+                            defaultGroup = groupSettings.default;
+                            fetchMultipleWebmaps = webMapSettings.fetchMultiple;
+                            fetchMultipleWebscenes = websceneSettings.fetchMultiple;
+                            fetchMultipleGroups = groupSettings.fetchMultiple;
+                            if (isWebMapEnabled) {
+                                webMaps = this._getPropertyArray(webmap);
+                                allowedWebmaps = this._limitItemSize(webMaps, fetchMultipleWebmaps);
+                                allowedWebmaps.forEach(function (id) {
+                                    var webMapId = _this._getDefaultId(id, defaultWebMap);
+                                    webMapPromises.push(_this._loadItem(webMapId));
+                                });
+                            }
+                            if (isWebSceneEnabled) {
+                                webScenes = this._getPropertyArray(webscene);
+                                allowedWebsenes = this._limitItemSize(webScenes, fetchMultipleWebscenes);
+                                allowedWebsenes.forEach(function (id) {
+                                    var webSceneId = _this._getDefaultId(id, defaultWebScene);
+                                    webScenePromises.push(_this._loadItem(webSceneId));
+                                });
+                            }
+                            if (isGroupInfoEnabled) {
+                                groups = this._getPropertyArray(group);
+                                allowedGroups = this._limitItemSize(groups, fetchMultipleGroups);
+                                allowedGroups.forEach(function (id) {
+                                    var groupId = _this._getDefaultId(id, defaultGroup);
+                                    groupInfoPromises.push(_this._queryGroupInfo(groupId, portal));
+                                });
+                            }
+                            if (isGroupItemsEnabled) {
+                                groups = this._getPropertyArray(group);
+                                groups.forEach(function (id) {
+                                    groupItemsPromises.push(_this.queryGroupItems(id, itemParams, portal));
+                                });
+                            }
+                            promises = {
+                                webMap: webMapPromises ? promiseUtils_1.eachAlways(webMapPromises) : promiseUtils_1.resolve(),
+                                webScene: webScenePromises ? promiseUtils_1.eachAlways(webScenePromises) : promiseUtils_1.resolve(),
+                                groupInfo: groupInfoPromises ? promiseUtils_1.eachAlways(groupInfoPromises) : promiseUtils_1.resolve(),
+                                groupItems: groupItemsPromises
+                                    ? promiseUtils_1.eachAlways(groupItemsPromises)
+                                    : promiseUtils_1.resolve()
+                            };
+                            return [4 /*yield*/, promiseUtils_1.eachAlways(promises)];
+                        case 3:
+                            itemArgs = _c.sent();
+                            webMapResponses = itemArgs.webMap.value;
+                            webSceneResponses = itemArgs.webScene.value;
+                            groupInfoResponses = itemArgs.groupInfo.value;
+                            groupItemsResponses = itemArgs.groupItems.value;
+                            itemInfo = applicationItem ? applicationItem.itemInfo : null;
+                            this._overwriteItemsExtent(webMapResponses, itemInfo);
+                            this._overwriteItemsExtent(webSceneResponses, itemInfo);
+                            this.results.webMapItems = webMapResponses;
+                            this.results.webSceneItems = webSceneResponses;
+                            this.results.groupInfos = groupInfoResponses;
+                            this.results.groupItems = groupItemsResponses;
+                            return [2 /*return*/, this];
                     }
-                }
-                else if (applicationItemResponse.error) {
-                    return promiseUtils_1.reject(applicationItemResponse.error);
-                }
-                _this.results.localStorage = localStorage;
-                _this.results.applicationItem = applicationItemResponse;
-                _this.results.applicationData = applicationDataResponse;
-                var applicationConfig = applicationData
-                    ? applicationData.values
-                    : null;
-                var portal = portalResponse ? portalResponse.value : null;
-                _this.portal = portal;
-                _this.units = _this._getUnits(portal);
-                _this.config = _this._mixinAllConfigs({
-                    config: _this.config,
-                    url: urlParams,
-                    local: localStorage,
-                    application: applicationConfig
-                });
-                _this._setGeometryService(_this.config, portal);
-                var _a = _this.config, webmap = _a.webmap, webscene = _a.webscene, group = _a.group;
-                var webMapPromises = [];
-                var webScenePromises = [];
-                var groupInfoPromises = [];
-                var groupItemsPromises = [];
-                var isWebMapEnabled = webMapSettings.fetch && webmap;
-                var isWebSceneEnabled = websceneSettings.fetch && webscene;
-                var isGroupInfoEnabled = groupSettings.fetchInfo && group;
-                var isGroupItemsEnabled = groupSettings.fetchItems && group;
-                var itemParams = groupSettings.itemParams;
-                var defaultWebMap = webMapSettings.default;
-                var defaultWebScene = websceneSettings.default;
-                var defaultGroup = groupSettings.default;
-                var fetchMultipleWebmaps = webMapSettings.fetchMultiple;
-                var fetchMultipleWebscenes = websceneSettings.fetchMultiple;
-                var fetchMultipleGroups = groupSettings.fetchMultiple;
-                if (isWebMapEnabled) {
-                    var webMaps = _this._getPropertyArray(webmap);
-                    var allowedWebmaps = _this._limitItemSize(webMaps, fetchMultipleWebmaps);
-                    allowedWebmaps.forEach(function (id) {
-                        var webMapId = _this._getDefaultId(id, defaultWebMap);
-                        webMapPromises.push(_this._loadItem(webMapId));
-                    });
-                }
-                if (isWebSceneEnabled) {
-                    var webScenes = _this._getPropertyArray(webscene);
-                    var allowedWebsenes = _this._limitItemSize(webScenes, fetchMultipleWebscenes);
-                    allowedWebsenes.forEach(function (id) {
-                        var webSceneId = _this._getDefaultId(id, defaultWebScene);
-                        webScenePromises.push(_this._loadItem(webSceneId));
-                    });
-                }
-                if (isGroupInfoEnabled) {
-                    var groups = _this._getPropertyArray(group);
-                    var allowedGroups = _this._limitItemSize(groups, fetchMultipleGroups);
-                    allowedGroups.forEach(function (id) {
-                        var groupId = _this._getDefaultId(id, defaultGroup);
-                        groupInfoPromises.push(_this._queryGroupInfo(groupId, portal));
-                    });
-                }
-                if (isGroupItemsEnabled) {
-                    var groups = _this._getPropertyArray(group);
-                    groups.forEach(function (id) {
-                        groupItemsPromises.push(_this.queryGroupItems(id, itemParams, portal));
-                    });
-                }
-                var promises = {
-                    webMap: webMapPromises
-                        ? promiseUtils_1.eachAlways(webMapPromises)
-                        : promiseUtils_1.resolve(),
-                    webScene: webScenePromises
-                        ? promiseUtils_1.eachAlways(webScenePromises)
-                        : promiseUtils_1.resolve(),
-                    groupInfo: groupInfoPromises
-                        ? promiseUtils_1.eachAlways(groupInfoPromises)
-                        : promiseUtils_1.resolve(),
-                    groupItems: groupItemsPromises
-                        ? promiseUtils_1.eachAlways(groupItemsPromises)
-                        : promiseUtils_1.resolve()
-                };
-                return promiseUtils_1.eachAlways(promises).catch(function (itemArgs) { return itemArgs; }).then(function (itemArgs) {
-                    var webMapResponses = itemArgs.webMap.value;
-                    var webSceneResponses = itemArgs.webScene.value;
-                    var groupInfoResponses = itemArgs.groupInfo.value;
-                    var groupItemsResponses = itemArgs.groupItems.value;
-                    var itemInfo = applicationItem ? applicationItem.itemInfo : null;
-                    _this._overwriteItemsExtent(webMapResponses, itemInfo);
-                    _this._overwriteItemsExtent(webSceneResponses, itemInfo);
-                    _this.results.webMapItems = webMapResponses;
-                    _this.results.webSceneItems = webSceneResponses;
-                    _this.results.groupInfos = groupInfoResponses;
-                    _this.results.groupItems = groupItemsResponses;
-                    return _this;
                 });
             });
         };
@@ -416,7 +423,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                                 query: "id:\"" + groupId + "\""
                             });
                             return [4 /*yield*/, portal.queryGroups(params)];
-                        case 1: return [2 /*return*/, _a.sent()];
+                        case 1: return [2 /*return*/, (_a.sent())];
                     }
                 });
             });

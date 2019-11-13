@@ -203,167 +203,191 @@ class ApplicationBase {
 
     const loadApplicationItem = appid ? this._loadItem(appid) : resolve();
 
-    const checkAppAccess = await IdentityManager.checkAppAccess(
-      sharingUrl,
-      oauthappid
-    );
+    let checkAppAccess = null;
+    try {
+      checkAppAccess = await IdentityManager.checkAppAccess(
+        sharingUrl,
+        oauthappid
+      );
+    } catch (e) {
+      console.error(e);
+    }
 
-    const itemInfoData =
-      loadApplicationItem instanceof PortalItem
-        ? loadApplicationItem.fetchData()
-        : undefined;
+    let itemInfo = null;
 
-    const fetchApplicationData = appid ? itemInfoData : resolve();
+    try {
+      itemInfo = await loadApplicationItem;
+    } catch (e) {
+      console.error(e);
+    }
+
+    const fetchApplicationData = appid ? itemInfo : resolve();
+
     const loadPortal = portalSettings.fetch ? new Portal().load() : resolve();
 
-    const applicationArgs = await eachAlways([
-      loadApplicationItem,
-      fetchApplicationData,
-      loadPortal,
-      checkAppAccess
-    ]);
+    try {
+      const applicationArgs = await eachAlways([
+        loadApplicationItem,
+        fetchApplicationData,
+        loadPortal,
+        checkAppAccess
+      ]);
 
-    const [
-      applicationItemResponse,
-      applicationDataResponse,
-      portalResponse,
-      checkAppAccessResponse
-    ] = applicationArgs;
-    const applicationItem = applicationItemResponse
-      ? applicationItemResponse.value
-      : null;
+      const [
+        applicationItemResponse,
+        applicationDataResponse,
+        portalResponse,
+        checkAppAccessResponse
+      ] = applicationArgs;
+      const applicationItem = applicationItemResponse
+        ? applicationItemResponse.value
+        : null;
 
-    const applicationData = applicationDataResponse
-      ? applicationDataResponse.value
-      : null;
+      const applicationData = applicationDataResponse
+        ? applicationDataResponse.value
+        : null;
 
-    const localStorage = localStorageSettings.fetch
-      ? this._getLocalConfig(appid)
-      : null;
+      const localStorage = localStorageSettings.fetch
+        ? this._getLocalConfig(appid)
+        : null;
 
-    const appAccess = checkAppAccessResponse
-      ? checkAppAccessResponse.value
-      : null;
-    if (
-      applicationItem &&
-      applicationItem.access &&
-      applicationItem.access !== "public"
-    ) {
-      // do we have permission to access app
+      const appAccess = checkAppAccessResponse
+        ? checkAppAccessResponse.value
+        : null;
       if (
-        appAccess &&
-        appAccess.name &&
-        appAccess.name === "identity-manager:not-authorized"
+        applicationItem &&
+        applicationItem.access &&
+        applicationItem.access !== "public"
       ) {
-        //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
-        return reject(appAccess.name);
+        // do we have permission to access app
+        if (
+          appAccess &&
+          appAccess.name &&
+          appAccess.name === "identity-manager:not-authorized"
+        ) {
+          //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
+          return reject(appAccess.name);
+        }
+      } else if (applicationItemResponse.error) {
+        return reject(applicationItemResponse.error);
       }
-    } else if (applicationItemResponse.error) {
-      return reject(applicationItemResponse.error);
-    }
 
-    this.results.localStorage = localStorage;
-    this.results.applicationItem = applicationItemResponse;
-    this.results.applicationData = applicationDataResponse;
+      this.results.localStorage = localStorage;
+      this.results.applicationItem = applicationItemResponse;
+      this.results.applicationData = applicationDataResponse;
 
-    const applicationConfig = applicationData ? applicationData.values : null;
+      const applicationConfig = applicationData ? applicationData.values : null;
 
-    const portal = portalResponse ? portalResponse.value : null;
-    this.portal = portal;
+      const portal = portalResponse ? portalResponse.value : null;
+      this.portal = portal;
 
-    this.units = this._getUnits(portal);
+      this.units = this._getUnits(portal);
 
-    this.config = this._mixinAllConfigs({
-      config: this.config,
-      url: urlParams,
-      local: localStorage,
-      application: applicationConfig
-    });
-
-    this._setGeometryService(this.config, portal);
-
-    const { webmap, webscene, group } = this.config;
-
-    const webMapPromises = [];
-    const webScenePromises = [];
-    const groupInfoPromises = [];
-    const groupItemsPromises = [];
-
-    const isWebMapEnabled = webMapSettings.fetch && webmap;
-    const isWebSceneEnabled = websceneSettings.fetch && webscene;
-    const isGroupInfoEnabled = groupSettings.fetchInfo && group;
-    const isGroupItemsEnabled = groupSettings.fetchItems && group;
-    const itemParams = groupSettings.itemParams;
-    const defaultWebMap = webMapSettings.default;
-    const defaultWebScene = websceneSettings.default;
-    const defaultGroup = groupSettings.default;
-    const fetchMultipleWebmaps = webMapSettings.fetchMultiple;
-    const fetchMultipleWebscenes = websceneSettings.fetchMultiple;
-    const fetchMultipleGroups = groupSettings.fetchMultiple;
-
-    if (isWebMapEnabled) {
-      const webMaps = this._getPropertyArray(webmap);
-      const allowedWebmaps = this._limitItemSize(webMaps, fetchMultipleWebmaps);
-      allowedWebmaps.forEach(id => {
-        const webMapId = this._getDefaultId(id, defaultWebMap);
-        webMapPromises.push(this._loadItem(webMapId));
+      this.config = this._mixinAllConfigs({
+        config: this.config,
+        url: urlParams,
+        local: localStorage,
+        application: applicationConfig
       });
+
+      this._setGeometryService(this.config, portal);
+
+      const { webmap, webscene, group } = this.config;
+
+      const webMapPromises = [];
+      const webScenePromises = [];
+      const groupInfoPromises = [];
+      const groupItemsPromises = [];
+
+      const isWebMapEnabled = webMapSettings.fetch && webmap;
+      const isWebSceneEnabled = websceneSettings.fetch && webscene;
+      const isGroupInfoEnabled = groupSettings.fetchInfo && group;
+      const isGroupItemsEnabled = groupSettings.fetchItems && group;
+      const itemParams = groupSettings.itemParams;
+      const defaultWebMap = webMapSettings.default;
+      const defaultWebScene = websceneSettings.default;
+      const defaultGroup = groupSettings.default;
+      const fetchMultipleWebmaps = webMapSettings.fetchMultiple;
+      const fetchMultipleWebscenes = websceneSettings.fetchMultiple;
+      const fetchMultipleGroups = groupSettings.fetchMultiple;
+
+      if (isWebMapEnabled) {
+        const webMaps = this._getPropertyArray(webmap);
+        const allowedWebmaps = this._limitItemSize(
+          webMaps,
+          fetchMultipleWebmaps
+        );
+        allowedWebmaps.forEach(id => {
+          const webMapId = this._getDefaultId(id, defaultWebMap);
+          webMapPromises.push(this._loadItem(webMapId));
+        });
+      }
+
+      if (isWebSceneEnabled) {
+        const webScenes = this._getPropertyArray(webscene);
+        const allowedWebsenes = this._limitItemSize(
+          webScenes,
+          fetchMultipleWebscenes
+        );
+        allowedWebsenes.forEach(id => {
+          const webSceneId = this._getDefaultId(id, defaultWebScene);
+          webScenePromises.push(this._loadItem(webSceneId));
+        });
+      }
+
+      if (isGroupInfoEnabled) {
+        const groups = this._getPropertyArray(group);
+        const allowedGroups = this._limitItemSize(groups, fetchMultipleGroups);
+        allowedGroups.forEach(id => {
+          const groupId = this._getDefaultId(id, defaultGroup);
+          groupInfoPromises.push(this._queryGroupInfo(groupId, portal));
+        });
+      }
+
+      if (isGroupItemsEnabled) {
+        const groups = this._getPropertyArray(group);
+        groups.forEach(id => {
+          groupItemsPromises.push(this.queryGroupItems(id, itemParams, portal));
+        });
+      }
+
+      const promises: ApplicationBaseItemPromises = {
+        webMap: webMapPromises ? eachAlways(webMapPromises) : resolve(),
+        webScene: webScenePromises ? eachAlways(webScenePromises) : resolve(),
+        groupInfo: groupInfoPromises
+          ? eachAlways(groupInfoPromises)
+          : resolve(),
+        groupItems: groupItemsPromises
+          ? eachAlways(groupItemsPromises)
+          : resolve()
+      };
+
+      let itemArgs = null;
+
+      try {
+        itemArgs = await eachAlways(promises);
+
+        const webMapResponses = itemArgs.webMap.value;
+        const webSceneResponses = itemArgs.webScene.value;
+        const groupInfoResponses = itemArgs.groupInfo.value;
+        const groupItemsResponses = itemArgs.groupItems.value;
+
+        const itemInfo = applicationItem ? applicationItem.itemInfo : null;
+        this._overwriteItemsExtent(webMapResponses, itemInfo);
+        this._overwriteItemsExtent(webSceneResponses, itemInfo);
+
+        this.results.webMapItems = webMapResponses;
+        this.results.webSceneItems = webSceneResponses;
+        this.results.groupInfos = groupInfoResponses;
+        this.results.groupItems = groupItemsResponses;
+
+        return this;
+      } catch (e) {
+        console.error(e);
+      }
+    } catch (e) {
+      console.error(e);
     }
-
-    if (isWebSceneEnabled) {
-      const webScenes = this._getPropertyArray(webscene);
-      const allowedWebsenes = this._limitItemSize(
-        webScenes,
-        fetchMultipleWebscenes
-      );
-      allowedWebsenes.forEach(id => {
-        const webSceneId = this._getDefaultId(id, defaultWebScene);
-        webScenePromises.push(this._loadItem(webSceneId));
-      });
-    }
-
-    if (isGroupInfoEnabled) {
-      const groups = this._getPropertyArray(group);
-      const allowedGroups = this._limitItemSize(groups, fetchMultipleGroups);
-      allowedGroups.forEach(id => {
-        const groupId = this._getDefaultId(id, defaultGroup);
-        groupInfoPromises.push(this._queryGroupInfo(groupId, portal));
-      });
-    }
-
-    if (isGroupItemsEnabled) {
-      const groups = this._getPropertyArray(group);
-      groups.forEach(id => {
-        groupItemsPromises.push(this.queryGroupItems(id, itemParams, portal));
-      });
-    }
-
-    const promises: ApplicationBaseItemPromises = {
-      webMap: webMapPromises ? eachAlways(webMapPromises) : resolve(),
-      webScene: webScenePromises ? eachAlways(webScenePromises) : resolve(),
-      groupInfo: groupInfoPromises ? eachAlways(groupInfoPromises) : resolve(),
-      groupItems: groupItemsPromises
-        ? eachAlways(groupItemsPromises)
-        : resolve()
-    };
-
-    const itemArgs = await eachAlways(promises);
-
-    const webMapResponses = itemArgs.webMap.value;
-    const webSceneResponses = itemArgs.webScene.value;
-    const groupInfoResponses = itemArgs.groupInfo.value;
-    const groupItemsResponses = itemArgs.groupItems.value;
-
-    const itemInfo = applicationItem ? applicationItem.itemInfo : null;
-    this._overwriteItemsExtent(webMapResponses, itemInfo);
-    this._overwriteItemsExtent(webSceneResponses, itemInfo);
-
-    this.results.webMapItems = webMapResponses;
-    this.results.webSceneItems = webSceneResponses;
-    this.results.groupInfos = groupInfoResponses;
-    this.results.groupItems = groupItemsResponses;
-
-    return this;
   }
 
   //--------------------------------------------------------------------------

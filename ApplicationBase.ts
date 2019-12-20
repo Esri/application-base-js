@@ -15,7 +15,7 @@ import kernel from "dojo/_base/kernel";
 
 import esriConfig from "esri/config";
 
-import { resolve, reject, eachAlways } from "esri/core/promiseUtils";
+import { resolve, reject, eachAlways, create } from "esri/core/promiseUtils";
 
 import IdentityManager from "esri/identity/IdentityManager";
 import OAuthInfo from "esri/identity/OAuthInfo";
@@ -210,7 +210,7 @@ class ApplicationBase {
         oauthappid
       );
     } catch (e) {
-      console.error(e);
+      checkAppAccess = resolve();
     }
 
     let itemInfo = null;
@@ -479,8 +479,8 @@ class ApplicationBase {
     const appLocationIndex = isEsriAppsPath
       ? esriAppsPathIndex
       : isEsriHomePath
-      ? esriHomePathIndex
-      : undefined;
+        ? esriHomePathIndex
+        : undefined;
 
     if (appLocationIndex === undefined) {
       return;
@@ -517,10 +517,10 @@ class ApplicationBase {
     const units = userUnits
       ? userUnits
       : responseUnits
-      ? responseUnits
-      : isEnglishUnits
-      ? "english"
-      : "metric";
+        ? responseUnits
+        : isEnglishUnits
+          ? "english"
+          : "metric";
     return units;
   }
 

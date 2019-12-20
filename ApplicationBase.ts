@@ -203,25 +203,9 @@ class ApplicationBase {
 
     const loadApplicationItem = appid ? this._loadItem(appid) : resolve();
 
-    let checkAppAccess = null;
-    try {
-      checkAppAccess = await IdentityManager.checkAppAccess(
-        sharingUrl,
-        oauthappid
-      );
-    } catch (e) {
-      checkAppAccess = resolve();
-    }
+    const checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid);
 
-    let itemInfo = null;
-
-    try {
-      itemInfo = await loadApplicationItem;
-    } catch (e) {
-      console.error(e);
-    }
-
-    const fetchApplicationData = appid ? itemInfo : resolve();
+    const fetchApplicationData = appid ? loadApplicationItem.then(itemInfo => { return itemInfo instanceof PortalItem ? itemInfo.fetchData() : undefined }) : resolve();
 
     const loadPortal = portalSettings.fetch ? new Portal().load() : resolve();
 

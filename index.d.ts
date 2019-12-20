@@ -1,12 +1,3 @@
-declare module 'ApplicationBase/declareDecorator' {
-	/**
-	 * A decorator that converts a TypeScript class into a declare constructor.
-	 * This allows declare constructors to be defined as classes, which nicely
-	 * hides away the `declare([], {})` boilerplate.
-	 */
-	export default function (...mixins: Object[]): ClassDecorator;
-
-}
 declare module 'ApplicationBase/interfaces' {
 	import Portal = require("esri/portal/Portal");
 	import PortalItem = require("esri/portal/PortalItem");
@@ -19,10 +10,10 @@ declare module 'ApplicationBase/interfaces' {
 	export type Direction = "ltr" | "rtl";
 
 	export interface ApplicationBaseItemPromises {
-	  webMap?: IPromise<any>;
-	  webScene?: IPromise<any>;
-	  groupInfo?: IPromise<any>;
-	  groupItems?: IPromise<any>;
+	  webMap?: Promise<any>;
+	  webScene?: Promise<any>;
+	  groupInfo?: Promise<any>;
+	  groupItems?: Promise<any>;
 	}
 
 	export interface ApplicationConfigs {
@@ -88,17 +79,17 @@ declare module 'ApplicationBase/interfaces' {
 	export interface ApplicationBaseResult {
 	  error?: Error;
 	  value: any;
-	  promise: IPromise<any>;
+	  promise: Promise<any>;
 	}
 
 	export interface ApplicationBasePortalItemResult extends ApplicationBaseResult {
 	  value: PortalItem;
-	  promise: IPromise<PortalItem>;
+	  promise: Promise<PortalItem>;
 	}
 
 	export interface ApplicationBasePortalQueryResult extends ApplicationBaseResult {
 	  value: PortalQueryResult;
-	  promise: IPromise<PortalQueryResult>;
+	  promise: Promise<PortalQueryResult>;
 	}
 
 	export interface ApplicationBaseResults {
@@ -133,8 +124,8 @@ declare module 'ApplicationBase/interfaces' {
 }
 declare module 'ApplicationBase/ApplicationBase' {
 	/// <reference types="arcgis-js-api" />
-	import Portal = require("esri/portal/Portal");
-	import PortalQueryParams = require("esri/portal/PortalQueryParams");
+	import Portal from "esri/portal/Portal";
+	import PortalQueryParams from "esri/portal/PortalQueryParams";
 	import { Direction, ApplicationBaseConstructorOptions, ApplicationBaseResults, ApplicationBaseSettings, ApplicationConfig } from 'ApplicationBase/interfaces'; class ApplicationBase {
 	    constructor(options: ApplicationBaseConstructorOptions);
 	    settings: ApplicationBaseSettings;
@@ -144,30 +135,30 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    direction: Direction;
 	    locale: string;
 	    units: string;
-	    queryGroupItems(groupId: string, itemParams: PortalQueryParams, portal?: Portal): IPromise<any>;
-	    load(): IPromise<ApplicationBase>;
-	    private _mixinSettingsDefaults(settings);
-	    private _limitItemSize(items, allowMultiple);
-	    private _getPropertyArray(property);
-	    private _getEsriEnvironmentPortalUrl();
-	    private _getEsriEnvironmentProxyUrl(portalUrl);
-	    private _getUnits(portal);
-	    private _queryGroupInfo(groupId, portal);
-	    private _loadItem(id);
-	    private _getLocalConfig(appid);
-	    private _overwriteItemsExtent(responses, applicationItem);
-	    private _overwriteItemExtent(item, applicationItem);
-	    private _getDefaultId(id, defaultId);
-	    private _getLanguageDirection(rtlLocales?);
-	    private _mixinAllConfigs(params);
-	    private _setGeometryService(config, portal);
-	    private _setPortalUrl(portalUrl);
-	    private _setProxyUrl(proxyUrl);
-	    private _registerOauthInfos(appId, portalUrl);
-	    private _getUrlParamValues(urlParams);
-	    private _urlToObject();
-	    private _formatUrlParamValue(urlParamValue);
-	    private _stripStringTags(value);
+	    queryGroupItems(groupId: string, itemParams: PortalQueryParams, portal?: Portal): Promise<__esri.PortalQueryResult>;
+	    load(): Promise<ApplicationBase>;
+	    private _mixinSettingsDefaults;
+	    private _limitItemSize;
+	    private _getPropertyArray;
+	    private _getEsriEnvironmentPortalUrl;
+	    private _getEsriEnvironmentProxyUrl;
+	    private _getUnits;
+	    private _queryGroupInfo;
+	    private _loadItem;
+	    private _getLocalConfig;
+	    private _overwriteItemsExtent;
+	    private _overwriteItemExtent;
+	    private _getDefaultId;
+	    private _getLanguageDirection;
+	    private _mixinAllConfigs;
+	    private _setGeometryService;
+	    private _setPortalUrl;
+	    private _setProxyUrl;
+	    private _registerOauthInfos;
+	    private _getUrlParamValues;
+	    private _urlToObject;
+	    private _formatUrlParamValue;
+	    private _stripStringTags;
 	}
 	export = ApplicationBase;
 
@@ -180,38 +171,30 @@ declare module 'ApplicationBase/support/domHelper' {
 }
 declare module 'ApplicationBase/support/urlUtils' {
 	/// <reference types="arcgis-js-api" />
-	import Camera = require("esri/Camera");
-	import Graphic = require("esri/Graphic");
-	import Extent = require("esri/geometry/Extent");
-	import Point = require("esri/geometry/Point");
+	import Camera from "esri/Camera";
+	import Extent from "esri/geometry/Extent";
+	import Point from "esri/geometry/Point";
+	import esri = __esri;
 	export function parseViewComponents(components: string): string[];
 	export function parseViewpoint(viewpoint: string): Camera;
 	export function parseCenter(center: string): Point;
 	export function parseLevel(level: string): number;
 	export function parseExtent(extent: string): Extent;
-	export function parseMarker(marker: string): IPromise<Graphic>;
+	export function parseMarker(marker: string): Promise<esri.Graphic | {}>;
 
 }
 declare module 'ApplicationBase/support/itemUtils' {
 	/// <reference types="arcgis-js-api" />
-	import WebMap = require("esri/WebMap");
-	import WebScene = require("esri/WebScene");
-	import MapView = require("esri/views/MapView");
-	import SceneView = require("esri/views/SceneView");
-	import PortalItem = require("esri/portal/PortalItem");
+	import PortalItem from "esri/portal/PortalItem";
 	import { CreateMapFromItemOptions, ApplicationConfig } from 'ApplicationBase/interfaces';
+	import esri = __esri;
 	export function getConfigViewProperties(config: ApplicationConfig): any;
-	export function createView(properties: any): IPromise<MapView | SceneView>;
-	export function createMapFromItem(options: CreateMapFromItemOptions): IPromise<WebMap | WebScene>;
-	export function createWebMapFromItem(options: CreateMapFromItemOptions): IPromise<WebMap>;
-	export function createWebSceneFromItem(options: CreateMapFromItemOptions): IPromise<WebScene>;
+	export function createView(properties: any): Promise<esri.MapView | esri.SceneView>;
+	export function createMapFromItem(options: CreateMapFromItemOptions): Promise<esri.WebMap | esri.WebScene>;
+	export function createWebMapFromItem(options: CreateMapFromItemOptions): Promise<esri.WebMap>;
+	export function createWebSceneFromItem(options: CreateMapFromItemOptions): Promise<esri.WebScene>;
 	export function getItemTitle(item: PortalItem): string;
-	export function goToMarker(marker: string, view: MapView | SceneView): IPromise<any>;
-	export function findQuery(query: string, view: MapView | SceneView): IPromise<any>;
+	export function goToMarker(marker: string, view: esri.MapView | esri.SceneView): Promise<any>;
+	export function findQuery(query: string, view: esri.MapView | esri.SceneView): Promise<any>;
 
-}
-declare namespace __esri {
-  interface IdentityManagerBase extends Evented {
-    checkAppAccess(resUrl: string, appId: string): IPromise<Object>;
-  }
 }

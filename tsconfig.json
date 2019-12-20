@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
     "sourceMap": true,
+    "lib": [
+      "es6",
+      "dom",
+      "scripthost"
+    ],
     "declaration": false,
     "noImplicitAny": false,
     "module": "amd",
     "target": "es5",
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "jsx": "react",
     "jsxFactory": "tsx"
@@ -19,13 +25,6 @@
   ],
   "files": [
     "./index.d.ts",
-    "./node_modules/@types/arcgis-js-api/index.d.ts",
-    "./node_modules/dojo-typings/dojo/1.11/loader.d.ts",
-    "./node_modules/dojo-typings/dojo/1.11/index.d.ts",
-    "./node_modules/dojo-typings/dojo/1.11/modules.d.ts",
-    "./node_modules/dojo-typings/dijit/1.11/index.d.ts",
-    "./node_modules/dojo-typings/dijit/1.11/modules.d.ts",
-    "./node_modules/dojo-typings/dojox/1.11/index.d.ts",
-    "./node_modules/dojo-typings/dojox/1.11/modules.d.ts"
+    "./node_modules/@types/arcgis-js-api/index.d.ts"
   ]
 }

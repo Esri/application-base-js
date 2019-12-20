@@ -24,7 +24,7 @@ Parses a level string into an `integer`.
 
 Parses an extent string into an `Extent`.
 
-### parseMarker(marker: string): IPromise&lt;Graphic&gt;
+### parseMarker(marker: string): Promise&lt;Graphic&gt;
 
 Parses a marker string into a `Graphic`.
 

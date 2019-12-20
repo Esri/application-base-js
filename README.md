@@ -166,7 +166,7 @@ Example:
 |---|---|---|
 |error|The error returned from the query|Error|
 |value|The value returned from the query|any|
-|promise|The query promise|IPromise&lt;any&gt;|
+|promise|The query promise|Promise&lt;any&gt;|
 
 ### ApplicationBaseResults
 
@@ -184,11 +184,11 @@ Example:
 
 ## Methods
 
-### load(): IPromise&lt;ApplicationBase&gt;
+### load(): Promise&lt;ApplicationBase&gt;
 
 Loads the requested ApplicationBase resources and returns the class once complete.
 
-### queryGroupItems(groupId: string, itemParams: [itemParams](#itemparams), portal?: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : IPromise&lt;any&gt;
+### queryGroupItems(groupId: string, itemParams: [itemParams](#itemparams), portal?: [Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)) : Promise&lt;any&gt;
 
 Query a group by parameters. `ApplicationBase.queryGroupItems("myid", {}, myPortal)`.
 

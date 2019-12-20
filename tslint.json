@@ -7,10 +7,7 @@
     "curly": true,
     "eofline": true,
     "forin": false,
-    "indent": [
-      true,
-      "spaces"
-    ],
+    "indent": [true, "spaces"],
     "interface-name": false,
     "jsdoc-format": true,
     "label-position": true,
@@ -40,22 +37,11 @@
     "no-use-before-declare": false,
     "no-var-keyword": true,
     "no-var-requires": false,
-    "one-line": [
-      true,
-      "check-open-brace",
-      "check-whitespace"
-    ],
+    "one-line": [true, "check-open-brace", "check-whitespace"],
     "prefer-const": true,
-    "quotemark": [
-      true,
-      "double",
-      "avoid-escape"
-    ],
+    "quotemark": [true, "double", "avoid-escape"],
     "radix": true,
-    "semicolon": [
-      true,
-      "always"
-    ],
+    "semicolon": [true, "always"],
     "space-before-function-paren": [
       true,
       {
@@ -74,10 +60,7 @@
         "singleline": "never"
       }
     ],
-    "triple-equals": [
-      true,
-      "allow-null-check"
-    ],
+    "triple-equals": [true, "allow-null-check"],
     "typedef": false,
     "typedef-whitespace": [
       true,
@@ -128,9 +111,5 @@
       }
     ],
     "suspicious-read-only": true
-  },
-  "rulesDirectory": [
-    "./tsrules"
-  ]
+  }
 }
-

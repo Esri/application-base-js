@@ -27,6 +27,7 @@ import { reject } from "esri/core/promiseUtils";
 import Extent from "esri/geometry/Extent";
 import Point from "esri/geometry/Point";
 import { PictureMarkerSymbol, SimpleMarkerSymbol } from "esri/symbols";
+import { eachAlways } from "esri/core/promiseUtils";
 import esri = __esri;
 interface CameraProperties {
   heading?: number;
@@ -166,14 +167,8 @@ export async function parseMarker(marker: string): Promise<esri.Graphic | {}> {
     return reject();
   }
 
-
-  const [Graphic, PopupTemplate, PictureMarkerSymbol, SimpleMarkerSymbol] = await Promise.all([
-    import("esri/Graphic"),
-    import("esri/PopupTemplate"),
-    import("esri/symbols/PictureMarkerSymbol"),
-    import("esri/symbols/SimpleMarkerSymbol")
-  ]);
-
+  const modules = await eachAlways([import("esri/Graphic"), import("esri/PopupTemplate"), import("esri/symbols/PictureMarkerSymbol"), import("esri/symbols/SimpleMarkerSymbol")]);
+  const [Graphic, PopupTemplate, PictureMarkerSymbol, SimpleMarkerSymbol] = modules.map((module) => module.value);
 
   const x = parseFloat(markerArray[0]);
   const y = parseFloat(markerArray[1]);

@@ -76,7 +76,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geometry/Extent", "esri/geometry/Point"], function (require, exports, Camera_1, promiseUtils_1, Extent_1, Point_1) {
+define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geometry/Extent", "esri/geometry/Point", "esri/core/promiseUtils"], function (require, exports, Camera_1, promiseUtils_1, Extent_1, Point_1, promiseUtils_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     Camera_1 = __importDefault(Camera_1);
@@ -175,7 +175,7 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geo
     exports.parseExtent = parseExtent;
     function parseMarker(marker) {
         return __awaiter(this, void 0, void 0, function () {
-            var markerArray, markerLength, _a, Graphic, PopupTemplate, PictureMarkerSymbol, SimpleMarkerSymbol, x, y, content, icon_url, label, wkid, markerSymbol, point, hasPopupDetails, popupTemplate, graphic;
+            var markerArray, markerLength, modules, _a, Graphic, PopupTemplate, PictureMarkerSymbol, SimpleMarkerSymbol, x, y, content, icon_url, label, wkid, markerSymbol, point, hasPopupDetails, popupTemplate, graphic;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -194,14 +194,10 @@ define(["require", "exports", "esri/Camera", "esri/core/promiseUtils", "esri/geo
                         if (markerLength < 2) {
                             return [2 /*return*/, promiseUtils_1.reject()];
                         }
-                        return [4 /*yield*/, Promise.all([
-                                new Promise(function (resolve_1, reject_1) { require(["esri/Graphic"], resolve_1, reject_1); }).then(__importStar),
-                                new Promise(function (resolve_2, reject_2) { require(["esri/PopupTemplate"], resolve_2, reject_2); }).then(__importStar),
-                                new Promise(function (resolve_3, reject_3) { require(["esri/symbols/PictureMarkerSymbol"], resolve_3, reject_3); }).then(__importStar),
-                                new Promise(function (resolve_4, reject_4) { require(["esri/symbols/SimpleMarkerSymbol"], resolve_4, reject_4); }).then(__importStar)
-                            ])];
+                        return [4 /*yield*/, promiseUtils_2.eachAlways([new Promise(function (resolve_1, reject_1) { require(["esri/Graphic"], resolve_1, reject_1); }).then(__importStar), new Promise(function (resolve_2, reject_2) { require(["esri/PopupTemplate"], resolve_2, reject_2); }).then(__importStar), new Promise(function (resolve_3, reject_3) { require(["esri/symbols/PictureMarkerSymbol"], resolve_3, reject_3); }).then(__importStar), new Promise(function (resolve_4, reject_4) { require(["esri/symbols/SimpleMarkerSymbol"], resolve_4, reject_4); }).then(__importStar)])];
                     case 1:
-                        _a = _b.sent(), Graphic = _a[0], PopupTemplate = _a[1], PictureMarkerSymbol = _a[2], SimpleMarkerSymbol = _a[3];
+                        modules = _b.sent();
+                        _a = modules.map(function (module) { return module.value; }), Graphic = _a[0], PopupTemplate = _a[1], PictureMarkerSymbol = _a[2], SimpleMarkerSymbol = _a[3];
                         x = parseFloat(markerArray[0]);
                         y = parseFloat(markerArray[1]);
                         content = markerArray[3];

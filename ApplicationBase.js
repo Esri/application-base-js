@@ -169,7 +169,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
         };
         ApplicationBase.prototype.load = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var settings, environmentSettings, groupSettings, localStorageSettings, portalSettings, webMapSettings, websceneSettings, urlParamsSettings, isEsri, urlParams, esriPortalUrl, _a, portalUrl, proxyUrl, oauthappid, appid, rtlLocales, sharingUrl, loadApplicationItem, checkAppAccess, e_1, itemInfo, e_2, fetchApplicationData, loadPortal, applicationArgs, applicationItemResponse, applicationDataResponse, portalResponse, checkAppAccessResponse, applicationItem, applicationData, localStorage_1, appAccess, applicationConfig, portal_1, _b, webmap, webscene, group, webMapPromises_1, webScenePromises_1, groupInfoPromises_1, groupItemsPromises_1, isWebMapEnabled, isWebSceneEnabled, isGroupInfoEnabled, isGroupItemsEnabled, itemParams_1, defaultWebMap_1, defaultWebScene_1, defaultGroup_1, fetchMultipleWebmaps, fetchMultipleWebscenes, fetchMultipleGroups, webMaps, allowedWebmaps, webScenes, allowedWebsenes, groups, allowedGroups, groups, promises, itemArgs, webMapResponses, webSceneResponses, groupInfoResponses, groupItemsResponses, itemInfo_1, e_3, e_4;
+                var settings, environmentSettings, groupSettings, localStorageSettings, portalSettings, webMapSettings, websceneSettings, urlParamsSettings, isEsri, urlParams, esriPortalUrl, _a, portalUrl, proxyUrl, oauthappid, appid, rtlLocales, sharingUrl, loadApplicationItem, checkAppAccess, fetchApplicationData, loadPortal, applicationArgs, applicationItemResponse, applicationDataResponse, portalResponse, checkAppAccessResponse, applicationItem, applicationData, localStorage_1, appAccess, applicationConfig, portal_1, _b, webmap, webscene, group, webMapPromises_1, webScenePromises_1, groupInfoPromises_1, groupItemsPromises_1, isWebMapEnabled, isWebSceneEnabled, isGroupInfoEnabled, isGroupItemsEnabled, itemParams_1, defaultWebMap_1, defaultWebScene_1, defaultGroup_1, fetchMultipleWebmaps, fetchMultipleWebscenes, fetchMultipleGroups, webMaps, allowedWebmaps, webScenes, allowedWebsenes, groups, allowedGroups, groups, promises, itemArgs, webMapResponses, webSceneResponses, groupInfoResponses, groupItemsResponses, itemInfo, e_1, e_2;
                 var _this = this;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
@@ -196,44 +196,19 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                             this._registerOauthInfos(oauthappid, portalUrl);
                             sharingUrl = portalUrl + "/sharing";
                             loadApplicationItem = appid ? this._loadItem(appid) : promiseUtils_1.resolve();
-                            checkAppAccess = null;
+                            checkAppAccess = IdentityManager_1.default.checkAppAccess(sharingUrl, oauthappid);
+                            fetchApplicationData = appid ? loadApplicationItem.then(function (itemInfo) { return itemInfo instanceof PortalItem_1.default ? itemInfo.fetchData() : undefined; }) : promiseUtils_1.resolve();
+                            loadPortal = portalSettings.fetch ? new Portal_1.default().load() : promiseUtils_1.resolve();
                             _c.label = 1;
                         case 1:
-                            _c.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, IdentityManager_1.default.checkAppAccess(sharingUrl, oauthappid)];
-                        case 2:
-                            checkAppAccess = _c.sent();
-                            return [3 /*break*/, 4];
-                        case 3:
-                            e_1 = _c.sent();
-                            console.error(e_1);
-                            return [3 /*break*/, 4];
-                        case 4:
-                            itemInfo = null;
-                            _c.label = 5;
-                        case 5:
-                            _c.trys.push([5, 7, , 8]);
-                            return [4 /*yield*/, loadApplicationItem];
-                        case 6:
-                            itemInfo = _c.sent();
-                            return [3 /*break*/, 8];
-                        case 7:
-                            e_2 = _c.sent();
-                            console.error(e_2);
-                            return [3 /*break*/, 8];
-                        case 8:
-                            fetchApplicationData = appid ? itemInfo : promiseUtils_1.resolve();
-                            loadPortal = portalSettings.fetch ? new Portal_1.default().load() : promiseUtils_1.resolve();
-                            _c.label = 9;
-                        case 9:
-                            _c.trys.push([9, 15, , 16]);
+                            _c.trys.push([1, 7, , 8]);
                             return [4 /*yield*/, promiseUtils_1.eachAlways([
                                     loadApplicationItem,
                                     fetchApplicationData,
                                     loadPortal,
                                     checkAppAccess
                                 ])];
-                        case 10:
+                        case 2:
                             applicationArgs = _c.sent();
                             applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
                             applicationItem = applicationItemResponse
@@ -333,34 +308,34 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                                     : promiseUtils_1.resolve()
                             };
                             itemArgs = null;
-                            _c.label = 11;
-                        case 11:
-                            _c.trys.push([11, 13, , 14]);
+                            _c.label = 3;
+                        case 3:
+                            _c.trys.push([3, 5, , 6]);
                             return [4 /*yield*/, promiseUtils_1.eachAlways(promises)];
-                        case 12:
+                        case 4:
                             itemArgs = _c.sent();
                             webMapResponses = itemArgs.webMap.value;
                             webSceneResponses = itemArgs.webScene.value;
                             groupInfoResponses = itemArgs.groupInfo.value;
                             groupItemsResponses = itemArgs.groupItems.value;
-                            itemInfo_1 = applicationItem ? applicationItem.itemInfo : null;
-                            this._overwriteItemsExtent(webMapResponses, itemInfo_1);
-                            this._overwriteItemsExtent(webSceneResponses, itemInfo_1);
+                            itemInfo = applicationItem ? applicationItem.itemInfo : null;
+                            this._overwriteItemsExtent(webMapResponses, itemInfo);
+                            this._overwriteItemsExtent(webSceneResponses, itemInfo);
                             this.results.webMapItems = webMapResponses;
                             this.results.webSceneItems = webSceneResponses;
                             this.results.groupInfos = groupInfoResponses;
                             this.results.groupItems = groupItemsResponses;
                             return [2 /*return*/, this];
-                        case 13:
-                            e_3 = _c.sent();
-                            console.error(e_3);
-                            return [3 /*break*/, 14];
-                        case 14: return [3 /*break*/, 16];
-                        case 15:
-                            e_4 = _c.sent();
-                            console.error(e_4);
-                            return [3 /*break*/, 16];
-                        case 16: return [2 /*return*/];
+                        case 5:
+                            e_1 = _c.sent();
+                            console.error(e_1);
+                            return [3 /*break*/, 6];
+                        case 6: return [3 /*break*/, 8];
+                        case 7:
+                            e_2 = _c.sent();
+                            console.error(e_2);
+                            return [3 /*break*/, 8];
+                        case 8: return [2 /*return*/];
                     }
                 });
             });

@@ -1,6 +1,6 @@
 {
   "name": "@esri/application-base-js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A core class for creating a configurable application using JavaScript/TypeScript",
   "author": "Matt Driscoll <mdriscoll@esri.com>",
   "homepage": "https://github.com/Esri/application-base-js",

@@ -260,7 +260,12 @@ class ApplicationBase {
       this.results.applicationItem = applicationItemResponse;
       this.results.applicationData = applicationDataResponse;
 
-      const applicationConfig = applicationData ? applicationData.values : null;
+      let values = applicationData?.values || null;
+      if (this.config?.mode === "draft" && values.draft) {
+        values = { ...values.draft };
+      }
+
+      const applicationConfig = applicationData ? values : null;
 
       const portal = portalResponse ? portalResponse.value : null;
       this.portal = portal;

@@ -21,6 +21,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/arcgis-js-api": "^4.14.0",
+    "dojo-typings": "^1.11.9",
     "dts-generator": "^2.1.0",
     "tslint": "^5.9.1",
     "typescript": "^3.1.1"

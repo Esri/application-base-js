@@ -168,12 +168,12 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
             });
         };
         ApplicationBase.prototype.load = function () {
-            var _a, _b;
+            var _a;
             return __awaiter(this, void 0, void 0, function () {
-                var settings, environmentSettings, groupSettings, localStorageSettings, portalSettings, webMapSettings, websceneSettings, urlParamsSettings, isEsri, urlParams, esriPortalUrl, _c, portalUrl, proxyUrl, oauthappid, appid, rtlLocales, sharingUrl, loadApplicationItem, checkAppAccess, fetchApplicationData, loadPortal, applicationArgs, applicationItemResponse, applicationDataResponse, portalResponse, checkAppAccessResponse, applicationItem, applicationData, localStorage_1, appAccess, values, applicationConfig, portal_1, _d, webmap, webscene, group, webMapPromises_1, webScenePromises_1, groupInfoPromises_1, groupItemsPromises_1, isWebMapEnabled, isWebSceneEnabled, isGroupInfoEnabled, isGroupItemsEnabled, itemParams_1, defaultWebMap_1, defaultWebScene_1, defaultGroup_1, fetchMultipleWebmaps, fetchMultipleWebscenes, fetchMultipleGroups, webMaps, allowedWebmaps, webScenes, allowedWebsenes, groups, allowedGroups, groups, promises, itemArgs, webMapResponses, webSceneResponses, groupInfoResponses, groupItemsResponses, itemInfo, e_1, e_2;
+                var settings, environmentSettings, groupSettings, localStorageSettings, portalSettings, webMapSettings, websceneSettings, urlParamsSettings, isEsri, urlParams, esriPortalUrl, _b, portalUrl, proxyUrl, oauthappid, appid, rtlLocales, sharingUrl, loadApplicationItem, checkAppAccess, fetchApplicationData, loadPortal, applicationArgs, applicationItemResponse, applicationDataResponse, portalResponse, checkAppAccessResponse, applicationItem, applicationData, localStorage_1, appAccess, values, applicationConfig, portal_1, _c, webmap, webscene, group, webMapPromises_1, webScenePromises_1, groupInfoPromises_1, groupItemsPromises_1, isWebMapEnabled, isWebSceneEnabled, isGroupInfoEnabled, isGroupItemsEnabled, itemParams_1, defaultWebMap_1, defaultWebScene_1, defaultGroup_1, fetchMultipleWebmaps, fetchMultipleWebscenes, fetchMultipleGroups, webMaps, allowedWebmaps, webScenes, allowedWebsenes, groups, allowedGroups, groups, promises, itemArgs, webMapResponses, webSceneResponses, groupInfoResponses, groupItemsResponses, itemInfo, e_1, e_2;
                 var _this = this;
-                return __generator(this, function (_e) {
-                    switch (_e.label) {
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
                         case 0:
                             settings = this.settings;
                             environmentSettings = settings.environment, groupSettings = settings.group, localStorageSettings = settings.localStorage, portalSettings = settings.portal, webMapSettings = settings.webMap, websceneSettings = settings.webScene, urlParamsSettings = settings.urlParams;
@@ -189,7 +189,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                                 this.config.portalUrl = esriPortalUrl;
                                 this.config.proxyUrl = this._getEsriEnvironmentProxyUrl(esriPortalUrl);
                             }
-                            _c = this.config, portalUrl = _c.portalUrl, proxyUrl = _c.proxyUrl, oauthappid = _c.oauthappid, appid = _c.appid;
+                            _b = this.config, portalUrl = _b.portalUrl, proxyUrl = _b.proxyUrl, oauthappid = _b.oauthappid, appid = _b.appid;
                             this._setPortalUrl(portalUrl);
                             this._setProxyUrl(proxyUrl);
                             rtlLocales = this.settings.rightToLeftLocales;
@@ -198,11 +198,17 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                             sharingUrl = portalUrl + "/sharing";
                             loadApplicationItem = appid ? this._loadItem(appid) : promiseUtils_1.resolve();
                             checkAppAccess = IdentityManager_1.default.checkAppAccess(sharingUrl, oauthappid);
-                            fetchApplicationData = appid ? loadApplicationItem.then(function (itemInfo) { return itemInfo instanceof PortalItem_1.default ? itemInfo.fetchData() : undefined; }) : promiseUtils_1.resolve();
+                            fetchApplicationData = appid
+                                ? loadApplicationItem.then(function (itemInfo) {
+                                    return itemInfo instanceof PortalItem_1.default
+                                        ? itemInfo.fetchData()
+                                        : undefined;
+                                })
+                                : promiseUtils_1.resolve();
                             loadPortal = portalSettings.fetch ? new Portal_1.default().load() : promiseUtils_1.resolve();
-                            _e.label = 1;
+                            _d.label = 1;
                         case 1:
-                            _e.trys.push([1, 7, , 8]);
+                            _d.trys.push([1, 7, , 8]);
                             return [4 /*yield*/, promiseUtils_1.eachAlways([
                                     loadApplicationItem,
                                     fetchApplicationData,
@@ -210,7 +216,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                                     checkAppAccess
                                 ])];
                         case 2:
-                            applicationArgs = _e.sent();
+                            applicationArgs = _d.sent();
                             applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
                             applicationItem = applicationItemResponse
                                 ? applicationItemResponse.value
@@ -241,8 +247,8 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                             this.results.localStorage = localStorage_1;
                             this.results.applicationItem = applicationItemResponse;
                             this.results.applicationData = applicationDataResponse;
-                            values = ((_a = applicationData) === null || _a === void 0 ? void 0 : _a.values) || null;
-                            if (((_b = this.config) === null || _b === void 0 ? void 0 : _b.mode) === "draft" && values.draft) {
+                            values = (applicationData === null || applicationData === void 0 ? void 0 : applicationData.values) || null;
+                            if (((_a = this.config) === null || _a === void 0 ? void 0 : _a.mode) === "draft" && values.draft) {
                                 values = __assign({}, values.draft);
                             }
                             applicationConfig = applicationData ? values : null;
@@ -256,7 +262,7 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                                 application: applicationConfig
                             });
                             this._setGeometryService(this.config, portal_1);
-                            _d = this.config, webmap = _d.webmap, webscene = _d.webscene, group = _d.group;
+                            _c = this.config, webmap = _c.webmap, webscene = _c.webscene, group = _c.group;
                             webMapPromises_1 = [];
                             webScenePromises_1 = [];
                             groupInfoPromises_1 = [];
@@ -313,12 +319,12 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                                     : promiseUtils_1.resolve()
                             };
                             itemArgs = null;
-                            _e.label = 3;
+                            _d.label = 3;
                         case 3:
-                            _e.trys.push([3, 5, , 6]);
+                            _d.trys.push([3, 5, , 6]);
                             return [4 /*yield*/, promiseUtils_1.eachAlways(promises)];
                         case 4:
-                            itemArgs = _e.sent();
+                            itemArgs = _d.sent();
                             webMapResponses = itemArgs.webMap.value;
                             webSceneResponses = itemArgs.webScene.value;
                             groupInfoResponses = itemArgs.groupInfo.value;
@@ -332,12 +338,12 @@ define(["require", "exports", "dojo/_base/kernel", "esri/config", "esri/core/pro
                             this.results.groupItems = groupItemsResponses;
                             return [2 /*return*/, this];
                         case 5:
-                            e_1 = _e.sent();
+                            e_1 = _d.sent();
                             console.error(e_1);
                             return [3 /*break*/, 6];
                         case 6: return [3 /*break*/, 8];
                         case 7:
-                            e_2 = _e.sent();
+                            e_2 = _d.sent();
                             console.error(e_2);
                             return [3 /*break*/, 8];
                         case 8: return [2 /*return*/];

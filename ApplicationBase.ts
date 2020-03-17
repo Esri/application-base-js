@@ -203,9 +203,18 @@ class ApplicationBase {
 
     const loadApplicationItem = appid ? this._loadItem(appid) : resolve();
 
-    const checkAppAccess = IdentityManager.checkAppAccess(sharingUrl, oauthappid);
+    const checkAppAccess = IdentityManager.checkAppAccess(
+      sharingUrl,
+      oauthappid
+    );
 
-    const fetchApplicationData = appid ? loadApplicationItem.then(itemInfo => { return itemInfo instanceof PortalItem ? itemInfo.fetchData() : undefined }) : resolve();
+    const fetchApplicationData = appid
+      ? loadApplicationItem.then(itemInfo => {
+          return itemInfo instanceof PortalItem
+            ? itemInfo.fetchData()
+            : undefined;
+        })
+      : resolve();
 
     const loadPortal = portalSettings.fetch ? new Portal().load() : resolve();
 
@@ -468,8 +477,8 @@ class ApplicationBase {
     const appLocationIndex = isEsriAppsPath
       ? esriAppsPathIndex
       : isEsriHomePath
-        ? esriHomePathIndex
-        : undefined;
+      ? esriHomePathIndex
+      : undefined;
 
     if (appLocationIndex === undefined) {
       return;
@@ -506,10 +515,10 @@ class ApplicationBase {
     const units = userUnits
       ? userUnits
       : responseUnits
-        ? responseUnits
-        : isEnglishUnits
-          ? "english"
-          : "metric";
+      ? responseUnits
+      : isEnglishUnits
+      ? "english"
+      : "metric";
     return units;
   }
 

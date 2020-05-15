@@ -61,7 +61,6 @@ export interface ApplicationBaseSettings {
   portal?: {
     fetch?: boolean;
   };
-  rightToLeftLocales?: string[];
   urlParams?: string[];
   webMap?: {
     default?: string;

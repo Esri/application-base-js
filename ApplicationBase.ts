@@ -393,7 +393,6 @@ class ApplicationBase {
 
   private _mixinSettingsDefaults(settings: ApplicationBaseSettings): void {
     const userEnvironmentSettings = settings.environment;
-    // const userLocalStorageSettings = settings.localStorage;
     const userGroupSettings = settings.group;
     const userPortalSettings = settings.portal;
     const userWebmapSettings = settings.webMap;
@@ -404,11 +403,6 @@ class ApplicationBase {
       webTierSecurity: false,
       ...userEnvironmentSettings
     };
-
-    /*settings.localStorage = {
-      fetch: true,
-      ...userLocalStorageSettings
-    };*/
 
     const itemParams = {
       sortField: "modified",
@@ -529,7 +523,7 @@ class ApplicationBase {
     return (await portal.queryGroups(params)) as __esri.PortalQueryResult;
   }
 
-  private _loadItem(id: string): IPromise<any> {
+  private _loadItem(id: string): IPromise<PortalItem> {
     const item = new PortalItem({
       id
     });

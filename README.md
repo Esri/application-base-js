@@ -154,6 +154,7 @@ Example:
 |config|Config created|[ApplicationConfig](#applicationconfig)|true|
 |direction|Language direction|string|true|
 |locale|Locale string|string|true|
+|isIE|True when IE11 and older boolean|boolean|true|
 |portal|`Portal` created by ApplicationBase|[Portal](https://developers.arcgis.com/javascript//latest/api-reference/esri-portal-Portal.html)|true|
 |results|ApplicationBase query results|[ApplicationBaseResults](#applicationbaseresults)|true|
 |settings|Config created|[ApplicationBaseConfig](#applicationbaseconfig)|true|

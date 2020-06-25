@@ -85,8 +85,6 @@ class ApplicationBase {
     this.config = configMixin;
     this.settings = settingsMixin;
 
-
-
   }
 
   //--------------------------------------------------------------------------
@@ -126,9 +124,15 @@ class ApplicationBase {
   locale: string = getLocale();
 
   //----------------------------------
+  //  Detect IE
+  //----------------------------------
+  isIE: boolean;
+
+  //----------------------------------
   //  units
   //----------------------------------
   units: string = null;
+
 
   //--------------------------------------------------------------------------
   //
@@ -193,8 +197,6 @@ class ApplicationBase {
 
     this._setPortalUrl(portalUrl);
     this._setProxyUrl(proxyUrl);
-
-
 
     this._registerOauthInfos(oauthappid, portalUrl);
     const sharingUrl = `${portalUrl}/sharing`;
@@ -271,6 +273,9 @@ class ApplicationBase {
         const portal = portalResponse ? portalResponse.value : null;
         this.portal = portal;
 
+        // Detect IE 11 and older 
+        this.isIE = this._detectIE();
+        console.log("IE", this.isIE);
         // Update the culture if there is a url param or portal culture
         this.locale = this.config?.locale || this.portal?.culture || getLocale();
         setLocale(this.locale);
@@ -511,6 +516,11 @@ class ApplicationBase {
           ? "english"
           : "metric";
     return units;
+  }
+
+  private _detectIE() {
+    return /*@cc_on!@*/false || !!document['documentMode'];
+
   }
 
   private async _queryGroupInfo(

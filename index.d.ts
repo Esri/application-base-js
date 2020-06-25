@@ -142,6 +142,7 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    private _getEsriEnvironmentPortalUrl;
 	    private _getEsriEnvironmentProxyUrl;
 	    private _getUnits;
+	    private _detectIE;
 	    private _queryGroupInfo;
 	    private _loadItem;
 	    private _overwriteItemsExtent;

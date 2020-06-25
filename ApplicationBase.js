@@ -239,6 +239,9 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                     : null;
                 var portal = portalResponse ? portalResponse.value : null;
                 _this.portal = portal;
+                // Detect IE 11 and older 
+                _this.isIE = _this._detectIE();
+                console.log("IE", _this.isIE);
                 // Update the culture if there is a url param or portal culture
                 _this.locale = ((_a = _this.config) === null || _a === void 0 ? void 0 : _a.locale) || ((_b = _this.portal) === null || _b === void 0 ? void 0 : _b.culture) || intl_1.getLocale();
                 intl_1.setLocale(_this.locale);
@@ -332,16 +335,11 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
         //--------------------------------------------------------------------------
         ApplicationBase.prototype._mixinSettingsDefaults = function (settings) {
             var userEnvironmentSettings = settings.environment;
-            // const userLocalStorageSettings = settings.localStorage;
             var userGroupSettings = settings.group;
             var userPortalSettings = settings.portal;
             var userWebmapSettings = settings.webMap;
             var userWebsceneSettings = settings.webScene;
             settings.environment = __assign({ isEsri: false, webTierSecurity: false }, userEnvironmentSettings);
-            /*settings.localStorage = {
-              fetch: true,
-              ...userLocalStorageSettings
-            };*/
             var itemParams = {
                 sortField: "modified",
                 sortOrder: "desc",
@@ -414,6 +412,9 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                         ? "english"
                         : "metric";
             return units;
+        };
+        ApplicationBase.prototype._detectIE = function () {
+            return /*@cc_on!@*/ false || !!document['documentMode'];
         };
         ApplicationBase.prototype._queryGroupInfo = function (groupId, portal) {
             return __awaiter(this, void 0, void 0, function () {

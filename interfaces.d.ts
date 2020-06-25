@@ -97,6 +97,7 @@ export interface ApplicationBaseResults {
   groupItems?: ApplicationBasePortalQueryResult;
   localStorage?: ApplicationConfig;
   portal?: Portal;
+  isIE?: boolean;
   urlParams?: ApplicationConfig;
   webMapItems?: ApplicationBasePortalItemResult[];
   webSceneItems?: ApplicationBasePortalItemResult[];

@@ -11,29 +11,25 @@
   limitations under the License.​
 */
 
-import kernel from "dojo/_base/kernel";
-
-import esriConfig from "esri/config";
-
-import { resolve, reject, eachAlways, create } from "esri/core/promiseUtils";
-
-import IdentityManager from "esri/identity/IdentityManager";
-import OAuthInfo from "esri/identity/OAuthInfo";
-
-import Portal from "esri/portal/Portal";
-import PortalItem from "esri/portal/PortalItem";
-import PortalQueryParams from "esri/portal/PortalQueryParams";
-
 import {
-  Direction,
-  ApplicationBaseItemPromises,
   ApplicationBaseConstructorOptions,
+  ApplicationBaseItemPromises,
   ApplicationBaseResult,
   ApplicationBaseResults,
   ApplicationBaseSettings,
   ApplicationConfig,
-  ApplicationConfigs
+  ApplicationConfigs,
+  Direction
 } from "./interfaces";
+import { eachAlways, reject, resolve } from "esri/core/promiseUtils";
+
+import IdentityManager from "esri/identity/IdentityManager";
+import OAuthInfo from "esri/identity/OAuthInfo";
+import Portal from "esri/portal/Portal";
+import PortalItem from "esri/portal/PortalItem";
+import PortalQueryParams from "esri/portal/PortalQueryParams";
+import esriConfig from "esri/config";
+import { getLocale, setLocale, prefersRTL } from "esri/intl";
 
 const defaultConfig = {
   portalUrl: "https://www.arcgis.com",
@@ -48,9 +44,7 @@ const defaultConfig = {
 const defaultSettings = {
   environment: {},
   group: {},
-  localStorage: {},
   portal: {},
-  rightToLeftLocales: ["ar", "he"],
   urlParams: [],
   webMap: {},
   webScene: {}
@@ -90,6 +84,7 @@ class ApplicationBase {
 
     this.config = configMixin;
     this.settings = settingsMixin;
+
   }
 
   //--------------------------------------------------------------------------
@@ -126,12 +121,18 @@ class ApplicationBase {
   //----------------------------------
   //  locale
   //----------------------------------
-  locale: string = kernel.locale;
+  locale: string = getLocale();
+
+  //----------------------------------
+  //  Detect IE
+  //----------------------------------
+  isIE: boolean;
 
   //----------------------------------
   //  units
   //----------------------------------
   units: string = null;
+
 
   //--------------------------------------------------------------------------
   //
@@ -165,17 +166,18 @@ class ApplicationBase {
     return result as __esri.PortalQueryResult;
   }
 
-  async load(): Promise<ApplicationBase> {
+  load(): Promise<ApplicationBase> {
     const { settings } = this;
     const {
       environment: environmentSettings,
       group: groupSettings,
-      localStorage: localStorageSettings,
       portal: portalSettings,
       webMap: webMapSettings,
       webScene: websceneSettings,
       urlParams: urlParamsSettings
     } = settings;
+
+
     const { isEsri } = environmentSettings;
     const urlParams = this._getUrlParamValues(urlParamsSettings);
     this.results.urlParams = urlParams;
@@ -195,197 +197,197 @@ class ApplicationBase {
 
     this._setPortalUrl(portalUrl);
     this._setProxyUrl(proxyUrl);
-    const rtlLocales = this.settings.rightToLeftLocales;
-    this.direction = this._getLanguageDirection(rtlLocales);
 
     this._registerOauthInfos(oauthappid, portalUrl);
     const sharingUrl = `${portalUrl}/sharing`;
 
     const loadApplicationItem = appid ? this._loadItem(appid) : resolve();
-
     const checkAppAccess = IdentityManager.checkAppAccess(
       sharingUrl,
       oauthappid
-    );
+    )
+      .catch(response => response)
+      .then(response => {
+        return response;
+      });
 
     const fetchApplicationData = appid
       ? loadApplicationItem.then(itemInfo => {
-          return itemInfo instanceof PortalItem
-            ? itemInfo.fetchData()
-            : undefined;
-        })
+        return itemInfo instanceof PortalItem
+          ? itemInfo.fetchData()
+          : undefined;
+      })
       : resolve();
-
     const loadPortal = portalSettings.fetch ? new Portal().load() : resolve();
 
-    try {
-      const applicationArgs = await eachAlways([
-        loadApplicationItem,
-        fetchApplicationData,
-        loadPortal,
-        checkAppAccess
-      ]);
+    return eachAlways([
+      loadApplicationItem,
+      fetchApplicationData,
+      loadPortal,
+      checkAppAccess
+    ])
+      .catch(applicationArgs => applicationArgs)
+      .then(applicationArgs => {
+        const [
+          applicationItemResponse,
+          applicationDataResponse,
+          portalResponse,
+          checkAppAccessResponse
+        ] = applicationArgs;
+        const applicationItem = applicationItemResponse
+          ? applicationItemResponse.value
+          : null;
 
-      const [
-        applicationItemResponse,
-        applicationDataResponse,
-        portalResponse,
-        checkAppAccessResponse
-      ] = applicationArgs;
-      const applicationItem = applicationItemResponse
-        ? applicationItemResponse.value
-        : null;
+        const applicationData = applicationDataResponse
+          ? applicationDataResponse.value
+          : null;
 
-      const applicationData = applicationDataResponse
-        ? applicationDataResponse.value
-        : null;
-
-      const localStorage = localStorageSettings.fetch
-        ? this._getLocalConfig(appid)
-        : null;
-
-      const appAccess = checkAppAccessResponse
-        ? checkAppAccessResponse.value
-        : null;
-      if (
-        applicationItem &&
-        applicationItem.access &&
-        applicationItem.access !== "public"
-      ) {
-        // do we have permission to access app
+        const appAccess = checkAppAccessResponse
+          ? checkAppAccessResponse.value
+          : null;
         if (
-          appAccess &&
-          appAccess.name &&
-          appAccess.name === "identity-manager:not-authorized"
+          applicationItem &&
+          applicationItem.access &&
+          applicationItem.access !== "public"
         ) {
-          //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
-          return reject(appAccess.name);
+          // do we have permission to access app
+          if (
+            appAccess &&
+            appAccess.name &&
+            appAccess.name === "identity-manager:not-authorized"
+          ) {
+            //identity-manager:not-authorized, identity-manager:not-authenticated, identity-manager:invalid-request
+            return reject(appAccess.name);
+          }
+        } else if (applicationItemResponse.error) {
+          return reject(applicationItemResponse.error);
         }
-      } else if (applicationItemResponse.error) {
-        return reject(applicationItemResponse.error);
-      }
 
-      this.results.localStorage = localStorage;
-      this.results.applicationItem = applicationItemResponse;
-      this.results.applicationData = applicationDataResponse;
+        this.results.applicationItem = applicationItemResponse;
+        this.results.applicationData = applicationDataResponse;
 
-      let values = applicationData?.values || null;
-      if (this.config?.mode === "draft" && values.draft) {
-        values = { ...values.draft };
-      }
+        const applicationConfig = applicationData
+          ? applicationData.values
+          : null;
 
-      const applicationConfig = applicationData ? values : null;
+        const portal = portalResponse ? portalResponse.value : null;
+        this.portal = portal;
 
-      const portal = portalResponse ? portalResponse.value : null;
-      this.portal = portal;
+        // Detect IE 11 and older 
+        this.isIE = this._detectIE();
+        console.log("IE", this.isIE);
+        // Update the culture if there is a url param or portal culture
+        this.locale = this.config?.locale || this.portal?.culture || getLocale();
+        setLocale(this.locale);
+        this.direction = prefersRTL(this.locale) ? "rtl" : "ltr";
 
-      this.units = this._getUnits(portal);
+        this.units = this._getUnits(portal);
 
-      this.config = this._mixinAllConfigs({
-        config: this.config,
-        url: urlParams,
-        local: localStorage,
-        application: applicationConfig
+        this.config = this._mixinAllConfigs({
+          config: this.config,
+          url: urlParams,
+          application: applicationConfig
+        });
+
+        this._setGeometryService(this.config, portal);
+
+        const { webmap, webscene, group, draft } = this.config;
+
+        const webMapPromises = [];
+        const webScenePromises = [];
+        const groupInfoPromises = [];
+        const groupItemsPromises = [];
+
+        const isWebMapEnabled = webMapSettings.fetch && webmap;
+        const isWebSceneEnabled = websceneSettings.fetch && webscene;
+        const isGroupInfoEnabled = groupSettings.fetchInfo && group;
+        const isGroupItemsEnabled = groupSettings.fetchItems && group;
+        const itemParams = groupSettings.itemParams;
+        const defaultWebMap = webMapSettings.default;
+        const defaultWebScene = websceneSettings.default;
+        const defaultGroup = groupSettings.default;
+        const fetchMultipleWebmaps = webMapSettings.fetchMultiple;
+        const fetchMultipleWebscenes = websceneSettings.fetchMultiple;
+        const fetchMultipleGroups = groupSettings.fetchMultiple;
+
+        if (isWebMapEnabled) {
+          const maps = draft?.webmap ? [draft.webmap, webmap] : webmap;
+          const webMaps = this._getPropertyArray(maps);
+
+          const allowedWebmaps = this._limitItemSize(
+            webMaps,
+            fetchMultipleWebmaps
+          );
+          allowedWebmaps.forEach(id => {
+            const webMapId = this._getDefaultId(id, defaultWebMap);
+            webMapPromises.push(this._loadItem(webMapId));
+          });
+        }
+
+        if (isWebSceneEnabled) {
+          const webScenes = this._getPropertyArray(webscene);
+          const allowedWebsenes = this._limitItemSize(
+            webScenes,
+            fetchMultipleWebscenes
+          );
+          allowedWebsenes.forEach(id => {
+            const webSceneId = this._getDefaultId(id, defaultWebScene);
+            webScenePromises.push(this._loadItem(webSceneId));
+          });
+        }
+
+        if (isGroupInfoEnabled) {
+          const groups = this._getPropertyArray(group);
+          const allowedGroups = this._limitItemSize(
+            groups,
+            fetchMultipleGroups
+          );
+          allowedGroups.forEach(id => {
+            const groupId = this._getDefaultId(id, defaultGroup);
+            groupInfoPromises.push(this._queryGroupInfo(groupId, portal));
+          });
+        }
+
+        if (isGroupItemsEnabled) {
+          const groups = this._getPropertyArray(group);
+          groups.forEach(id => {
+            groupItemsPromises.push(
+              this.queryGroupItems(id, itemParams, portal)
+            );
+          });
+        }
+
+        const promises: ApplicationBaseItemPromises = {
+          webMap: webMapPromises ? eachAlways(webMapPromises) : resolve(),
+          webScene: webScenePromises ? eachAlways(webScenePromises) : resolve(),
+          groupInfo: groupInfoPromises
+            ? eachAlways(groupInfoPromises)
+            : resolve(),
+          groupItems: groupItemsPromises
+            ? eachAlways(groupItemsPromises)
+            : resolve()
+        };
+
+        return eachAlways(promises)
+          .catch(itemArgs => itemArgs)
+          .then(itemArgs => {
+            const webMapResponses = itemArgs.webMap.value;
+            const webSceneResponses = itemArgs.webScene.value;
+            const groupInfoResponses = itemArgs.groupInfo.value;
+            const groupItemsResponses = itemArgs.groupItems.value;
+
+            const itemInfo = applicationItem ? applicationItem.itemInfo : null;
+            this._overwriteItemsExtent(webMapResponses, itemInfo);
+            this._overwriteItemsExtent(webSceneResponses, itemInfo);
+
+            this.results.webMapItems = webMapResponses;
+            this.results.webSceneItems = webSceneResponses;
+            this.results.groupInfos = groupInfoResponses;
+            this.results.groupItems = groupItemsResponses;
+
+            return this;
+          });
       });
-
-      this._setGeometryService(this.config, portal);
-
-      const { webmap, webscene, group } = this.config;
-
-      const webMapPromises = [];
-      const webScenePromises = [];
-      const groupInfoPromises = [];
-      const groupItemsPromises = [];
-
-      const isWebMapEnabled = webMapSettings.fetch && webmap;
-      const isWebSceneEnabled = websceneSettings.fetch && webscene;
-      const isGroupInfoEnabled = groupSettings.fetchInfo && group;
-      const isGroupItemsEnabled = groupSettings.fetchItems && group;
-      const itemParams = groupSettings.itemParams;
-      const defaultWebMap = webMapSettings.default;
-      const defaultWebScene = websceneSettings.default;
-      const defaultGroup = groupSettings.default;
-      const fetchMultipleWebmaps = webMapSettings.fetchMultiple;
-      const fetchMultipleWebscenes = websceneSettings.fetchMultiple;
-      const fetchMultipleGroups = groupSettings.fetchMultiple;
-
-      if (isWebMapEnabled) {
-        const webMaps = this._getPropertyArray(webmap);
-        const allowedWebmaps = this._limitItemSize(
-          webMaps,
-          fetchMultipleWebmaps
-        );
-        allowedWebmaps.forEach(id => {
-          const webMapId = this._getDefaultId(id, defaultWebMap);
-          webMapPromises.push(this._loadItem(webMapId));
-        });
-      }
-
-      if (isWebSceneEnabled) {
-        const webScenes = this._getPropertyArray(webscene);
-        const allowedWebsenes = this._limitItemSize(
-          webScenes,
-          fetchMultipleWebscenes
-        );
-        allowedWebsenes.forEach(id => {
-          const webSceneId = this._getDefaultId(id, defaultWebScene);
-          webScenePromises.push(this._loadItem(webSceneId));
-        });
-      }
-
-      if (isGroupInfoEnabled) {
-        const groups = this._getPropertyArray(group);
-        const allowedGroups = this._limitItemSize(groups, fetchMultipleGroups);
-        allowedGroups.forEach(id => {
-          const groupId = this._getDefaultId(id, defaultGroup);
-          groupInfoPromises.push(this._queryGroupInfo(groupId, portal));
-        });
-      }
-
-      if (isGroupItemsEnabled) {
-        const groups = this._getPropertyArray(group);
-        groups.forEach(id => {
-          groupItemsPromises.push(this.queryGroupItems(id, itemParams, portal));
-        });
-      }
-
-      const promises: ApplicationBaseItemPromises = {
-        webMap: webMapPromises ? eachAlways(webMapPromises) : resolve(),
-        webScene: webScenePromises ? eachAlways(webScenePromises) : resolve(),
-        groupInfo: groupInfoPromises
-          ? eachAlways(groupInfoPromises)
-          : resolve(),
-        groupItems: groupItemsPromises
-          ? eachAlways(groupItemsPromises)
-          : resolve()
-      };
-
-      let itemArgs = null;
-
-      try {
-        itemArgs = await eachAlways(promises);
-
-        const webMapResponses = itemArgs.webMap.value;
-        const webSceneResponses = itemArgs.webScene.value;
-        const groupInfoResponses = itemArgs.groupInfo.value;
-        const groupItemsResponses = itemArgs.groupItems.value;
-
-        const itemInfo = applicationItem ? applicationItem.itemInfo : null;
-        this._overwriteItemsExtent(webMapResponses, itemInfo);
-        this._overwriteItemsExtent(webSceneResponses, itemInfo);
-
-        this.results.webMapItems = webMapResponses;
-        this.results.webSceneItems = webSceneResponses;
-        this.results.groupInfos = groupInfoResponses;
-        this.results.groupItems = groupItemsResponses;
-
-        return this;
-      } catch (e) {
-        console.error(e);
-      }
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   //--------------------------------------------------------------------------
@@ -396,7 +398,6 @@ class ApplicationBase {
 
   private _mixinSettingsDefaults(settings: ApplicationBaseSettings): void {
     const userEnvironmentSettings = settings.environment;
-    const userLocalStorageSettings = settings.localStorage;
     const userGroupSettings = settings.group;
     const userPortalSettings = settings.portal;
     const userWebmapSettings = settings.webMap;
@@ -406,11 +407,6 @@ class ApplicationBase {
       isEsri: false,
       webTierSecurity: false,
       ...userEnvironmentSettings
-    };
-
-    settings.localStorage = {
-      fetch: true,
-      ...userLocalStorageSettings
     };
 
     const itemParams = {
@@ -477,8 +473,8 @@ class ApplicationBase {
     const appLocationIndex = isEsriAppsPath
       ? esriAppsPathIndex
       : isEsriHomePath
-      ? esriHomePathIndex
-      : undefined;
+        ? esriHomePathIndex
+        : undefined;
 
     if (appLocationIndex === undefined) {
       return;
@@ -511,15 +507,20 @@ class ApplicationBase {
       (userRegion && responseRegion === USRegion) ||
       (userRegion && !responseRegion) ||
       (!user && ipCountryCode === USRegion) ||
-      (!user && !ipCountryCode && kernel.locale === USLocale);
+      (!user && !ipCountryCode && this.locale === USLocale);
     const units = userUnits
       ? userUnits
       : responseUnits
-      ? responseUnits
-      : isEnglishUnits
-      ? "english"
-      : "metric";
+        ? responseUnits
+        : isEnglishUnits
+          ? "english"
+          : "metric";
     return units;
+  }
+
+  private _detectIE() {
+    return /*@cc_on!@*/false || !!document['documentMode'];
+
   }
 
   private async _queryGroupInfo(
@@ -532,22 +533,11 @@ class ApplicationBase {
     return (await portal.queryGroups(params)) as __esri.PortalQueryResult;
   }
 
-  private _loadItem(id: string): Promise<PortalItem> {
+  private _loadItem(id: string): IPromise<PortalItem> {
     const item = new PortalItem({
       id
     });
     return item.load();
-  }
-
-  private _getLocalConfig(appid: string): ApplicationConfig {
-    if (!window.localStorage || !appid) {
-      return;
-    }
-
-    const lsItemId = `application_base_config_${appid}`;
-    const lsItem = localStorage.getItem(lsItemId);
-    const localConfig = lsItem && JSON.parse(lsItem);
-    return localConfig;
   }
 
   private _overwriteItemsExtent(
@@ -587,21 +577,12 @@ class ApplicationBase {
     return useDefaultId ? defaultId : id;
   }
 
-  private _getLanguageDirection(
-    rtlLocales: string[] = ["ar", "he"]
-  ): Direction {
-    const isRTL = rtlLocales.some(language => {
-      return kernel.locale.indexOf(language) !== -1;
-    });
-
-    return isRTL ? "rtl" : "ltr";
-  }
-
   private _mixinAllConfigs(params: ApplicationConfigs): ApplicationConfig {
     const config = params.config || null;
     const appConfig = params.application || null;
     const localConfig = params.local || null;
     const urlConfig = params.url || null;
+
     return {
       ...config,
       ...appConfig,

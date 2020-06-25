@@ -1,11 +1,11 @@
 declare module 'ApplicationBase/interfaces' {
-	import Portal = require("esri/portal/Portal");
-	import PortalItem = require("esri/portal/PortalItem");
-	import PortalQueryResult = require("esri/portal/PortalQueryResult");
-	import PortalQueryParams = require("esri/portal/PortalQueryParams");
+	import Portal = require('esri/portal/Portal');
+	import PortalItem = require('esri/portal/PortalItem');
+	import PortalQueryResult = require('esri/portal/PortalQueryResult');
+	import PortalQueryParams = require('esri/portal/PortalQueryParams');
 
-	import WebMap = require("esri/WebMap");
-	import WebScene = require("esri/WebScene");
+	import WebMap = require('esri/WebMap');
+	import WebScene = require('esri/WebScene');
 
 	export type Direction = "ltr" | "rtl";
 
@@ -62,7 +62,6 @@ declare module 'ApplicationBase/interfaces' {
 	  portal?: {
 	    fetch?: boolean;
 	  };
-	  rightToLeftLocales?: string[];
 	  urlParams?: string[];
 	  webMap?: {
 	    default?: string;
@@ -124,9 +123,9 @@ declare module 'ApplicationBase/interfaces' {
 }
 declare module 'ApplicationBase/ApplicationBase' {
 	/// <reference types="arcgis-js-api" />
-	import Portal from "esri/portal/Portal";
-	import PortalQueryParams from "esri/portal/PortalQueryParams";
-	import { Direction, ApplicationBaseConstructorOptions, ApplicationBaseResults, ApplicationBaseSettings, ApplicationConfig } from 'ApplicationBase/interfaces'; class ApplicationBase {
+	import { ApplicationBaseConstructorOptions, ApplicationBaseResults, ApplicationBaseSettings, ApplicationConfig, Direction } from 'ApplicationBase/interfaces';
+	import Portal from 'esri/portal/Portal';
+	import PortalQueryParams from 'esri/portal/PortalQueryParams'; class ApplicationBase {
 	    constructor(options: ApplicationBaseConstructorOptions);
 	    settings: ApplicationBaseSettings;
 	    config: ApplicationConfig;
@@ -143,13 +142,12 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    private _getEsriEnvironmentPortalUrl;
 	    private _getEsriEnvironmentProxyUrl;
 	    private _getUnits;
+	    private _detectIE;
 	    private _queryGroupInfo;
 	    private _loadItem;
-	    private _getLocalConfig;
 	    private _overwriteItemsExtent;
 	    private _overwriteItemExtent;
 	    private _getDefaultId;
-	    private _getLanguageDirection;
 	    private _mixinAllConfigs;
 	    private _setGeometryService;
 	    private _setPortalUrl;
@@ -171,9 +169,9 @@ declare module 'ApplicationBase/support/domHelper' {
 }
 declare module 'ApplicationBase/support/urlUtils' {
 	/// <reference types="arcgis-js-api" />
-	import Camera from "esri/Camera";
-	import Extent from "esri/geometry/Extent";
-	import Point from "esri/geometry/Point";
+	import Camera from 'esri/Camera';
+	import Extent from 'esri/geometry/Extent';
+	import Point from 'esri/geometry/Point';
 	import esri = __esri;
 	export function parseViewComponents(components: string): string[];
 	export function parseViewpoint(viewpoint: string): Camera;
@@ -185,7 +183,7 @@ declare module 'ApplicationBase/support/urlUtils' {
 }
 declare module 'ApplicationBase/support/itemUtils' {
 	/// <reference types="arcgis-js-api" />
-	import PortalItem from "esri/portal/PortalItem";
+	import PortalItem from 'esri/portal/PortalItem';
 	import { CreateMapFromItemOptions, ApplicationConfig } from 'ApplicationBase/interfaces';
 	import esri = __esri;
 	export function getConfigViewProperties(config: ApplicationConfig): any;

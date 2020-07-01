@@ -275,9 +275,8 @@ class ApplicationBase {
 
         // Detect IE 11 and older 
         this.isIE = this._detectIE();
-        console.log("IE", this.isIE);
-        // Update the culture if there is a url param or portal culture
-        this.locale = this.config?.locale || this.portal?.culture || getLocale();
+        // Update the culture if there is a url param 
+        this.locale = this.config?.locale || getLocale();
         setLocale(this.locale);
         this.direction = prefersRTL(this.locale) ? "rtl" : "ltr";
 

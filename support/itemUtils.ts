@@ -158,13 +158,14 @@ export async function findQuery(
     return resolve();
   }
 
-  const SearchViewModel = await import("esri/widgets/Search/SearchViewModel");
-  const searchVM = new SearchViewModel.default({
+  const Search = await import("esri/widgets/Search");
+
+  const search = new Search.default({
     view
   });
-  const result = await searchVM.search(query);
+  const result = await search.search(query);
   whenFalseOnce(view, "popup.visible", () => {
-    searchVM.destroy();
+    search.destroy();
   });
   return result;
 }

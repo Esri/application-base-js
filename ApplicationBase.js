@@ -241,7 +241,6 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                 _this.portal = portal;
                 // Detect IE 11 and older 
                 _this.isIE = _this._detectIE();
-                console.log("IE", _this.isIE);
                 // Update the culture if there is a url param or portal culture
                 _this.locale = ((_a = _this.config) === null || _a === void 0 ? void 0 : _a.locale) || ((_b = _this.portal) === null || _b === void 0 ? void 0 : _b.culture) || intl_1.getLocale();
                 intl_1.setLocale(_this.locale);

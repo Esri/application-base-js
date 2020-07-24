@@ -9,6 +9,25 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -48,16 +67,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", "esri/views/MapView", "esri/views/SceneView", "./urlUtils"], function (require, exports, promiseUtils_1, watchUtils_1, MapView_1, SceneView_1, urlUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.findQuery = exports.goToMarker = exports.getItemTitle = exports.createWebSceneFromItem = exports.createWebMapFromItem = exports.createMapFromItem = exports.createView = exports.getConfigViewProperties = void 0;
     MapView_1 = __importDefault(MapView_1);
     SceneView_1 = __importDefault(SceneView_1);
     //--------------------------------------------------------------------------
@@ -188,7 +201,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
     exports.goToMarker = goToMarker;
     function findQuery(query, view) {
         return __awaiter(this, void 0, void 0, function () {
-            var SearchViewModel, searchVM, result;
+            var Search, search, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -196,17 +209,17 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         if (!query || !view) {
                             return [2 /*return*/, promiseUtils_1.resolve()];
                         }
-                        return [4 /*yield*/, new Promise(function (resolve_3, reject_3) { require(["esri/widgets/Search/SearchViewModel"], resolve_3, reject_3); }).then(__importStar)];
+                        return [4 /*yield*/, new Promise(function (resolve_3, reject_3) { require(["esri/widgets/Search"], resolve_3, reject_3); }).then(__importStar)];
                     case 1:
-                        SearchViewModel = _a.sent();
-                        searchVM = new SearchViewModel.default({
+                        Search = _a.sent();
+                        search = new Search.default({
                             view: view
                         });
-                        return [4 /*yield*/, searchVM.search(query)];
+                        return [4 /*yield*/, search.search(query)];
                     case 2:
                         result = _a.sent();
                         watchUtils_1.whenFalseOnce(view, "popup.visible", function () {
-                            searchVM.destroy();
+                            search.destroy();
                         });
                         return [2 /*return*/, result];
                 }

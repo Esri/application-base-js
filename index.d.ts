@@ -133,6 +133,7 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    portal: Portal;
 	    direction: Direction;
 	    locale: string;
+	    isIE: boolean;
 	    units: string;
 	    queryGroupItems(groupId: string, itemParams: PortalQueryParams, portal?: Portal): Promise<__esri.PortalQueryResult>;
 	    load(): Promise<ApplicationBase>;

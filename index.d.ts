@@ -197,3 +197,34 @@ declare module 'ApplicationBase/support/itemUtils' {
 	export function findQuery(query: string, view: esri.MapView | esri.SceneView): Promise<any>;
 
 }
+declare module 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils' {
+	/**
+	 * This module contains common functions and interfaces to be used in different
+	 * widgetConfigUtil files.
+	 */
+	/// <reference types="arcgis-js-api" />
+	/** Returns the first DOM node in the page which matches the className */
+	export function _findNode(className: string): HTMLElement;
+	export interface esriWidgetProps extends __esri.WidgetProperties {
+	    config: any;
+	    view?: __esri.MapView;
+	    portal?: __esri.Portal;
+	    propertyName?: string;
+	}
+
+}
+declare module 'ApplicationBase/support/widgetConfigUtils/basemapToggle' {
+	/**
+	 * This module contains a method to instantiate the 4.x API BasemapToggle Widget
+	 * using configuration variable which come from the Config Panel.
+	 */
+	/// <reference types="arcgis-js-api" />
+	import { esriWidgetProps } from 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils';
+	/**
+	 * Adds BasemapToggle to Application, including logic to make
+	 * integrations with the Config Panel function properly
+	 * @param props
+	 */
+	export function addBasemapToggle(props: esriWidgetProps): Promise<__esri.BasemapToggle>;
+
+}

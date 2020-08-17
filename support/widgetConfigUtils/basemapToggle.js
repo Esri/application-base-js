@@ -1,6 +1,6 @@
 /**
- * This module contains a method to instantiate the 4.x API BasemapToggle Widget
- * using configuration variable which come from the Config Panel.
+ * This module contains a methods to assist with creation of the 4.x API BasemapToggle Widget
+ * using configuration variables that come from the Config Panel.
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -41,100 +41,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "./widgetConfigUtils", "esri/widgets/BasemapToggle", "esri/Basemap"], function (require, exports, widgetConfigUtils_1, BasemapToggle_1, Basemap_1) {
+define(["require", "exports", "esri/Basemap"], function (require, exports, Basemap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    BasemapToggle_1 = __importDefault(BasemapToggle_1);
     Basemap_1 = __importDefault(Basemap_1);
     //////////////////////////////
-    // Public Module Functions
+    // Public Functions
     //////////////////////////////
-    /** The original basemap for the Webmap */
-    var _originalBasemap;
-    /** The alternate basemap in the BasemapToggle */
-    var _nextBasemap;
     /**
-     * Adds BasemapToggle to Application, including logic to make
-     * integrations with the Config Panel function properly
+     * Gets the proper Basemaps for the BasemapToggle (internally tracks the
+     * original Map's Basemap)
      * @param props
      */
-    function addBasemapToggle(props) {
+    function getBasemaps(props) {
         return __awaiter(this, void 0, void 0, function () {
-            var view, config, propertyName, portal, basemapToggle, basemapTogglePosition, basemapSelector, nextBasemap, alternateBasemapId, basemapToggleInstance, node;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var view, config, portal, basemapSelector, nextBasemap, alternateBasemapId, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        view = props.view, config = props.config, propertyName = props.propertyName, portal = props.portal;
-                        basemapToggle = config.basemapToggle, basemapTogglePosition = config.basemapTogglePosition, basemapSelector = config.basemapSelector, nextBasemap = config.nextBasemap;
+                        view = props.view, config = props.config, portal = props.portal;
+                        basemapSelector = config.basemapSelector, nextBasemap = config.nextBasemap;
                         alternateBasemapId = basemapSelector || nextBasemap;
-                        node = widgetConfigUtils_1._findNode("esri-basemap-toggle");
-                        if (node)
-                            basemapToggleInstance = view.ui.find("basemapToggle");
                         // Save original basemap
-                        if (!_originalBasemap)
-                            _originalBasemap = view.map.basemap;
-                        // Remove BasemapToggle
-                        if (!basemapToggle) {
-                            if (node) {
-                                _resetBasemapsInToggle(basemapToggleInstance, _originalBasemap);
-                                view.ui.remove(node);
-                                basemapToggleInstance.destroy();
-                            }
-                            return [2 /*return*/, null]; // BasemapToggle has been removed
-                        }
+                        if (!_basemapToggleState.originalBasemap)
+                            _basemapToggleState.originalBasemap = view.map.basemap;
+                        // setup nextBasemap
+                        _a = _basemapToggleState;
                         return [4 /*yield*/, _getBasemap(alternateBasemapId, portal)];
                     case 1:
                         // setup nextBasemap
-                        _nextBasemap = _a.sent();
-                        if (node && propertyName === "basemapSelector") {
-                            _resetBasemapsInToggle(basemapToggleInstance, _originalBasemap, _nextBasemap);
-                        }
-                        else if (node && propertyName === "basemapTogglePosition") {
-                            view.ui.move(node, basemapTogglePosition);
-                        }
-                        else if (propertyName === "basemapToggle") {
-                            basemapToggleInstance = new BasemapToggle_1.default({
-                                view: view,
-                                nextBasemap: _nextBasemap,
-                                id: "basemapToggle"
-                            });
-                            view.ui.add(basemapToggleInstance, basemapTogglePosition);
-                        }
-                        return [2 /*return*/, basemapToggleInstance];
+                        _a.nextBasemap = _b.sent();
+                        return [2 /*return*/, _basemapToggleState];
                 }
             });
         });
     }
-    exports.addBasemapToggle = addBasemapToggle;
-    //////////////////////////////
-    // Private Module Functions
-    //////////////////////////////
-    /**
-     * Creates Basemap instance properly from either a well-known-basemap-id, or
-     * from a webmap id
-     */
-    function _getBasemap(id, portal) {
-        return __awaiter(this, void 0, void 0, function () {
-            var basemap;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        basemap = Basemap_1.default.fromId(id);
-                        if (!!basemap) return [3 /*break*/, 2];
-                        return [4 /*yield*/, new Basemap_1.default({
-                                portalItem: {
-                                    id: id,
-                                    portal: portal
-                                }
-                            }).loadAll()];
-                    case 1:
-                        basemap = _a.sent();
-                        _a.label = 2;
-                    case 2: return [2 /*return*/, basemap];
-                }
-            });
-        });
-    }
+    exports.getBasemaps = getBasemaps;
     /**
      * Resets the Basemaps in the BasemapToggle by explicitly setting them.
      * Note: This also affects the basemap on the current Webmap being shown in the view,
@@ -143,10 +85,37 @@ define(["require", "exports", "./widgetConfigUtils", "esri/widgets/BasemapToggle
      * @param primaryBasemap The Basemap desired to be set as the Webmap's Basemap
      * @param nextBasemap The Alternate Basemap in the BasemapToggle
      */
-    function _resetBasemapsInToggle(basemapToggle, primaryBasemap, nextBasemap) {
+    function resetBasemapsInToggle(basemapToggle, primaryBasemap, nextBasemap) {
         basemapToggle.nextBasemap = primaryBasemap; // assign original first
         basemapToggle.toggle(); // toggle to make original the current basemap
         basemapToggle.nextBasemap = nextBasemap; // assign alternate 
+    }
+    exports.resetBasemapsInToggle = resetBasemapsInToggle;
+    //////////////////////////////
+    // Private Variables
+    //////////////////////////////
+    var _basemapToggleState = {
+        originalBasemap: null,
+        nextBasemap: null
+    };
+    //////////////////////////////
+    // Private Functions
+    //////////////////////////////
+    /**
+     * Creates Basemap instance properly from either a well-known-basemap-id, or
+     * from a webmap id
+     */
+    function _getBasemap(id, portal) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, Basemap_1.default.fromId(id) || new Basemap_1.default({
+                        portalItem: {
+                            id: id,
+                            portal: portal
+                        }
+                    }).loadAll()];
+            });
+        });
     }
 });
 //# sourceMappingURL=basemapToggle.js.map

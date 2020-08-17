@@ -3,18 +3,6 @@
  * widgetConfigUtil files.
  */
 
-
-/** Returns the first DOM node in the page which matches the className */
-export function _findNode(className: string): HTMLElement {
-    const mainNodes = document.getElementsByClassName(className);
-    let node = null;
-    for (let j = 0; j < mainNodes.length; j++) {
-        node = mainNodes[j] as HTMLElement;
-    }
-    return node ? node : null;
-}
-
-
 export interface esriWidgetProps extends __esri.WidgetProperties {
     config: any;
     view?: __esri.MapView;

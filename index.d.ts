@@ -203,8 +203,6 @@ declare module 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils' {
 	 * widgetConfigUtil files.
 	 */
 	/// <reference types="arcgis-js-api" />
-	/** Returns the first DOM node in the page which matches the className */
-	export function _findNode(className: string): HTMLElement;
 	export interface esriWidgetProps extends __esri.WidgetProperties {
 	    config: any;
 	    view?: __esri.MapView;
@@ -215,16 +213,29 @@ declare module 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils' {
 }
 declare module 'ApplicationBase/support/widgetConfigUtils/basemapToggle' {
 	/**
-	 * This module contains a method to instantiate the 4.x API BasemapToggle Widget
-	 * using configuration variable which come from the Config Panel.
+	 * This module contains a methods to assist with creation of the 4.x API BasemapToggle Widget
+	 * using configuration variables that come from the Config Panel.
 	 */
 	/// <reference types="arcgis-js-api" />
 	import { esriWidgetProps } from 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils';
+	export interface IBasemapToggleState {
+	    originalBasemap: __esri.Basemap;
+	    nextBasemap: __esri.Basemap;
+	}
 	/**
-	 * Adds BasemapToggle to Application, including logic to make
-	 * integrations with the Config Panel function properly
+	 * Gets the proper Basemaps for the BasemapToggle (internally tracks the
+	 * original Map's Basemap)
 	 * @param props
 	 */
-	export function addBasemapToggle(props: esriWidgetProps): Promise<__esri.BasemapToggle>;
+	export function getBasemaps(props: esriWidgetProps): Promise<IBasemapToggleState>;
+	/**
+	 * Resets the Basemaps in the BasemapToggle by explicitly setting them.
+	 * Note: This also affects the basemap on the current Webmap being shown in the view,
+	 * because when nextBasemap on the BasemapToggle gets set, then that overrides the
+	 * basemap property on the Webmap
+	 * @param primaryBasemap The Basemap desired to be set as the Webmap's Basemap
+	 * @param nextBasemap The Alternate Basemap in the BasemapToggle
+	 */
+	export function resetBasemapsInToggle(basemapToggle: __esri.BasemapToggle, primaryBasemap: __esri.Basemap, nextBasemap?: __esri.Basemap): void;
 
 }

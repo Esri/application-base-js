@@ -197,3 +197,45 @@ declare module 'ApplicationBase/support/itemUtils' {
 	export function findQuery(query: string, view: esri.MapView | esri.SceneView): Promise<any>;
 
 }
+declare module 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils' {
+	/**
+	 * This module contains common functions and interfaces to be used in different
+	 * widgetConfigUtil files.
+	 */
+	/// <reference types="arcgis-js-api" />
+	export interface esriWidgetProps extends __esri.WidgetProperties {
+	    config: any;
+	    view?: __esri.MapView;
+	    portal?: __esri.Portal;
+	    propertyName?: string;
+	}
+
+}
+declare module 'ApplicationBase/support/widgetConfigUtils/basemapToggle' {
+	/**
+	 * This module contains a methods to assist with creation of the 4.x API BasemapToggle Widget
+	 * using configuration variables that come from the Config Panel.
+	 */
+	/// <reference types="arcgis-js-api" />
+	import { esriWidgetProps } from 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils';
+	export interface IBasemapToggleState {
+	    originalBasemap: __esri.Basemap;
+	    nextBasemap: __esri.Basemap;
+	}
+	/**
+	 * Gets the proper Basemaps for the BasemapToggle (internally tracks the
+	 * original Map's Basemap)
+	 * @param props
+	 */
+	export function getBasemaps(props: esriWidgetProps): Promise<IBasemapToggleState>;
+	/**
+	 * Resets the Basemaps in the BasemapToggle by explicitly setting them.
+	 * Note: This also affects the basemap on the current Webmap being shown in the view,
+	 * because when nextBasemap on the BasemapToggle gets set, then that overrides the
+	 * basemap property on the Webmap
+	 * @param primaryBasemap The Basemap desired to be set as the Webmap's Basemap
+	 * @param nextBasemap The Alternate Basemap in the BasemapToggle
+	 */
+	export function resetBasemapsInToggle(basemapToggle: __esri.BasemapToggle, primaryBasemap: __esri.Basemap, nextBasemap?: __esri.Basemap): void;
+
+}

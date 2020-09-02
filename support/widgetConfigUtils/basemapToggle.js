@@ -44,6 +44,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 define(["require", "exports", "esri/Basemap"], function (require, exports, Basemap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.resetBasemapsInToggle = exports.getBasemaps = void 0;
     Basemap_1 = __importDefault(Basemap_1);
     //////////////////////////////
     // Public Functions

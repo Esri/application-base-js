@@ -207,7 +207,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
             ])
                 .catch(function (applicationArgs) { return applicationArgs; })
                 .then(function (applicationArgs) {
-                var _a, _b;
+                var _a;
                 var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
                 var applicationItem = applicationItemResponse
                     ? applicationItemResponse.value
@@ -241,8 +241,8 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                 _this.portal = portal;
                 // Detect IE 11 and older 
                 _this.isIE = _this._detectIE();
-                // Update the culture if there is a url param or portal culture
-                _this.locale = ((_a = _this.config) === null || _a === void 0 ? void 0 : _a.locale) || ((_b = _this.portal) === null || _b === void 0 ? void 0 : _b.culture) || intl_1.getLocale();
+                // Update the culture if there is a url param 
+                _this.locale = ((_a = _this.config) === null || _a === void 0 ? void 0 : _a.locale) || intl_1.getLocale();
                 intl_1.setLocale(_this.locale);
                 _this.direction = intl_1.prefersRTL(_this.locale) ? "rtl" : "ltr";
                 _this.units = _this._getUnits(portal);
@@ -252,7 +252,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                     application: applicationConfig
                 });
                 _this._setGeometryService(_this.config, portal);
-                var _c = _this.config, webmap = _c.webmap, webscene = _c.webscene, group = _c.group, draft = _c.draft;
+                var _b = _this.config, webmap = _b.webmap, webscene = _b.webscene, group = _b.group, draft = _b.draft;
                 var webMapPromises = [];
                 var webScenePromises = [];
                 var groupInfoPromises = [];

@@ -19,13 +19,13 @@
 
   limitations under the License.​
 */
-import { reject, resolve } from "esri/core/promiseUtils";
-import { whenFalseOnce } from "esri/core/watchUtils";
+import { reject, resolve } from "@arcgis/core/core/promiseUtils";
+import { whenFalseOnce } from "@arcgis/core/core/watchUtils";
 
-import MapView from "esri/views/MapView";
-import SceneView from "esri/views/SceneView";
+import MapView from "@arcgis/core/views/MapView";
+import SceneView from "@arcgis/core/views/SceneView";
 
-import PortalItem from "esri/portal/PortalItem";
+import PortalItem from "@arcgis/core/portal/PortalItem";
 
 import {
   CreateMapFromItemOptions,
@@ -105,7 +105,7 @@ export async function createWebMapFromItem(
   options: CreateMapFromItemOptions
 ): Promise<esri.WebMap> {
   const { item, appProxies } = options;
-  const WebMap = await import("esri/WebMap");
+  const WebMap = await import("@arcgis/core/WebMap");
   const wm = new WebMap.default({
     portalItem: item
   });
@@ -118,7 +118,7 @@ export async function createWebSceneFromItem(
   options: CreateMapFromItemOptions
 ): Promise<esri.WebScene> {
   const { item, appProxies } = options;
-  const WebScene = await import("esri/WebScene");
+  const WebScene = await import("@arcgis/core/WebScene");
   const ws = new WebScene.default({
     portalItem: item
   });
@@ -158,7 +158,7 @@ export async function findQuery(
     return resolve();
   }
 
-  const Search = await import("esri/widgets/Search");
+  const Search = await import("@arcgis/core/widgets/Search");
 
   const search = new Search.default({
     view

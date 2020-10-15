@@ -9,25 +9,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -67,10 +48,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", "esri/views/MapView", "esri/views/SceneView", "./urlUtils"], function (require, exports, promiseUtils_1, watchUtils_1, MapView_1, SceneView_1, urlUtils_1) {
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/core/watchUtils", "@arcgis/core/views/MapView", "@arcgis/core/views/SceneView", "./urlUtils"], function (require, exports, promiseUtils_1, watchUtils_1, MapView_1, SceneView_1, urlUtils_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.findQuery = exports.goToMarker = exports.getItemTitle = exports.createWebSceneFromItem = exports.createWebMapFromItem = exports.createMapFromItem = exports.createView = exports.getConfigViewProperties = void 0;
     MapView_1 = __importDefault(MapView_1);
     SceneView_1 = __importDefault(SceneView_1);
     //--------------------------------------------------------------------------
@@ -127,7 +114,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                 switch (_a.label) {
                     case 0:
                         item = options.item, appProxies = options.appProxies;
-                        return [4 /*yield*/, new Promise(function (resolve_1, reject_1) { require(["esri/WebMap"], resolve_1, reject_1); }).then(__importStar)];
+                        return [4 /*yield*/, new Promise(function (resolve_1, reject_1) { require(["@arcgis/core/WebMap"], resolve_1, reject_1); }).then(__importStar)];
                     case 1:
                         WebMap = _a.sent();
                         wm = new WebMap.default({
@@ -152,7 +139,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                 switch (_a.label) {
                     case 0:
                         item = options.item, appProxies = options.appProxies;
-                        return [4 /*yield*/, new Promise(function (resolve_2, reject_2) { require(["esri/WebScene"], resolve_2, reject_2); }).then(__importStar)];
+                        return [4 /*yield*/, new Promise(function (resolve_2, reject_2) { require(["@arcgis/core/WebScene"], resolve_2, reject_2); }).then(__importStar)];
                     case 1:
                         WebScene = _a.sent();
                         ws = new WebScene.default({
@@ -209,7 +196,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         if (!query || !view) {
                             return [2 /*return*/, promiseUtils_1.resolve()];
                         }
-                        return [4 /*yield*/, new Promise(function (resolve_3, reject_3) { require(["esri/widgets/Search"], resolve_3, reject_3); }).then(__importStar)];
+                        return [4 /*yield*/, new Promise(function (resolve_3, reject_3) { require(["@arcgis/core/widgets/Search"], resolve_3, reject_3); }).then(__importStar)];
                     case 1:
                         Search = _a.sent();
                         search = new Search.default({

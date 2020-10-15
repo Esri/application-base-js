@@ -41,10 +41,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/Basemap"], function (require, exports, Basemap_1) {
+define(["require", "exports", "@arcgis/core/Basemap"], function (require, exports, Basemap_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.resetBasemapsInToggle = exports.getBasemaps = void 0;
     Basemap_1 = __importDefault(Basemap_1);
     //////////////////////////////
     // Public Functions

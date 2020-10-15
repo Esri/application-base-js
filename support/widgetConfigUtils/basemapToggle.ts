@@ -4,7 +4,7 @@
  */
 
 import { esriWidgetProps } from "./widgetConfigUtils";
-import Basemap from "esri/Basemap";
+import Basemap from "@arcgis/core/Basemap";
 
 //////////////////////////////
 // Public Interfaces

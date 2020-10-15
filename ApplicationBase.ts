@@ -21,15 +21,15 @@ import {
   ApplicationConfigs,
   Direction
 } from "./interfaces";
-import { eachAlways, reject, resolve } from "esri/core/promiseUtils";
+import { eachAlways, reject, resolve } from "@arcgis/core/core/promiseUtils";
 
-import IdentityManager from "esri/identity/IdentityManager";
-import OAuthInfo from "esri/identity/OAuthInfo";
-import Portal from "esri/portal/Portal";
-import PortalItem from "esri/portal/PortalItem";
-import PortalQueryParams from "esri/portal/PortalQueryParams";
-import esriConfig from "esri/config";
-import { getLocale, setLocale, prefersRTL } from "esri/intl";
+import IdentityManager from "@arcgis/core/identity/IdentityManager";
+import OAuthInfo from "@arcgis/core/identity/OAuthInfo";
+import Portal from "@arcgis/core/portal/Portal";
+import PortalItem from "@arcgis/core/portal/PortalItem";
+import PortalQueryParams from "@arcgis/core/portal/PortalQueryParams";
+import esriConfig from "@arcgis/core/config";
+import { getLocale, setLocale, prefersRTL } from "@arcgis/core/intl";
 
 const defaultConfig = {
   portalUrl: "https://www.arcgis.com",
@@ -698,4 +698,4 @@ class ApplicationBase {
   }
 }
 
-export = ApplicationBase;
+export default ApplicationBase;

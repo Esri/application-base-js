@@ -1,10 +1,10 @@
-import Portal = require("esri/portal/Portal");
-import PortalItem = require("esri/portal/PortalItem");
-import PortalQueryResult = require("esri/portal/PortalQueryResult");
-import PortalQueryParams = require("esri/portal/PortalQueryParams");
+import Portal from "@arcgis/core/portal/Portal";
+import PortalItem from "@arcgis/core/portal/PortalItem";
+import PortalQueryResult from "@arcgis/core/portal/PortalQueryResult";
+import PortalQueryParams from "@arcgis/core/portal/PortalQueryParams";
 
-import WebMap = require("esri/WebMap");
-import WebScene = require("esri/WebScene");
+import WebMap from "@arcgis/core/WebMap";
+import WebScene from "@arcgis/core/WebScene";
 
 export type Direction = "ltr" | "rtl";
 

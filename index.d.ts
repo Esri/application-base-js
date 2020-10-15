@@ -1,11 +1,11 @@
 declare module 'ApplicationBase/interfaces' {
-	import Portal = require('esri/portal/Portal');
-	import PortalItem = require('esri/portal/PortalItem');
-	import PortalQueryResult = require('esri/portal/PortalQueryResult');
-	import PortalQueryParams = require('esri/portal/PortalQueryParams');
+	import Portal from "@arcgis/core/portal/Portal";
+	import PortalItem from "@arcgis/core/portal/PortalItem";
+	import PortalQueryResult from "@arcgis/core/portal/PortalQueryResult";
+	import PortalQueryParams from "@arcgis/core/portal/PortalQueryParams";
 
-	import WebMap = require('esri/WebMap');
-	import WebScene = require('esri/WebScene');
+	import WebMap from "@arcgis/core/WebMap";
+	import WebScene from "@arcgis/core/WebScene";
 
 	export type Direction = "ltr" | "rtl";
 
@@ -127,10 +127,9 @@ declare module 'ApplicationBase/interfaces' {
 	}
 }
 declare module 'ApplicationBase/ApplicationBase' {
-	/// <reference types="arcgis-js-api" />
 	import { ApplicationBaseConstructorOptions, ApplicationBaseResults, ApplicationBaseSettings, ApplicationConfig, Direction } from 'ApplicationBase/interfaces';
-	import Portal from 'esri/portal/Portal';
-	import PortalQueryParams from 'esri/portal/PortalQueryParams'; class ApplicationBase {
+	import Portal from '@arcgis/core/portal/Portal';
+	import PortalQueryParams from '@arcgis/core/portal/PortalQueryParams'; class ApplicationBase {
 	    constructor(options: ApplicationBaseConstructorOptions);
 	    settings: ApplicationBaseSettings;
 	    config: ApplicationConfig;
@@ -164,7 +163,7 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    private _formatUrlParamValue;
 	    private _stripStringTags;
 	}
-	export = ApplicationBase;
+	export default ApplicationBase;
 
 }
 declare module 'ApplicationBase/support/domHelper' {
@@ -174,10 +173,9 @@ declare module 'ApplicationBase/support/domHelper' {
 
 }
 declare module 'ApplicationBase/support/urlUtils' {
-	/// <reference types="arcgis-js-api" />
-	import Camera from 'esri/Camera';
-	import Extent from 'esri/geometry/Extent';
-	import Point from 'esri/geometry/Point';
+	import Camera from '@arcgis/core/Camera';
+	import Extent from '@arcgis/core/geometry/Extent';
+	import Point from '@arcgis/core/geometry/Point';
 	import esri = __esri;
 	export function parseViewComponents(components: string): string[];
 	export function parseViewpoint(viewpoint: string): Camera;
@@ -188,8 +186,7 @@ declare module 'ApplicationBase/support/urlUtils' {
 
 }
 declare module 'ApplicationBase/support/itemUtils' {
-	/// <reference types="arcgis-js-api" />
-	import PortalItem from 'esri/portal/PortalItem';
+	import PortalItem from '@arcgis/core/portal/PortalItem';
 	import { CreateMapFromItemOptions, ApplicationConfig } from 'ApplicationBase/interfaces';
 	import esri = __esri;
 	export function getConfigViewProperties(config: ApplicationConfig): any;
@@ -207,7 +204,6 @@ declare module 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils' {
 	 * This module contains common functions and interfaces to be used in different
 	 * widgetConfigUtil files.
 	 */
-	/// <reference types="arcgis-js-api" />
 	export interface esriWidgetProps extends __esri.WidgetProperties {
 	    config: any;
 	    view?: __esri.MapView;
@@ -221,7 +217,6 @@ declare module 'ApplicationBase/support/widgetConfigUtils/basemapToggle' {
 	 * This module contains a methods to assist with creation of the 4.x API BasemapToggle Widget
 	 * using configuration variables that come from the Config Panel.
 	 */
-	/// <reference types="arcgis-js-api" />
 	import { esriWidgetProps } from 'ApplicationBase/support/widgetConfigUtils/widgetConfigUtils';
 	export interface IBasemapToggleState {
 	    originalBasemap: __esri.Basemap;

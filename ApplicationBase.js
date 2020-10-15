@@ -60,8 +60,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityManager", "esri/identity/OAuthInfo", "esri/portal/Portal", "esri/portal/PortalItem", "esri/portal/PortalQueryParams", "esri/config", "esri/intl"], function (require, exports, promiseUtils_1, IdentityManager_1, OAuthInfo_1, Portal_1, PortalItem_1, PortalQueryParams_1, config_1, intl_1) {
+define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/identity/IdentityManager", "@arcgis/core/identity/OAuthInfo", "@arcgis/core/portal/Portal", "@arcgis/core/portal/PortalItem", "@arcgis/core/portal/PortalQueryParams", "@arcgis/core/config", "@arcgis/core/intl"], function (require, exports, promiseUtils_1, IdentityManager_1, OAuthInfo_1, Portal_1, PortalItem_1, PortalQueryParams_1, config_1, intl_1) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     IdentityManager_1 = __importDefault(IdentityManager_1);
     OAuthInfo_1 = __importDefault(OAuthInfo_1);
     Portal_1 = __importDefault(Portal_1);
@@ -554,6 +555,6 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
         };
         return ApplicationBase;
     }());
-    return ApplicationBase;
+    exports.default = ApplicationBase;
 });
 //# sourceMappingURL=ApplicationBase.js.map

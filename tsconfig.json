@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "lib": [
-      "es6",
-      "dom",
-      "scripthost"
-    ],
+    "lib": ["es6", "dom", "scripthost"],
     "declaration": false,
     "noImplicitAny": false,
+    "strictNullChecks": false,
     "module": "amd",
     "target": "es5",
     "moduleResolution": "node",
@@ -16,15 +13,7 @@
     "jsx": "react",
     "jsxFactory": "tsx"
   },
-  "include": [
-    "./**/*"
-  ],
-  "exclude": [
-    "./node_modules",
-    "./tsrules"
-  ],
-  "files": [
-    "./index.d.ts",
-    "./node_modules/@types/arcgis-js-api/index.d.ts"
-  ]
+  "include": ["./**/*"],
+  "exclude": ["./node_modules", "./tsrules"],
+  "files": ["./index.d.ts"]
 }

@@ -20,14 +20,14 @@
   limitations under the License.​
 */
 
-import Camera from "esri/Camera";
+import Camera from "@arcgis/core/Camera";
 
-import { reject } from "esri/core/promiseUtils";
+import { reject } from "@arcgis/core/core/promiseUtils";
 
-import Extent from "esri/geometry/Extent";
-import Point from "esri/geometry/Point";
-import { PictureMarkerSymbol, SimpleMarkerSymbol } from "esri/symbols";
-import { eachAlways } from "esri/core/promiseUtils";
+import Extent from "@arcgis/core/geometry/Extent";
+import Point from "@arcgis/core/geometry/Point";
+import { PictureMarkerSymbol, SimpleMarkerSymbol } from "@arcgis/core/symbols";
+import { eachAlways } from "@arcgis/core/core/promiseUtils";
 import esri = __esri;
 interface CameraProperties {
   heading?: number;
@@ -167,7 +167,7 @@ export async function parseMarker(marker: string): Promise<esri.Graphic | {}> {
     return reject();
   }
 
-  const modules = await eachAlways([import("esri/Graphic"), import("esri/PopupTemplate"), import("esri/symbols/PictureMarkerSymbol"), import("esri/symbols/SimpleMarkerSymbol")]);
+  const modules = await eachAlways([import("@arcgis/core/Graphic"), import("@arcgis/core/PopupTemplate"), import("@arcgis/core/symbols/PictureMarkerSymbol"), import("@arcgis/core/symbols/SimpleMarkerSymbol")]);
   const [Graphic, PopupTemplate, PictureMarkerSymbol, SimpleMarkerSymbol] = modules.map((module) => module.value);
 
   const x = parseFloat(markerArray[0]);

@@ -21,6 +21,7 @@ import {
   ApplicationConfigs,
   Direction
 } from "./interfaces";
+import { parseConfig } from "./support/configParser";
 import { eachAlways, reject, resolve } from "esri/core/promiseUtils";
 
 import IdentityManager from "esri/identity/IdentityManager";
@@ -82,7 +83,7 @@ class ApplicationBase {
 
     this._mixinSettingsDefaults(settingsMixin);
 
-    this.config = configMixin;
+    this.config = parseConfig(configMixin);
     this.settings = settingsMixin;
 
   }

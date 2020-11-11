@@ -60,7 +60,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityManager", "esri/identity/OAuthInfo", "esri/portal/Portal", "esri/portal/PortalItem", "esri/portal/PortalQueryParams", "esri/config", "esri/intl"], function (require, exports, promiseUtils_1, IdentityManager_1, OAuthInfo_1, Portal_1, PortalItem_1, PortalQueryParams_1, config_1, intl_1) {
+define(["require", "exports", "./support/configParser", "esri/core/promiseUtils", "esri/identity/IdentityManager", "esri/identity/OAuthInfo", "esri/portal/Portal", "esri/portal/PortalItem", "esri/portal/PortalQueryParams", "esri/config", "esri/intl"], function (require, exports, configParser_1, promiseUtils_1, IdentityManager_1, OAuthInfo_1, Portal_1, PortalItem_1, PortalQueryParams_1, config_1, intl_1) {
     "use strict";
     IdentityManager_1 = __importDefault(IdentityManager_1);
     OAuthInfo_1 = __importDefault(OAuthInfo_1);
@@ -125,6 +125,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
             //  units
             //----------------------------------
             this.units = null;
+            this.invalidContentOrigin = false;
             var config = options.config, settings = options.settings;
             var applicationConfig = typeof config === "string"
                 ? JSON.parse(config)
@@ -135,7 +136,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
             var configMixin = __assign(__assign({}, defaultConfig), applicationConfig);
             var settingsMixin = __assign(__assign({}, defaultSettings), applicationBaseSettings);
             this._mixinSettingsDefaults(settingsMixin);
-            this.config = configMixin;
+            this.config = configParser_1.parseConfig(configMixin);
             this.settings = settingsMixin;
         }
         //--------------------------------------------------------------------------
@@ -207,7 +208,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
             ])
                 .catch(function (applicationArgs) { return applicationArgs; })
                 .then(function (applicationArgs) {
-                var _a;
+                var _a, _b;
                 var applicationItemResponse = applicationArgs[0], applicationDataResponse = applicationArgs[1], portalResponse = applicationArgs[2], checkAppAccessResponse = applicationArgs[3];
                 var applicationItem = applicationItemResponse
                     ? applicationItemResponse.value
@@ -232,6 +233,13 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                 else if (applicationItemResponse.error) {
                     return promiseUtils_1.reject(applicationItemResponse.error);
                 }
+                // user not signed in and contentOrigin is other. 
+                if (((_a = applicationItem === null || applicationItem === void 0 ? void 0 : applicationItem.sourceJSON) === null || _a === void 0 ? void 0 : _a.contentOrigin) === "other") {
+                    if (appAccess && appAccess.credential && appAccess.credential !== undefined) {
+                        return;
+                    }
+                    _this.invalidContentOrigin = true;
+                }
                 _this.results.applicationItem = applicationItemResponse;
                 _this.results.applicationData = applicationDataResponse;
                 var applicationConfig = applicationData
@@ -242,7 +250,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                 // Detect IE 11 and older 
                 _this.isIE = _this._detectIE();
                 // Update the culture if there is a url param 
-                _this.locale = ((_a = _this.config) === null || _a === void 0 ? void 0 : _a.locale) || intl_1.getLocale();
+                _this.locale = ((_b = _this.config) === null || _b === void 0 ? void 0 : _b.locale) || intl_1.getLocale();
                 intl_1.setLocale(_this.locale);
                 _this.direction = intl_1.prefersRTL(_this.locale) ? "rtl" : "ltr";
                 _this.units = _this._getUnits(portal);
@@ -252,7 +260,7 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                     application: applicationConfig
                 });
                 _this._setGeometryService(_this.config, portal);
-                var _b = _this.config, webmap = _b.webmap, webscene = _b.webscene, group = _b.group, draft = _b.draft;
+                var _c = _this.config, webmap = _c.webmap, webscene = _c.webscene, group = _c.group, draft = _c.draft;
                 var webMapPromises = [];
                 var webScenePromises = [];
                 var groupInfoPromises = [];
@@ -323,6 +331,13 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
                     _this.results.webSceneItems = webSceneResponses;
                     _this.results.groupInfos = groupInfoResponses;
                     _this.results.groupItems = groupItemsResponses;
+                    // Check and see if we need to evaluate group,maps,scenes
+                    if (!(appAccess === null || appAccess === void 0 ? void 0 : appAccess.credential) && _this.invalidContentOrigin) {
+                        return promiseUtils_1.reject({
+                            appUrl: _this._getAppUrl(),
+                            error: "application:origin-other"
+                        });
+                    }
                     return _this;
                 });
             });
@@ -551,6 +566,33 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/identity/IdentityM
         ApplicationBase.prototype._stripStringTags = function (value) {
             var tagsRE = /<\/?[^>]+>/g;
             return value.replace(tagsRE, "");
+        };
+        ApplicationBase.prototype._getAppUrl = function () {
+            var location = window.location;
+            var hostname = location.hostname;
+            var newOrigin = "//www.arcgis.com";
+            if (hostname.indexOf("devext.arcgis.com") !== -1) {
+                newOrigin = "//devext.arcgis.com";
+            }
+            else if (hostname.indexOf("qaext.arcgis.com") !== -1) {
+                newOrigin = "//qaext.arcgis.com";
+            }
+            var appurl = "" + location.protocol + newOrigin + location.pathname;
+            if (location === null || location === void 0 ? void 0 : location.search) {
+                appurl = "" + appurl + location.search;
+            }
+            return appurl;
+        };
+        ApplicationBase.prototype._checkContentOrigin = function (responses) {
+            var _this = this;
+            responses.some(function (response) {
+                var _a, _b;
+                if (response === null || response === void 0 ? void 0 : response.value) {
+                    if (((_b = (_a = response.value) === null || _a === void 0 ? void 0 : _a.sourceJSON) === null || _b === void 0 ? void 0 : _b.contentOrigin) === "other") {
+                        _this.invalidContentOrigin = true;
+                    }
+                }
+            });
         };
         return ApplicationBase;
     }());

@@ -134,7 +134,7 @@ class ApplicationBase {
   //----------------------------------
   units: string = null;
 
-
+  invalidContentOrigin: boolean = false;
   //--------------------------------------------------------------------------
   //
   //  Public Methods
@@ -263,7 +263,11 @@ class ApplicationBase {
         } else if (applicationItemResponse.error) {
           return reject(applicationItemResponse.error);
         }
-
+        // user not signed in and contentOrigin is other. 
+        if (applicationItem?.sourceJSON?.contentOrigin === "other") {
+          if (appAccess && appAccess.credential && appAccess.credential !== undefined) { return; }
+          this.invalidContentOrigin = true;
+        }
         this.results.applicationItem = applicationItemResponse;
         this.results.applicationData = applicationDataResponse;
 
@@ -384,7 +388,13 @@ class ApplicationBase {
             this.results.webSceneItems = webSceneResponses;
             this.results.groupInfos = groupInfoResponses;
             this.results.groupItems = groupItemsResponses;
-
+            // Check and see if we need to evaluate group,maps,scenes
+            if (!appAccess?.credential && this.invalidContentOrigin) {
+              return reject({
+                appUrl: this._getAppUrl(),
+                error: "application:origin-other"
+              });
+            }
             return this;
           });
       });
@@ -696,6 +706,30 @@ class ApplicationBase {
   private _stripStringTags(value: string): string {
     const tagsRE = /<\/?[^>]+>/g;
     return value.replace(tagsRE, "");
+  }
+  private _getAppUrl() {
+    const location = window.location;
+    const hostname = location.hostname;
+    let newOrigin = "//www.arcgis.com";
+    if (hostname.indexOf("devext.arcgis.com") !== -1) {
+      newOrigin = "//devext.arcgis.com"
+    } else if (hostname.indexOf("qaext.arcgis.com") !== -1) {
+      newOrigin = "//qaext.arcgis.com"
+    }
+    let appurl = `${location.protocol}${newOrigin}${location.pathname}`;
+    if (location?.search) {
+      appurl = `${appurl}${location.search}`;
+    }
+    return appurl;
+  }
+  private _checkContentOrigin(responses) {
+    responses.some((response) => {
+      if (response?.value) {
+        if (response.value?.sourceJSON?.contentOrigin === "other") {
+          this.invalidContentOrigin = true;
+        }
+      }
+    })
   }
 }
 

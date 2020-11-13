@@ -180,7 +180,7 @@ class ApplicationBase {
 
 
     const { isEsri } = environmentSettings;
-    const urlParams = this._getUrlParamValues(urlParamsSettings);
+    const urlParams = parseConfig(this._getUrlParamValues(urlParamsSettings));
     this.results.urlParams = urlParams;
 
     this.config = this._mixinAllConfigs({
@@ -271,9 +271,11 @@ class ApplicationBase {
         this.results.applicationItem = applicationItemResponse;
         this.results.applicationData = applicationDataResponse;
 
-        const applicationConfig = applicationData
-          ? applicationData.values
-          : null;
+        const applicationConfig = parseConfig(
+          applicationData
+            ? applicationData.values as ApplicationConfig
+            : null
+          );
 
         const portal = portalResponse ? portalResponse.value : null;
         this.portal = portal;

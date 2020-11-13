@@ -1,3 +1,5 @@
+import { ApplicationConfig } from "../interfaces";
+
 /**
  * Handles backwards compatibility for the App Configs by transforming 
  * the inputted Config into a form that is equivalent to what the Config 
@@ -10,7 +12,7 @@
  * ****
  * @param config - App Config
  */
-export function parseConfig(config: any): any{
+export function parseConfig(config: ApplicationConfig): ApplicationConfig{
 
     // old (extentSelectorConfig === __esri.MapViewConstraints) 
     // => 

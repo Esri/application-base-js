@@ -170,7 +170,7 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
             var settings = this.settings;
             var environmentSettings = settings.environment, groupSettings = settings.group, portalSettings = settings.portal, webMapSettings = settings.webMap, websceneSettings = settings.webScene, urlParamsSettings = settings.urlParams;
             var isEsri = environmentSettings.isEsri;
-            var urlParams = this._getUrlParamValues(urlParamsSettings);
+            var urlParams = configParser_1.parseConfig(this._getUrlParamValues(urlParamsSettings));
             this.results.urlParams = urlParams;
             this.config = this._mixinAllConfigs({
                 config: this.config,
@@ -242,9 +242,9 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                 }
                 _this.results.applicationItem = applicationItemResponse;
                 _this.results.applicationData = applicationDataResponse;
-                var applicationConfig = applicationData
+                var applicationConfig = configParser_1.parseConfig(applicationData
                     ? applicationData.values
-                    : null;
+                    : null);
                 var portal = portalResponse ? portalResponse.value : null;
                 _this.portal = portal;
                 // Detect IE 11 and older 

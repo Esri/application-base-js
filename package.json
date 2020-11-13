@@ -26,7 +26,7 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "start": "npm run build; npm run watch -s",
+    "start": "npm run build && npm run watch -s",
     "watch": "tsc --watch",
     "build": "dts-generator --prefix ApplicationBase --project ./ --out index.d.ts"
   }

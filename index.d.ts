@@ -187,6 +187,21 @@ declare module 'ApplicationBase/ApplicationBase' {
 	export = ApplicationBase;
 
 }
+declare module 'ApplicationBase/support/configurationSettingsBase' {
+	/// <reference types="arcgis-js-api" />
+	import Accessor from 'esri/core/Accessor';
+	import { ApplicationConfig } from 'ApplicationBase/interfaces'; class ConfigurationSettingsBase extends Accessor {
+	    /** Determines if the App is being run within the Config Panel's IFrame */
+	    withinConfigurationExperience: boolean;
+	    private _draft;
+	    private _draftMode;
+	    constructor(params?: ApplicationConfig);
+	    initialize(): void;
+	    _handleConfigurationUpdates(e: any): void;
+	}
+	export = ConfigurationSettingsBase;
+
+}
 declare module 'ApplicationBase/support/domHelper' {
 	export function setPageLocale(locale: string): void;
 	export function setPageDirection(direction: string): void;

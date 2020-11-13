@@ -1,4 +1,4 @@
-import { ApplicationConfig } from "ApplicationBase/interfaces";
+import { ApplicationConfig } from "../interfaces";
 
 /**
  * Handles backwards compatibility for the App Configs by transforming 

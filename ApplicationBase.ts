@@ -275,7 +275,7 @@ class ApplicationBase {
           applicationData
             ? applicationData.values as ApplicationConfig
             : null
-          );
+        );
 
         const portal = portalResponse ? portalResponse.value : null;
         this.portal = portal;
@@ -331,7 +331,8 @@ class ApplicationBase {
         }
 
         if (isWebSceneEnabled) {
-          const webScenes = this._getPropertyArray(webscene);
+          const scenes = draft?.webscene ? [draft.webscene, webscene] : webscene;
+          const webScenes = this._getPropertyArray(scenes);
           const allowedWebsenes = this._limitItemSize(
             webScenes,
             fetchMultipleWebscenes
@@ -343,7 +344,8 @@ class ApplicationBase {
         }
 
         if (isGroupInfoEnabled) {
-          const groups = this._getPropertyArray(group);
+          const draftGroups = draft?.group ? [draft.group, group] : group;
+          const groups = this._getPropertyArray(draftGroups);
           const allowedGroups = this._limitItemSize(
             groups,
             fetchMultipleGroups

@@ -286,7 +286,8 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                     });
                 }
                 if (isWebSceneEnabled) {
-                    var webScenes = _this._getPropertyArray(webscene);
+                    var scenes = (draft === null || draft === void 0 ? void 0 : draft.webscene) ? [draft.webscene, webscene] : webscene;
+                    var webScenes = _this._getPropertyArray(scenes);
                     var allowedWebsenes = _this._limitItemSize(webScenes, fetchMultipleWebscenes);
                     allowedWebsenes.forEach(function (id) {
                         var webSceneId = _this._getDefaultId(id, defaultWebScene);
@@ -294,7 +295,8 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                     });
                 }
                 if (isGroupInfoEnabled) {
-                    var groups = _this._getPropertyArray(group);
+                    var draftGroups = (draft === null || draft === void 0 ? void 0 : draft.group) ? [draft.group, group] : group;
+                    var groups = _this._getPropertyArray(draftGroups);
                     var allowedGroups = _this._limitItemSize(groups, fetchMultipleGroups);
                     allowedGroups.forEach(function (id) {
                         var groupId = _this._getDefaultId(id, defaultGroup);

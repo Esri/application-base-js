@@ -265,8 +265,10 @@ class ApplicationBase {
         }
         // user not signed in and contentOrigin is other. 
         if (applicationItem?.sourceJSON?.contentOrigin === "other") {
-          if (appAccess && appAccess.credential && appAccess.credential !== undefined) { return; }
-          this.invalidContentOrigin = true;
+          if (appAccess?.credential === undefined) {
+            this.invalidContentOrigin = true;
+          }
+
         }
         this.results.applicationItem = applicationItemResponse;
         this.results.applicationData = applicationDataResponse;
@@ -399,7 +401,7 @@ class ApplicationBase {
                 error: "application:origin-other"
               });
             }
-            return this;
+              return this;
           });
       });
   }

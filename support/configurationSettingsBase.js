@@ -30,9 +30,10 @@ define(["require", "exports", "esri/core/Accessor", "esri/core/accessorSupport/d
     var ConfigurationSettingsBase = /** @class */ (function (_super) {
         __extends(ConfigurationSettingsBase, _super);
         function ConfigurationSettingsBase(params) {
+            var _a;
             var _this = _super.call(this) || this;
             /** Determines if the App is being run within the Config Panel's IFrame */
-            _this.withinConfigurationExperience = window.location !== window.parent.location;
+            _this.withinConfigurationExperience = ((_a = window === null || window === void 0 ? void 0 : window.frameElement) === null || _a === void 0 ? void 0 : _a.getAttribute("data-embed-type")) === "instant-config";
             _this._draft = null;
             _this._draftMode = false;
             _this._draft = params === null || params === void 0 ? void 0 : params.draft;

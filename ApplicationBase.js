@@ -235,10 +235,9 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                 }
                 // user not signed in and contentOrigin is other. 
                 if (((_a = applicationItem === null || applicationItem === void 0 ? void 0 : applicationItem.sourceJSON) === null || _a === void 0 ? void 0 : _a.contentOrigin) === "other") {
-                    if (appAccess && appAccess.credential && appAccess.credential !== undefined) {
-                        return;
+                    if ((appAccess === null || appAccess === void 0 ? void 0 : appAccess.credential) === undefined) {
+                        _this.invalidContentOrigin = true;
                     }
-                    _this.invalidContentOrigin = true;
                 }
                 _this.results.applicationItem = applicationItemResponse;
                 _this.results.applicationData = applicationDataResponse;
@@ -340,7 +339,9 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                             error: "application:origin-other"
                         });
                     }
-                    return _this;
+                    else {
+                        return _this;
+                    }
                 });
             });
         };

@@ -30,10 +30,9 @@ define(["require", "exports", "esri/core/Accessor", "esri/core/accessorSupport/d
     var ConfigurationSettingsBase = /** @class */ (function (_super) {
         __extends(ConfigurationSettingsBase, _super);
         function ConfigurationSettingsBase(params) {
-            var _a;
             var _this = _super.call(this) || this;
             /** Determines if the App is being run within the Config Panel's IFrame */
-            _this.withinConfigurationExperience = ((_a = window === null || window === void 0 ? void 0 : window.frameElement) === null || _a === void 0 ? void 0 : _a.getAttribute("data-embed-type")) === "instant-config";
+            _this.withinConfigurationExperience = _this._isWithinConfigurationExperience();
             _this._draft = null;
             _this._draftMode = false;
             _this._draft = params === null || params === void 0 ? void 0 : params.draft;
@@ -56,6 +55,14 @@ define(["require", "exports", "esri/core/Accessor", "esri/core/accessorSupport/d
             if (((_a = e === null || e === void 0 ? void 0 : e.data) === null || _a === void 0 ? void 0 : _a.type) === 'cats-app') {
                 Object.assign(this, e.data);
             }
+        };
+        ConfigurationSettingsBase.prototype._isWithinConfigurationExperience = function () {
+            var frameElement = window.frameElement, location = window.location, parent = window.parent;
+            return frameElement
+                ? frameElement.getAttribute("data-embed-type") === "instant-config"
+                    ? true
+                    : false
+                : location !== parent.location;
         };
         __decorate([
             decorators_1.property()

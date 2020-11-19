@@ -9,8 +9,7 @@ import { ApplicationConfig } from '../interfaces'
 class ConfigurationSettingsBase extends Accessor {
   /** Determines if the App is being run within the Config Panel's IFrame */
   @property()
-  withinConfigurationExperience: boolean = 
-    window?.frameElement?.getAttribute("data-embed-type") === "instant-config";
+  withinConfigurationExperience: boolean = this._isWithinConfigurationExperience();
 
   private _draft: ApplicationConfig = null;
   private _draftMode: boolean = false;
@@ -42,6 +41,15 @@ class ConfigurationSettingsBase extends Accessor {
     if (e?.data?.type === 'cats-app') {
       Object.assign(this, e.data);
     }
+  }
+
+  private _isWithinConfigurationExperience(): boolean {
+    const { frameElement, location, parent } = window;
+    return frameElement
+      ? frameElement.getAttribute("data-embed-type") === "instant-config"
+        ? true
+        : false
+      : location !== parent.location;
   }
 }
 export = ConfigurationSettingsBase;

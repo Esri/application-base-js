@@ -18,8 +18,10 @@ import { ApplicationConfig } from "../interfaces";
  */
 export function parseConfig(config: ApplicationConfig): ApplicationConfig{
 
-    config.extentSelectorConfig = _extentSelectorConfigConvert(config.extentSelectorConfig);
-    config.extentSelectorConfig = _extentSelectorConfigValidate(config.extentSelectorConfig);
+    if(config.extentSelectorConfig != null){
+        config.extentSelectorConfig = _extentSelectorConfigConvert(config.extentSelectorConfig);
+        config.extentSelectorConfig = _extentSelectorConfigValidate(config.extentSelectorConfig);
+    }
 
     return config;
 }
@@ -55,20 +57,20 @@ export function _extentSelectorConfigConvert(extentSelectorConfig: any): IExtent
 
 
 export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelectorOutput): IExtentSelectorOutput{
-
-    if(Object.keys(extentSelectorConfig)?.length === 0 && extentSelectorConfig?.constructor === Object){
-        return {
-            constraints: {
-                geometry: null,
-                minScale: 100,
-                maxScale: 591657528,
-                rotationEnabled: true
-            },
-            mapRotation: 0
-        };
-    }
-
     if(extentSelectorConfig){
+
+        if(Object.keys(extentSelectorConfig)?.length === 0 && extentSelectorConfig?.constructor === Object){
+            return {
+                constraints: {
+                    geometry: null,
+                    minScale: 100,
+                    maxScale: 591657528,
+                    rotationEnabled: true
+                },
+                mapRotation: 0
+            };
+        }
+
 
         if(extentSelectorConfig?.constraints?.geometry != null){
 
@@ -97,6 +99,6 @@ export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelec
 
     }
 
-    return extentSelectorConfig
+    return extentSelectorConfig;
 
 }

@@ -22,8 +22,10 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
      * @param config - App Config
      */
     function parseConfig(config) {
-        config.extentSelectorConfig = _extentSelectorConfigConvert(config.extentSelectorConfig);
-        config.extentSelectorConfig = _extentSelectorConfigValidate(config.extentSelectorConfig);
+        if (config.extentSelectorConfig != null) {
+            config.extentSelectorConfig = _extentSelectorConfigConvert(config.extentSelectorConfig);
+            config.extentSelectorConfig = _extentSelectorConfigValidate(config.extentSelectorConfig);
+        }
         return config;
     }
     exports.parseConfig = parseConfig;
@@ -49,18 +51,18 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
     exports._extentSelectorConfigConvert = _extentSelectorConfigConvert;
     function _extentSelectorConfigValidate(extentSelectorConfig) {
         var _a, _b;
-        if (((_a = Object.keys(extentSelectorConfig)) === null || _a === void 0 ? void 0 : _a.length) === 0 && (extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constructor) === Object) {
-            return {
-                constraints: {
-                    geometry: null,
-                    minScale: 100,
-                    maxScale: 591657528,
-                    rotationEnabled: true
-                },
-                mapRotation: 0
-            };
-        }
         if (extentSelectorConfig) {
+            if (((_a = Object.keys(extentSelectorConfig)) === null || _a === void 0 ? void 0 : _a.length) === 0 && (extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constructor) === Object) {
+                return {
+                    constraints: {
+                        geometry: null,
+                        minScale: 100,
+                        maxScale: 591657528,
+                        rotationEnabled: true
+                    },
+                    mapRotation: 0
+                };
+            }
             if (((_b = extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constraints) === null || _b === void 0 ? void 0 : _b.geometry) != null) {
                 var geom = jsonUtils_1.default.fromJSON(extentSelectorConfig.constraints.geometry);
                 if (geom.type === "polygon") {

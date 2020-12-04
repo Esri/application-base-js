@@ -127,20 +127,36 @@ declare module 'ApplicationBase/interfaces' {
 	}
 }
 declare module 'ApplicationBase/support/configParser' {
+	/// <reference types="arcgis-js-api" />
 	import { ApplicationConfig } from 'ApplicationBase/interfaces';
 	/**
-	 * Handles backwards compatibility for the App Configs by transforming
+	 * "Convert" functions handle backwards compatibility for the App Configs by transforming
 	 * the inputted Config into a form that is equivalent to what the Config
 	 * Panel would produce right at this moment.
 	 *
+	 * "Validate" functions handle turning potentially invalid app item JSON into a valid
+	 * form, which will not cause the template app to error.
+	 *
 	 * *** NOTE:
-	 * For all additions below, please add a comment with the old
+	 * For all "Convert" additions below, please add a comment with the old
 	 * interface that is being transformed from, and the new interface that
 	 * is being transformed to
 	 * ****
 	 * @param config - App Config
 	 */
 	export function parseConfig(config: ApplicationConfig): ApplicationConfig;
+	export interface IExtentSelectorOutput {
+	    constraints: __esri.MapViewConstraints;
+	    mapRotation: number;
+	}
+	/**
+	 * // old (extentSelectorConfig === __esri.MapViewConstraints)
+	 * // =>
+	 * // new (extentSelectorConfig === IExtentSelectorOutput)
+	 * @param config
+	 */
+	export function _extentSelectorConfigConvert(extentSelectorConfig: any): IExtentSelectorOutput;
+	export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelectorOutput): IExtentSelectorOutput;
 
 }
 declare module 'ApplicationBase/ApplicationBase' {
@@ -198,6 +214,7 @@ declare module 'ApplicationBase/support/configurationSettingsBase' {
 	    constructor(params?: ApplicationConfig);
 	    initialize(): void;
 	    _handleConfigurationUpdates(e: any): void;
+	    private _isWithinConfigurationExperience;
 	}
 	export = ConfigurationSettingsBase;
 

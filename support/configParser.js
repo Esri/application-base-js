@@ -1,11 +1,7 @@
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-define(["require", "exports", "esri/geometry/support/jsonUtils"], function (require, exports, jsonUtils_1) {
+define(["require", "exports", "esri/geometry/support/jsonUtils"], function (require, exports, jsonUtils) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports._extentSelectorConfigValidate = exports._extentSelectorConfigConvert = exports.parseConfig = void 0;
-    jsonUtils_1 = __importDefault(jsonUtils_1);
     /**
      * "Convert" functions handle backwards compatibility for the App Configs by transforming
      * the inputted Config into a form that is equivalent to what the Config
@@ -29,6 +25,8 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
         return config;
     }
     exports.parseConfig = parseConfig;
+    var MIN_SCALE_DEFAULT = 591657528;
+    var MAX_SCALE_DEFAULT = 100;
     /**
      * // old (extentSelectorConfig === __esri.MapViewConstraints)
      * // =>
@@ -56,15 +54,15 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
                 return {
                     constraints: {
                         geometry: null,
-                        minScale: 100,
-                        maxScale: 591657528,
+                        minScale: MIN_SCALE_DEFAULT,
+                        maxScale: MAX_SCALE_DEFAULT,
                         rotationEnabled: true
                     },
                     mapRotation: 0
                 };
             }
             if (((_b = extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constraints) === null || _b === void 0 ? void 0 : _b.geometry) != null) {
-                var geom = jsonUtils_1.default.fromJSON(extentSelectorConfig.constraints.geometry);
+                var geom = jsonUtils.fromJSON(extentSelectorConfig.constraints.geometry);
                 if (geom.type === "polygon") {
                     extentSelectorConfig.constraints.geometry =
                         geom.rings.length > 0 ?
@@ -82,10 +80,10 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
                 }
             }
             if (extentSelectorConfig.constraints.minScale == null) {
-                extentSelectorConfig.constraints.minScale = 100;
+                extentSelectorConfig.constraints.minScale = MIN_SCALE_DEFAULT;
             }
             if (extentSelectorConfig.constraints.maxScale == null) {
-                extentSelectorConfig.constraints.maxScale = 591657528;
+                extentSelectorConfig.constraints.maxScale = MAX_SCALE_DEFAULT;
             }
         }
         return extentSelectorConfig;

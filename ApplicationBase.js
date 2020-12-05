@@ -339,9 +339,7 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                             error: "application:origin-other"
                         });
                     }
-                    else {
-                        return _this;
-                    }
+                    return _this;
                 });
             });
         };

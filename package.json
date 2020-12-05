@@ -1,6 +1,6 @@
 {
   "name": "@esri/application-base-js",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "A core class for creating a configurable application using JavaScript/TypeScript",
   "author": "Matt Driscoll <mdriscoll@esri.com>",
   "homepage": "https://github.com/Esri/application-base-js",
@@ -20,7 +20,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@types/arcgis-js-api": "^4.16.0",
+    "@types/arcgis-js-api": "^4.17.0",
     "dts-generator": "^3.0.0",
     "tslint": "^5.9.1",
     "typescript": "^3.9.7"

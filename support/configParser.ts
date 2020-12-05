@@ -1,4 +1,4 @@
-import jsonUtils from "esri/geometry/support/jsonUtils";
+import jsonUtils = require("esri/geometry/support/jsonUtils");
 import { ApplicationConfig } from "../interfaces";
 
 /**
@@ -33,6 +33,10 @@ export interface IExtentSelectorOutput {
     mapRotation: number;
   }
 
+  const MIN_SCALE_DEFAULT = 591657528;
+  const MAX_SCALE_DEFAULT = 100;
+
+
 
 /**
  * // old (extentSelectorConfig === __esri.MapViewConstraints) 
@@ -63,8 +67,8 @@ export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelec
             return {
                 constraints: {
                     geometry: null,
-                    minScale: 100,
-                    maxScale: 591657528,
+                    minScale: MIN_SCALE_DEFAULT,
+                    maxScale: MAX_SCALE_DEFAULT,
                     rotationEnabled: true
                 },
                 mapRotation: 0
@@ -91,10 +95,10 @@ export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelec
         }
 
         if(extentSelectorConfig.constraints.minScale == null){
-            extentSelectorConfig.constraints.minScale = 100;
+            extentSelectorConfig.constraints.minScale = MIN_SCALE_DEFAULT;
         }
         if(extentSelectorConfig.constraints.maxScale == null){
-            extentSelectorConfig.constraints.maxScale = 591657528;
+            extentSelectorConfig.constraints.maxScale = MAX_SCALE_DEFAULT;
         }
 
     }

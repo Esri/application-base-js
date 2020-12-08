@@ -18,7 +18,7 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
      * @param config - App Config
      */
     function parseConfig(config) {
-        if (config.extentSelectorConfig != null) {
+        if ((config === null || config === void 0 ? void 0 : config.extentSelectorConfig) != null) {
             config.extentSelectorConfig = _extentSelectorConfigConvert(config.extentSelectorConfig);
             config.extentSelectorConfig = _extentSelectorConfigValidate(config.extentSelectorConfig);
         }
@@ -48,9 +48,9 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
     }
     exports._extentSelectorConfigConvert = _extentSelectorConfigConvert;
     function _extentSelectorConfigValidate(extentSelectorConfig) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         if (extentSelectorConfig) {
-            if (((_a = Object.keys(extentSelectorConfig)) === null || _a === void 0 ? void 0 : _a.length) === 0 && (extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constructor) === Object) {
+            if (typeof extentSelectorConfig === "object" && ((_a = Object.keys(extentSelectorConfig)) === null || _a === void 0 ? void 0 : _a.length) === 0) {
                 return {
                     constraints: {
                         geometry: null,
@@ -63,13 +63,13 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
             }
             if (((_b = extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constraints) === null || _b === void 0 ? void 0 : _b.geometry) != null) {
                 var geom = jsonUtils.fromJSON(extentSelectorConfig.constraints.geometry);
-                if (geom.type === "polygon") {
+                if ((geom === null || geom === void 0 ? void 0 : geom.type) === "polygon") {
                     extentSelectorConfig.constraints.geometry =
                         geom.rings.length > 0 ?
                             extentSelectorConfig.constraints.geometry :
                             null;
                 }
-                else if (geom.type === "extent") {
+                else if ((geom === null || geom === void 0 ? void 0 : geom.type) === "extent") {
                     extentSelectorConfig.constraints.geometry =
                         geom.width != null && geom.height != null ?
                             extentSelectorConfig.constraints.geometry :
@@ -79,10 +79,10 @@ define(["require", "exports", "esri/geometry/support/jsonUtils"], function (requ
                     extentSelectorConfig.constraints.geometry = null;
                 }
             }
-            if (extentSelectorConfig.constraints.minScale == null) {
+            if ((extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constraints) && ((_c = extentSelectorConfig.constraints) === null || _c === void 0 ? void 0 : _c.minScale) == null) {
                 extentSelectorConfig.constraints.minScale = MIN_SCALE_DEFAULT;
             }
-            if (extentSelectorConfig.constraints.maxScale == null) {
+            if ((extentSelectorConfig === null || extentSelectorConfig === void 0 ? void 0 : extentSelectorConfig.constraints) && ((_d = extentSelectorConfig.constraints) === null || _d === void 0 ? void 0 : _d.maxScale) == null) {
                 extentSelectorConfig.constraints.maxScale = MAX_SCALE_DEFAULT;
             }
         }

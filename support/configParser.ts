@@ -18,7 +18,7 @@ import { ApplicationConfig } from "../interfaces";
  */
 export function parseConfig(config: ApplicationConfig): ApplicationConfig{
 
-    if(config.extentSelectorConfig != null){
+    if(config?.extentSelectorConfig != null){
         config.extentSelectorConfig = _extentSelectorConfigConvert(config.extentSelectorConfig);
         config.extentSelectorConfig = _extentSelectorConfigValidate(config.extentSelectorConfig);
     }
@@ -63,7 +63,7 @@ export function _extentSelectorConfigConvert(extentSelectorConfig: any): IExtent
 export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelectorOutput): IExtentSelectorOutput{
     if(extentSelectorConfig){
 
-        if(Object.keys(extentSelectorConfig)?.length === 0 && extentSelectorConfig?.constructor === Object){
+        if(typeof extentSelectorConfig === "object" && Object.keys(extentSelectorConfig)?.length === 0){
             return {
                 constraints: {
                     geometry: null,
@@ -79,12 +79,12 @@ export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelec
         if(extentSelectorConfig?.constraints?.geometry != null){
 
             const geom = jsonUtils.fromJSON(extentSelectorConfig.constraints.geometry);
-            if(geom.type === "polygon"){
+            if(geom?.type === "polygon"){
                 extentSelectorConfig.constraints.geometry = 
                     (geom as __esri.Polygon).rings.length > 0 ? 
                         extentSelectorConfig.constraints.geometry : 
                         null;
-            }else if (geom.type === "extent"){
+            }else if (geom?.type === "extent"){
                 extentSelectorConfig.constraints.geometry = 
                     (geom as __esri.Extent).width != null && (geom as __esri.Extent).height != null ?
                         extentSelectorConfig.constraints.geometry : 
@@ -94,10 +94,10 @@ export function _extentSelectorConfigValidate(extentSelectorConfig: IExtentSelec
             }
         }
 
-        if(extentSelectorConfig.constraints.minScale == null){
+        if(extentSelectorConfig?.constraints && extentSelectorConfig.constraints?.minScale == null){
             extentSelectorConfig.constraints.minScale = MIN_SCALE_DEFAULT;
         }
-        if(extentSelectorConfig.constraints.maxScale == null){
+        if(extentSelectorConfig?.constraints && extentSelectorConfig.constraints?.maxScale == null){
             extentSelectorConfig.constraints.maxScale = MAX_SCALE_DEFAULT;
         }
 

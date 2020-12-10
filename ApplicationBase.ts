@@ -264,11 +264,12 @@ class ApplicationBase {
           return reject(applicationItemResponse.error);
         }
         // user not signed in and contentOrigin is other. 
-        if (applicationItem?.sourceJSON?.contentOrigin === "other") {
+        // If app is within an iframe ignore all of this 
+        const withinFrame = window.location !== window.parent.location;
+        if (applicationItem?.sourceJSON?.contentOrigin === "other" && !withinFrame) {
           if (appAccess?.credential === undefined) {
             this.invalidContentOrigin = true;
           }
-
         }
         this.results.applicationItem = applicationItemResponse;
         this.results.applicationData = applicationDataResponse;
@@ -401,7 +402,7 @@ class ApplicationBase {
                 error: "application:origin-other"
               });
             }
-              return this;
+            return this;
           });
       });
   }
@@ -728,15 +729,7 @@ class ApplicationBase {
     }
     return appurl;
   }
-  private _checkContentOrigin(responses) {
-    responses.some((response) => {
-      if (response?.value) {
-        if (response.value?.sourceJSON?.contentOrigin === "other") {
-          this.invalidContentOrigin = true;
-        }
-      }
-    })
-  }
+
 }
 
 export = ApplicationBase;

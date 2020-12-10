@@ -234,7 +234,9 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                     return promiseUtils_1.reject(applicationItemResponse.error);
                 }
                 // user not signed in and contentOrigin is other. 
-                if (((_a = applicationItem === null || applicationItem === void 0 ? void 0 : applicationItem.sourceJSON) === null || _a === void 0 ? void 0 : _a.contentOrigin) === "other") {
+                // If app is within an iframe ignore all of this 
+                var withinFrame = window.location !== window.parent.location;
+                if (((_a = applicationItem === null || applicationItem === void 0 ? void 0 : applicationItem.sourceJSON) === null || _a === void 0 ? void 0 : _a.contentOrigin) === "other" && !withinFrame) {
                     if ((appAccess === null || appAccess === void 0 ? void 0 : appAccess.credential) === undefined) {
                         _this.invalidContentOrigin = true;
                     }
@@ -583,17 +585,6 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                 appurl = "" + appurl + location.search;
             }
             return appurl;
-        };
-        ApplicationBase.prototype._checkContentOrigin = function (responses) {
-            var _this = this;
-            responses.some(function (response) {
-                var _a, _b;
-                if (response === null || response === void 0 ? void 0 : response.value) {
-                    if (((_b = (_a = response.value) === null || _a === void 0 ? void 0 : _a.sourceJSON) === null || _b === void 0 ? void 0 : _b.contentOrigin) === "other") {
-                        _this.invalidContentOrigin = true;
-                    }
-                }
-            });
         };
         return ApplicationBase;
     }());

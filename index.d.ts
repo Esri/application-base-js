@@ -45,10 +45,6 @@ declare module 'ApplicationBase/interfaces' {
 	}
 
 	export interface ApplicationBaseSettings {
-	  environment: {
-	    isEsri?: boolean;
-	    webTierSecurity?: boolean;
-	  };
 	  localStorage?: {
 	    fetch?: boolean;
 	  };
@@ -181,6 +177,8 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    private _getPropertyArray;
 	    private _getEsriEnvironmentPortalUrl;
 	    private _getEsriEnvironmentProxyUrl;
+	    private _isEnvironmentEsri;
+	    private _isPortalServer;
 	    private _getUnits;
 	    private _detectIE;
 	    private _queryGroupInfo;
@@ -198,7 +196,6 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    private _formatUrlParamValue;
 	    private _stripStringTags;
 	    private _getAppUrl;
-	    private _checkContentOrigin;
 	}
 	export = ApplicationBase;
 

@@ -44,10 +44,6 @@ export interface ApplicationConfig {
 }
 
 export interface ApplicationBaseSettings {
-  environment: {
-    isEsri?: boolean;
-    webTierSecurity?: boolean;
-  };
   localStorage?: {
     fetch?: boolean;
   };

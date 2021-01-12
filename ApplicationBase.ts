@@ -43,7 +43,6 @@ const defaultConfig = {
 };
 
 const defaultSettings = {
-  environment: {},
   group: {},
   portal: {},
   urlParams: [],
@@ -167,10 +166,9 @@ class ApplicationBase {
     return result as __esri.PortalQueryResult;
   }
 
-  load(): Promise<ApplicationBase> {
+  async load(): Promise<ApplicationBase> {
     const { settings } = this;
     const {
-      environment: environmentSettings,
       group: groupSettings,
       portal: portalSettings,
       webMap: webMapSettings,
@@ -179,7 +177,7 @@ class ApplicationBase {
     } = settings;
 
 
-    const { isEsri } = environmentSettings;
+    const isEsri = await this._isEnvironmentEsri();
     const urlParams = parseConfig(this._getUrlParamValues(urlParamsSettings));
     this.results.urlParams = urlParams;
 
@@ -414,17 +412,10 @@ class ApplicationBase {
   //--------------------------------------------------------------------------
 
   private _mixinSettingsDefaults(settings: ApplicationBaseSettings): void {
-    const userEnvironmentSettings = settings.environment;
     const userGroupSettings = settings.group;
     const userPortalSettings = settings.portal;
     const userWebmapSettings = settings.webMap;
     const userWebsceneSettings = settings.webScene;
-
-    settings.environment = {
-      isEsri: false,
-      webTierSecurity: false,
-      ...userEnvironmentSettings
-    };
 
     const itemParams = {
       sortField: "modified",
@@ -508,6 +499,17 @@ class ApplicationBase {
     }
 
     return `${portalUrl}/sharing/proxy`;
+  }
+
+  private async _isEnvironmentEsri(): Promise<boolean>{
+    const urlBase: string = window.location.origin;
+    return urlBase.indexOf("arcgis.com") !== -1 || await this._isPortalServer(urlBase); // AGO || ArcGIS Portal
+  }
+
+  private async _isPortalServer(url): Promise<boolean>{
+    const urlTest: string = `${url}/arcgis/rest/info`;
+    const res: Response = await fetch(urlTest);
+    return res.ok;
   }
 
   private _getUnits(portal: Portal): string {

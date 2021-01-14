@@ -503,13 +503,19 @@ class ApplicationBase {
 
   private async _isEnvironmentEsri(): Promise<boolean>{
     const urlBase: string = window.location.origin;
-    return urlBase.indexOf("arcgis.com") !== -1 || await this._isPortalServer(urlBase); // AGO || ArcGIS Portal
+    return urlBase.indexOf("arcgis.com") !== -1 || await this._isPortalServer(); // AGO || ArcGIS Portal
   }
 
-  private async _isPortalServer(url): Promise<boolean>{
-    const urlTest: string = `${url}/arcgis/rest/info`;
-    const res: Response = await fetch(urlTest);
-    return res.ok;
+  private async _isPortalServer(): Promise<boolean>{
+    const testingUrl: string = `${this._getEsriEnvironmentPortalUrl()}/sharing/rest/info`;
+    try{
+      const res: Response = await fetch(testingUrl, {
+        method: 'HEAD'
+      });
+      return res.ok;
+    }catch(err){
+      return false;
+    }
   }
 
   private _getUnits(portal: Portal): string {

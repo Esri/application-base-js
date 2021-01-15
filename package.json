@@ -1,6 +1,6 @@
 {
   "name": "@esri/application-base-js",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "A core class for creating a configurable application using JavaScript/TypeScript",
   "author": "Matt Driscoll <mdriscoll@esri.com>",
   "homepage": "https://github.com/Esri/application-base-js",
@@ -26,8 +26,10 @@
     "typescript": "^3.9.7"
   },
   "scripts": {
-    "start": "npm run build && npm run watch -s",
+    "start": "npm run watch -s",
     "watch": "tsc --watch",
-    "build": "dts-generator --prefix ApplicationBase --project ./ --out index.d.ts"
+    "prepare": "npm run build",
+    "build": "tsc && npm run generateTypes",
+    "generateTypes": "dts-generator --prefix ApplicationBase --project ./ --out index.d.ts"
   }
 }

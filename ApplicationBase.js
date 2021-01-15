@@ -423,7 +423,7 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                             urlBase = window.location.origin;
                             _a = urlBase.indexOf("arcgis.com") !== -1;
                             if (_a) return [3 /*break*/, 2];
-                            return [4 /*yield*/, this._isPortalServer(urlBase)];
+                            return [4 /*yield*/, this._isPortalServer()];
                         case 1:
                             _a = (_b.sent());
                             _b.label = 2;
@@ -432,17 +432,26 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                 });
             });
         };
-        ApplicationBase.prototype._isPortalServer = function (url) {
+        ApplicationBase.prototype._isPortalServer = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var urlTest, res;
+                var testingUrl, res, err_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            urlTest = url + "/arcgis/rest/info";
-                            return [4 /*yield*/, fetch(urlTest)];
+                            testingUrl = this._getEsriEnvironmentPortalUrl() + "/sharing/rest/info";
+                            _a.label = 1;
                         case 1:
+                            _a.trys.push([1, 3, , 4]);
+                            return [4 /*yield*/, fetch(testingUrl, {
+                                    method: 'HEAD'
+                                })];
+                        case 2:
                             res = _a.sent();
                             return [2 /*return*/, res.ok];
+                        case 3:
+                            err_1 = _a.sent();
+                            return [2 /*return*/, false];
+                        case 4: return [2 /*return*/];
                     }
                 });
             });

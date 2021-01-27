@@ -112,6 +112,7 @@ declare module 'ApplicationBase/interfaces' {
 
 	export interface CreateMapFromItemOptions {
 	  item: PortalItem;
+	  mapParams?: __esri.MapProperties,
 	  appProxies?: ApplicationProxy[];
 	}
 

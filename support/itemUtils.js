@@ -122,17 +122,15 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
     exports.createMapFromItem = createMapFromItem;
     function createWebMapFromItem(options) {
         return __awaiter(this, void 0, void 0, function () {
-            var item, appProxies, WebMap, wm;
+            var item, appProxies, mapParams, WebMap, wm;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        item = options.item, appProxies = options.appProxies;
+                        item = options.item, appProxies = options.appProxies, mapParams = options.mapParams;
                         return [4 /*yield*/, new Promise(function (resolve_1, reject_1) { require(["esri/WebMap"], resolve_1, reject_1); }).then(__importStar)];
                     case 1:
                         WebMap = _a.sent();
-                        wm = new WebMap.default({
-                            portalItem: item
-                        });
+                        wm = new WebMap.default(__assign({ portalItem: item }, mapParams));
                         return [4 /*yield*/, wm.load()];
                     case 2:
                         _a.sent();

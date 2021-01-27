@@ -104,10 +104,11 @@ export function createMapFromItem(
 export async function createWebMapFromItem(
   options: CreateMapFromItemOptions
 ): Promise<esri.WebMap> {
-  const { item, appProxies } = options;
+  const { item, appProxies, mapParams } = options;
   const WebMap = await import("esri/WebMap");
   const wm = new WebMap.default({
-    portalItem: item
+    portalItem: item,
+    ...mapParams
   });
   await wm.load();
   await wm.basemap.load();

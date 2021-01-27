@@ -111,6 +111,7 @@ export interface ApplicationBaseConstructorOptions {
 
 export interface CreateMapFromItemOptions {
   item: PortalItem;
+  mapParams?: __esri.MapProperties,
   appProxies?: ApplicationProxy[];
 }
 

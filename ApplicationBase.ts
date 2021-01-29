@@ -501,19 +501,19 @@ class ApplicationBase {
     return `${portalUrl}/sharing/proxy`;
   }
 
-  private async _isEnvironmentEsri(): Promise<boolean>{
+  private async _isEnvironmentEsri(): Promise<boolean> {
     const urlBase: string = window.location.origin;
     return urlBase.indexOf("arcgis.com") !== -1 || await this._isPortalServer(); // AGO || ArcGIS Portal
   }
 
-  private async _isPortalServer(): Promise<boolean>{
+  private async _isPortalServer(): Promise<boolean> {
     const testingUrl: string = `${this._getEsriEnvironmentPortalUrl()}/sharing/rest/info`;
-    try{
+    try {
       const res: Response = await fetch(testingUrl, {
         method: 'HEAD'
       });
       return res.ok;
-    }catch(err){
+    } catch (err) {
       return false;
     }
   }
@@ -660,8 +660,7 @@ class ApplicationBase {
 
     const info = new OAuthInfo({
       appId,
-      portalUrl,
-      popup: true
+      portalUrl
     });
 
     if (!info) {

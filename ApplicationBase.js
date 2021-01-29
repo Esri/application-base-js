@@ -569,8 +569,7 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
             }
             var info = new OAuthInfo_1.default({
                 appId: appId,
-                portalUrl: portalUrl,
-                popup: true
+                portalUrl: portalUrl
             });
             if (!info) {
                 return;

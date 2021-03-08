@@ -22,6 +22,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
+    exports.setPageTitle = exports.setPageDirection = exports.setPageLocale = void 0;
     function setPageLocale(locale) {
         document.documentElement.lang = locale;
     }

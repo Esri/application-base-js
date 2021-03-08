@@ -635,7 +635,7 @@ class ApplicationBase {
     const info = new OAuthInfo({
       appId,
       portalUrl,
-      popup: true
+      popup: false
     });
 
     if (!info) {

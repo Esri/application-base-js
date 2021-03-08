@@ -67,12 +67,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/core/watchUtils", "@arcgis/core/views/MapView", "@arcgis/core/views/SceneView", "./urlUtils"], function (require, exports, promiseUtils_1, watchUtils_1, MapView_1, SceneView_1, urlUtils_1) {
+define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/core/watchUtils", "@arcgis/core/views/MapView", "@arcgis/core/views/SceneView", "./urlUtils", "../../refs/itemTypes"], function (require, exports, promiseUtils_1, watchUtils_1, MapView_1, SceneView_1, urlUtils_1, itemTypes_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.findQuery = exports.goToMarker = exports.getItemTitle = exports.createWebSceneFromItem = exports.createWebMapFromItem = exports.createMapFromItem = exports.createView = exports.getConfigViewProperties = void 0;
     MapView_1 = __importDefault(MapView_1);
     SceneView_1 = __importDefault(SceneView_1);
+    itemTypes_1 = __importDefault(itemTypes_1);
     //--------------------------------------------------------------------------
     //
     //  Public Methods
@@ -98,8 +99,8 @@ define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/co
                 if (!map) {
                     return [2 /*return*/, promiseUtils_1.reject("properties does not contain a \"map\"")];
                 }
-                isWebMap = map.declaredClass === "esri.WebMap";
-                isWebScene = map.declaredClass === "esri.WebScene";
+                isWebMap = map.declaredClass === "__esri.WebMap";
+                isWebScene = map.declaredClass === "__esri.WebScene";
                 if (!isWebMap && !isWebScene) {
                     return [2 /*return*/, promiseUtils_1.reject("map is not a \"WebMap\" or \"WebScene\"")];
                 }
@@ -110,8 +111,8 @@ define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/co
     exports.createView = createView;
     function createMapFromItem(options) {
         var item = options.item;
-        var isWebMap = item.type === "Web Map";
-        var isWebScene = item.type === "Web Scene";
+        var isWebMap = item.type === itemTypes_1.default.webmap;
+        var isWebScene = item.type === itemTypes_1.default.webscene;
         if (!isWebMap && !isWebScene) {
             return promiseUtils_1.reject();
         }

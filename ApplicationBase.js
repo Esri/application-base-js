@@ -365,7 +365,7 @@ define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/id
             return [];
         };
         ApplicationBase.prototype._getEsriEnvironmentPortalUrl = function () {
-            var pathname = location.pathname;
+            var pathname = window.location.pathname;
             var esriAppsPath = "/apps/";
             var esriHomePath = "/home/";
             var esriAppsPathIndex = pathname.indexOf(esriAppsPath);
@@ -381,7 +381,7 @@ define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/id
                 return;
             }
             var portalInstance = pathname.substr(0, appLocationIndex);
-            var host = location.host;
+            var host = window.location.host;
             return "https://" + host + portalInstance;
         };
         ApplicationBase.prototype._getEsriEnvironmentProxyUrl = function (portalUrl) {

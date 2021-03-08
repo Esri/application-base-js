@@ -41,7 +41,6 @@ import {
   parseCenter,
   parseLevel
 } from "./urlUtils";
-import itemTypes from "../../refs/itemTypes";
 
 //--------------------------------------------------------------------------
 //
@@ -91,8 +90,8 @@ export function createMapFromItem(
   options: CreateMapFromItemOptions
 ): Promise<__esri.WebMap | __esri.WebScene> {
   const { item } = options;
-  const isWebMap = item.type === itemTypes.webmap;
-  const isWebScene = item.type === itemTypes.webscene;
+  const isWebMap = item.type === "Web Map";
+  const isWebScene = item.type === "Web Scene";
 
   if (!isWebMap && !isWebScene) {
     return reject();

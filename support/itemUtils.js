@@ -98,8 +98,8 @@ define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/co
                 if (!map) {
                     return [2 /*return*/, promiseUtils_1.reject("properties does not contain a \"map\"")];
                 }
-                isWebMap = map.declaredClass === "esri.WebMap";
-                isWebScene = map.declaredClass === "esri.WebScene";
+                isWebMap = map.declaredClass === "__esri.WebMap";
+                isWebScene = map.declaredClass === "__esri.WebScene";
                 if (!isWebMap && !isWebScene) {
                     return [2 /*return*/, promiseUtils_1.reject("map is not a \"WebMap\" or \"WebScene\"")];
                 }

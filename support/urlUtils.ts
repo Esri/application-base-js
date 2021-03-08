@@ -28,7 +28,6 @@ import Extent from "@arcgis/core/geometry/Extent";
 import Point from "@arcgis/core/geometry/Point";
 import { PictureMarkerSymbol, SimpleMarkerSymbol } from "@arcgis/core/symbols";
 import { eachAlways } from "@arcgis/core/core/promiseUtils";
-import esri = __esri;
 interface CameraProperties {
   heading?: number;
   position?: Point;
@@ -147,7 +146,7 @@ export function parseExtent(extent: string): Extent {
   return ext;
 }
 
-export async function parseMarker(marker: string): Promise<esri.Graphic | {}> {
+export async function parseMarker(marker: string): Promise<__esri.Graphic | {}> {
   // ?marker=-117;34;4326;My Title;http://www.daisysacres.com/images/daisy_icon.gif;My location&level=10
   // ?marker=-117,34,4326,My Title,http://www.daisysacres.com/images/daisy_icon.gif,My location&level=10
   // ?marker=-13044705.25,4036227.41,102100,My Title,http://www.daisysacres.com/images/daisy_icon.gif,My location&level=10
@@ -204,7 +203,7 @@ export async function parseMarker(marker: string): Promise<esri.Graphic | {}> {
     ? new PopupTemplate.default({
       title: content || null,
       content: label || null
-    }) as esri.PopupTemplate
+    }) as __esri.PopupTemplate
     : null;
 
   const graphic = new Graphic.default({
@@ -212,7 +211,7 @@ export async function parseMarker(marker: string): Promise<esri.Graphic | {}> {
     symbol: markerSymbol,
     popupTemplate: popupTemplate
   });
-  return graphic as esri.Graphic;
+  return graphic as __esri.Graphic;
 }
 
 //--------------------------------------------------------------------------

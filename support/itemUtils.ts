@@ -41,7 +41,7 @@ import {
   parseCenter,
   parseLevel
 } from "./urlUtils";
-import esri = __esri;
+
 //--------------------------------------------------------------------------
 //
 //  Public Methods
@@ -67,27 +67,28 @@ export function getConfigViewProperties(config: ApplicationConfig): any {
   };
 }
 
-export async function createView(properties: any): Promise<esri.MapView | esri.SceneView> {
+export async function createView(
+  properties: any
+): Promise<__esri.MapView | __esri.SceneView> {
   const { map } = properties;
 
   if (!map) {
     return reject(`properties does not contain a "map"`);
   }
 
-  const isWebMap = map.declaredClass === "esri.WebMap";
-  const isWebScene = map.declaredClass === "esri.WebScene";
+  const isWebMap = map.declaredClass === "__esri.WebMap";
+  const isWebScene = map.declaredClass === "__esri.WebScene";
 
   if (!isWebMap && !isWebScene) {
     return reject(`map is not a "WebMap" or "WebScene"`);
   }
 
   return isWebMap ? new MapView(properties) : new SceneView(properties);
-
 }
 
 export function createMapFromItem(
   options: CreateMapFromItemOptions
-): Promise<esri.WebMap | esri.WebScene> {
+): Promise<__esri.WebMap | __esri.WebScene> {
   const { item } = options;
   const isWebMap = item.type === "Web Map";
   const isWebScene = item.type === "Web Scene";
@@ -98,12 +99,14 @@ export function createMapFromItem(
 
   return isWebMap
     ? createWebMapFromItem(options)
-    : (createWebSceneFromItem(options) as Promise<esri.WebMap | esri.WebScene>);
+    : (createWebSceneFromItem(options) as Promise<
+        __esri.WebMap | __esri.WebScene
+      >);
 }
 
 export async function createWebMapFromItem(
   options: CreateMapFromItemOptions
-): Promise<esri.WebMap> {
+): Promise<__esri.WebMap> {
   const { item, appProxies } = options;
   const WebMap = await import("@arcgis/core/WebMap");
   const wm = new WebMap.default({
@@ -116,7 +119,7 @@ export async function createWebMapFromItem(
 
 export async function createWebSceneFromItem(
   options: CreateMapFromItemOptions
-): Promise<esri.WebScene> {
+): Promise<__esri.WebScene> {
   const { item, appProxies } = options;
   const WebScene = await import("@arcgis/core/WebScene");
   const ws = new WebScene.default({
@@ -135,7 +138,7 @@ export function getItemTitle(item: PortalItem): string {
 
 export async function goToMarker(
   marker: string,
-  view: esri.MapView | esri.SceneView
+  view: __esri.MapView | __esri.SceneView
 ): Promise<any> {
   if (!marker || !view) {
     return resolve();
@@ -143,7 +146,7 @@ export async function goToMarker(
   const graphic = await parseMarker(marker);
   await view.when();
 
-  view.graphics.add(graphic as esri.Graphic);
+  view.graphics.add(graphic as __esri.Graphic);
   view.goTo(graphic);
 
   return graphic;
@@ -151,7 +154,7 @@ export async function goToMarker(
 
 export async function findQuery(
   query: string,
-  view: esri.MapView | esri.SceneView
+  view: __esri.MapView | __esri.SceneView
 ): Promise<any> {
   // ?find=redlands, ca
   if (!query || !view) {
@@ -177,9 +180,9 @@ export async function findQuery(
 //--------------------------------------------------------------------------
 
 function _updateProxiedLayers(
-  webItem: esri.WebMap | esri.WebScene,
+  webItem: __esri.WebMap | __esri.WebScene,
   appProxies?: ApplicationProxy[]
-): esri.WebMap | esri.WebScene {
+): __esri.WebMap | __esri.WebScene {
   if (!appProxies) {
     return webItem;
   }

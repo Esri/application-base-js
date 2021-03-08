@@ -462,7 +462,7 @@ class ApplicationBase {
   }
 
   private _getEsriEnvironmentPortalUrl(): string {
-    const pathname = location.pathname;
+    const pathname = window.location.pathname;
     const esriAppsPath = "/apps/";
     const esriHomePath = "/home/";
     const esriAppsPathIndex = pathname.indexOf(esriAppsPath);
@@ -480,7 +480,7 @@ class ApplicationBase {
     }
 
     const portalInstance = pathname.substr(0, appLocationIndex);
-    const host = location.host;
+    const host = window.location.host;
     return `https://${host}${portalInstance}`;
   }
 

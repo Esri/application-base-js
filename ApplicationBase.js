@@ -504,7 +504,7 @@ define(["require", "exports", "@arcgis/core/core/promiseUtils", "@arcgis/core/id
             var info = new OAuthInfo_1.default({
                 appId: appId,
                 portalUrl: portalUrl,
-                popup: true
+                popup: false
             });
             if (!info) {
                 return;

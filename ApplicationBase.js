@@ -283,8 +283,9 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                                     var fetchMultipleWebmaps = webMapSettings.fetchMultiple;
                                     var fetchMultipleWebscenes = websceneSettings.fetchMultiple;
                                     var fetchMultipleGroups = groupSettings.fetchMultiple;
+                                    var withinConfigExperience = _this._isWithinConfigurationExperience();
                                     if (isWebMapEnabled) {
-                                        var maps = (draft === null || draft === void 0 ? void 0 : draft.webmap) ? [draft.webmap, webmap] : webmap;
+                                        var maps = (withinConfigExperience && (draft === null || draft === void 0 ? void 0 : draft.webmap)) ? [draft.webmap, webmap] : webmap;
                                         var webMaps = _this._getPropertyArray(maps);
                                         var allowedWebmaps = _this._limitItemSize(webMaps, fetchMultipleWebmaps);
                                         allowedWebmaps.forEach(function (id) {
@@ -293,7 +294,7 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                                         });
                                     }
                                     if (isWebSceneEnabled) {
-                                        var scenes = (draft === null || draft === void 0 ? void 0 : draft.webscene) ? [draft.webscene, webscene] : webscene;
+                                        var scenes = withinConfigExperience && (draft === null || draft === void 0 ? void 0 : draft.webscene) ? [draft.webscene, webscene] : webscene;
                                         var webScenes = _this._getPropertyArray(scenes);
                                         var allowedWebsenes = _this._limitItemSize(webScenes, fetchMultipleWebscenes);
                                         allowedWebsenes.forEach(function (id) {
@@ -302,7 +303,7 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                                         });
                                     }
                                     if (isGroupInfoEnabled) {
-                                        var draftGroups = (draft === null || draft === void 0 ? void 0 : draft.group) ? [draft.group, group] : group;
+                                        var draftGroups = withinConfigExperience && (draft === null || draft === void 0 ? void 0 : draft.group) ? [draft.group, group] : group;
                                         var groups = _this._getPropertyArray(draftGroups);
                                         var allowedGroups = _this._limitItemSize(groups, fetchMultipleGroups);
                                         allowedGroups.forEach(function (id) {
@@ -633,6 +634,24 @@ define(["require", "exports", "./support/configParser", "esri/core/promiseUtils"
                 appurl = "" + appurl + location.search;
             }
             return appurl;
+        };
+        ApplicationBase.prototype._isWithinConfigurationExperience = function () {
+            var frameElement = window.frameElement, location = window.location, parent = window.parent;
+            // If frameElement is null, origins between parent and child do not match
+            return frameElement
+                ? // If origins match, check if parent iframe has data-embed-type="instant-config"
+                    frameElement.getAttribute("data-embed-type") === "instant-config"
+                        ? // If so, app is within config experience - use draft values
+                            true
+                        : // Otherwise, it is not within config experience - use publish values
+                            false
+                : // Origins do not match
+                    // IF TRUE - If parent and child locations do not match, and the location hostnames are local host.
+                    // Use draft values for locally hosted config panel testing
+                    // IF FALSE - template app is embedded on hosted page - use publish values.
+                    location !== parent.location &&
+                        (location.hostname === "localhost" ||
+                            location.hostname === "127.0.0.1");
         };
         return ApplicationBase;
     }());

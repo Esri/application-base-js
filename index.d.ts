@@ -197,6 +197,7 @@ declare module 'ApplicationBase/ApplicationBase' {
 	    private _formatUrlParamValue;
 	    private _stripStringTags;
 	    private _getAppUrl;
+	    private _isWithinConfigurationExperience;
 	}
 	export = ApplicationBase;
 

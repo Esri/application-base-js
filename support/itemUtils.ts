@@ -111,7 +111,8 @@ export async function createWebMapFromItem(
     ...mapParams
   });
   await wm.load();
-  await wm.basemap.load();
+  if (wm?.basemap)
+    await wm.basemap.load();
   return _updateProxiedLayers(wm, appProxies) as __esri.WebMap;
 }
 
@@ -124,7 +125,8 @@ export async function createWebSceneFromItem(
     portalItem: item
   });
   await ws.load();
-  await ws.basemap.load();
+  if (ws?.basemap)
+    await ws.basemap.load();
   return _updateProxiedLayers(ws, appProxies) as __esri.WebScene;
 }
 

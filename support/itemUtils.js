@@ -134,10 +134,12 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         return [4 /*yield*/, wm.load()];
                     case 2:
                         _a.sent();
+                        if (!(wm === null || wm === void 0 ? void 0 : wm.basemap)) return [3 /*break*/, 4];
                         return [4 /*yield*/, wm.basemap.load()];
                     case 3:
                         _a.sent();
-                        return [2 /*return*/, _updateProxiedLayers(wm, appProxies)];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, _updateProxiedLayers(wm, appProxies)];
                 }
             });
         });
@@ -159,10 +161,12 @@ define(["require", "exports", "esri/core/promiseUtils", "esri/core/watchUtils", 
                         return [4 /*yield*/, ws.load()];
                     case 2:
                         _a.sent();
+                        if (!(ws === null || ws === void 0 ? void 0 : ws.basemap)) return [3 /*break*/, 4];
                         return [4 /*yield*/, ws.basemap.load()];
                     case 3:
                         _a.sent();
-                        return [2 /*return*/, _updateProxiedLayers(ws, appProxies)];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, _updateProxiedLayers(ws, appProxies)];
                 }
             });
         });

@@ -1,3 +1,6 @@
+# Deprecated
+This repo is no longer maintained. The functionality has been forked and is being maintained in the [Templates Common Library repo](https://github.com/Esri/templates-common-library/blob/master/src/baseClasses/ApplicationBase.ts)
+
 # ApplicationBase
 
 A class designed to handle common tasks of configurable ArcGIS Web Applications.
